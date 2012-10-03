@@ -3687,6 +3687,7 @@ static void player_wipe(void)
 
 		/* Hack -- Non-unique Nazguls are semi-unique */
 		else if (r_ptr->flags7 & RF7_NAZGUL) r_ptr->max_num = MAX_NAZGUL_NUM;
+		else if (i == MON_CAMELOT_KNIGHT) r_ptr->max_num = MAX_CAMELOT_KNIGHT_NUM;
 
 		/* Clear visible kills in this life */
 		r_ptr->r_pkills = 0;
@@ -3819,7 +3820,7 @@ static void player_wipe(void)
 	else
 	{
 		dungeon_type = 0;
-		p_ptr->recall_dungeon = DUNGEON_GALGALS;
+		p_ptr->recall_dungeon = DUNGEON_CAMELOT;
 	}
 }
 

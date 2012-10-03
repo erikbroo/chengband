@@ -2248,7 +2248,7 @@ static void display_player_various(void)
 					ds = k_info[o_ptr->k_idx].ac;
 					
 					if (object_is_known(o_ptr)) damage[i] += o_ptr->to_a * 100;
-					basedam = dd * (ds + 1) * 50;
+					basedam = (dd + p_ptr->weapon_info[i].to_dd) * (ds + p_ptr->weapon_info[i].to_ds + 1) * 50;
 				}
 				else
 				{
@@ -3937,9 +3937,9 @@ void display_player(int mode)
 
 	/* XXX XXX XXX */
 	if (mut_count(NULL) && display_mutations)
-		mode = (mode % 5);
+		mode = (mode % 6);
 	else
-		mode = (mode % 4);
+		mode = (mode % 5);
 
 	/* Erase screen */
 	clear_from(0);
@@ -4205,8 +4205,14 @@ void display_player(int mode)
 	{
 		display_player_other_flag_info();
 	}
-
 	else if (mode == 4)
+	{
+		if (object_is_melee_weapon(&inventory[INVEN_RARM]) && object_is_known(&inventory[INVEN_RARM]))
+			display_weapon_info(0, 0, 1);
+		if (object_is_melee_weapon(&inventory[INVEN_LARM]) && object_is_known(&inventory[INVEN_LARM]))
+			display_weapon_info(1, 0, 40);
+	}
+	else if (mode == 5)
 	{
 		mut_do_cmd_knowledge();
 	}
@@ -4767,7 +4773,6 @@ static void dump_aux_recall(FILE *fff)
 	}
 }
 
-
 /*
  *
  */
@@ -5196,6 +5201,10 @@ static void dump_aux_equipment_inventory(FILE *fff)
 {
 	int i;
 	char o_name[MAX_NLEN];
+	int x, y;
+	byte a;
+	char c;
+	char		buf[1024];
 
 	/* Dump the equipment */
 	if (equip_cnt)
@@ -5227,6 +5236,37 @@ static void dump_aux_equipment_inventory(FILE *fff)
 		}
 		fprintf(fff, "\n\n");
 	}
+
+	fprintf(fff, "  [Melee Damage]\n\n");
+	display_player(4);
+	/* Dump part of the screen */
+	for (y = 0; y < 22; y++)
+	{
+		/* Dump each row */
+		for (x = 0; x < 79; x++)
+		{
+			/* Get the attr/char */
+			(void)(Term_what(x, y, &a, &c));
+
+			/* Dump it (Ignore equippy tile graphic) */
+			if (a < 128)
+				buf[x] = c;
+			else
+				buf[x] = ' ';
+		}
+
+		/* End the string */
+		buf[x] = '\0';
+
+		/* Kill trailing spaces */
+		while ((x > 0) && (buf[x-1] == ' ')) buf[--x] = '\0';
+
+		/* Only print non-blank rows */
+		if (strlen(buf) > 0)
+			fprintf(fff, "%s\n", buf);
+	}
+	fprintf(fff, "\n\n");
+
 
 	/* Dump the inventory */
 #ifdef JP

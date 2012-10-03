@@ -1665,6 +1665,9 @@ s16b get_mon_num(int level)
 		r_idx = table[i].index;
 		r_ptr = &r_info[r_idx];
 
+		/* Hack: Camelot monsters only appear in Camelot */
+		if ((r_ptr->flags2 & RF2_CAMELOT) && dungeon_type != DUNGEON_CAMELOT) continue;
+
 		/* Hack: Only Olympians can summon Olympians ... */
 		if ((r_ptr->flags3 & RF3_OLYMPIAN) && summon_specific_who)
 		{
@@ -4486,20 +4489,46 @@ bool summon_specific(int who, int y1, int x1, int lev, int type, u32b mode)
 /* A "dangerous" function, creates a pet of the specified type */
 bool summon_named_creature (int who, int oy, int ox, int r_idx, u32b mode)
 {
-	int x, y;
+	bool result = FALSE;
+	int x, y, i;
+	monster_race *r_ptr;
 
-	/* Paranoia */
-	/* if (!r_idx) return; */
-
-	/* Prevent illegal monsters */
 	if (r_idx >= max_r_idx) return FALSE;
-
 	if (p_ptr->inside_arena) return FALSE;
-
 	if (!mon_scatter(r_idx, &y, &x, oy, ox, 2)) return FALSE;
 
-	/* Place it (allow groups) */
-	return place_monster_aux(who, y, x, r_idx, (mode | PM_NO_KAGE));
+	r_ptr = &r_info[r_idx];
+	if (!(r_ptr->flags7 & RF7_GUARDIAN) && r_ptr->cur_num < r_ptr->max_num)
+		result = place_monster_aux(who, y, x, r_idx, (mode | PM_NO_KAGE));
+
+	if (!result && (r_ptr->flags1 & RF1_UNIQUE) && one_in_(2))
+	{
+		for (i = 1; i < max_m_idx; i++)
+		{
+		monster_type *m_ptr = &m_list[i];
+
+			if (m_ptr->r_idx != r_idx) continue;
+			oy = m_ptr->fy;
+			ox = m_ptr->fx;
+			cave[oy][ox].m_idx = 0;
+
+			cave[y][x].m_idx = i;
+			m_ptr->fy = y;
+			m_ptr->fx = x;
+
+			reset_target(m_ptr);
+			update_mon(i, TRUE);
+			lite_spot(oy, ox);
+			lite_spot(y, x);
+			if (r_info[m_ptr->r_idx].flags7 & (RF7_LITE_MASK | RF7_DARK_MASK))
+				p_ptr->update |= (PU_MON_LITE);
+
+			result = TRUE;
+			break;
+		}
+	}
+
+	return result;
 }
 
 

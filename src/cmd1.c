@@ -1410,11 +1410,13 @@ s16b tot_dam_aux(object_type *o_ptr, int tdam, monster_type *m_ptr, s16b hand, i
 			if (have_flag(flgs, TR_FORCE_WEAPON) || p_ptr->tim_force)
 			{
 				int cost = 0;
+				int dd = o_ptr->dd + p_ptr->weapon_info[hand].to_dd;
+				int ds = o_ptr->ds + p_ptr->weapon_info[hand].to_ds;
 				
 				if (p_ptr->pclass == CLASS_SAMURAI)
-					cost = (1 + (o_ptr->dd * o_ptr->ds * 2 / 5));
+					cost = (1 + (dd * ds * 2 / 5));
 				else
-					cost = (1+(o_ptr->dd * o_ptr->ds / 5));
+					cost = (1 + (dd * ds / 5));
 
 				if (p_ptr->csp >= cost)
 				{
@@ -3883,7 +3885,7 @@ static bool py_attack_aux(int y, int x, bool *fear, bool *mdeath, s16b hand, int
 
 				if ( o_ptr->tval == TV_SWORD
 				  && o_ptr->sval == SV_RUNESWORD
-				  && monster_living(r_ptr) )
+				  /*&& monster_living(r_ptr)*/ )
 				{
 					_rune_sword_kill(o_ptr, r_ptr);
 				}

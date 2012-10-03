@@ -631,6 +631,8 @@ static void do_cmd_wiz_hack_chris7_imp(FILE* file)
 {
 	int ct = get_quantity("How Many Thousands?", 1000);
 	int depths[] = { 1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, -1 };
+	/*int depths[] = { 1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 99, 100, 110, 120, -1 };*/
+	/*int depths[] = { 99, 120, -1 };*/
 	int i, j;
 	int counts[1024];
 	int good_counts[1024];
@@ -667,8 +669,12 @@ static void do_cmd_wiz_hack_chris7_imp(FILE* file)
 				counts[k]++;
 			}
 
+			if (forge.name1)
+				a_info[forge.name1].cur_num = 0;
+
 			object_wipe(&forge);
 			if (!make_object(&forge, AM_GOOD)) continue;
+
 			identify_item(&forge);
 			forge.ident |= (IDENT_MENTAL); 
 
@@ -677,6 +683,9 @@ static void do_cmd_wiz_hack_chris7_imp(FILE* file)
 			{
 				good_counts[k]++;
 			}
+
+			if (forge.name1)
+				a_info[forge.name1].cur_num = 0;
 		}
 
 		for (j = 1; j < 1024; j++)

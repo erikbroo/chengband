@@ -1371,6 +1371,7 @@ extern void quest_discovery(int q_idx);
 extern int quest_number(int level);
 extern int random_quest_number(int level);
 extern bool tele_town(void);
+extern void display_weapon_info(int hand, int row, int col);
 
 /* util.c */
 extern errr path_parse(char *buf, int max, cptr file);

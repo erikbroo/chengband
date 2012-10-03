@@ -225,6 +225,14 @@ bool fear_allow_shoot(void)
 	return TRUE;
 }
 
+static int _plev(void)
+{
+	if (p_ptr->lev <= 40)
+		return p_ptr->lev;
+
+	return 40 + (p_ptr->lev - 40)*2;
+}
+
 /* Fear Saving Throws */
 bool fear_save_p(int ml)
 {
@@ -238,7 +246,7 @@ bool fear_save_p(int ml)
 	if (p_ptr->pclass == CLASS_BERSERKER) return TRUE;
 	if (inventory[INVEN_HEAD].name1 == ART_ARES) return TRUE;
 
-	pl = p_ptr->lev + adj_stat_save[p_ptr->stat_ind[A_CHR]];
+	pl = _plev() + adj_stat_save[p_ptr->stat_ind[A_CHR]];
 	if (pl < 1) pl = 1;
 
 	if (prace_is_(RACE_SNOTLING)) ml *= 2;
@@ -267,7 +275,7 @@ bool fear_save_p(int ml)
 
 bool fear_save_m(monster_type *m_ptr)
 {
-	int           pl = p_ptr->lev;
+	int           pl = _plev();
 	monster_race *r_ptr = &r_info[m_ptr->r_idx];
 	int           ml = _r_level(r_ptr);
 	bool          result = FALSE;

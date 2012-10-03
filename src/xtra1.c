@@ -35,6 +35,10 @@ int z, bonus;
 	{
 		z -= 2;
 	}
+
+	if (!inventory[INVEN_LARM].k_idx && p_ptr->ryoute)
+		z -= 2;
+
 	if (inventory[INVEN_RARM].k_idx && 
 	    (k_info[inventory[INVEN_RARM].k_idx].tval == TV_SHIELD  || k_info[inventory[INVEN_RARM].k_idx].tval == TV_CARD))
 	{

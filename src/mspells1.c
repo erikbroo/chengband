@@ -3765,27 +3765,26 @@ msg_format("%sは無傷の球の呪文を唱えた。", m_name);
 			{
 				int num = randint1(4);
 				msg_format("%^s summons friends!", m_name);
-				if (one_in_(3) && r_info[MON_ZEUS].cur_num == 0 && r_info[MON_ZEUS].max_num == 1)
+				if (one_in_(3) && r_info[MON_ZEUS].max_num == 1)
 				{
-					summon_named_creature(m_idx, y, x, MON_ZEUS, mode);
+					if (summon_named_creature(m_idx, y, x, MON_ZEUS, mode))
+						break;
 				}
-				else
+
+				for (k = 0; k < num; k++)
 				{
-					for (k = 0; k < num; k++)
-					{
-						summon_named_creature(m_idx, y, x, MON_ULT_MAGUS, mode);
-					}
+					summon_named_creature(m_idx, y, x, MON_ULT_MAGUS, mode);
 				}
 				break;
 			}
 			case MON_ARES:
 			{
 				msg_format("%^s yells 'Mommy! Daddy! Help!!'", m_name);
-				if (r_info[MON_ZEUS].cur_num == 0 && r_info[MON_ZEUS].max_num == 1)
+				if (r_info[MON_ZEUS].max_num == 1)
 				{
-					summon_named_creature(m_idx, y, x, MON_ZEUS, mode);
+					summon_named_creature(m_idx, y, x, MON_ZEUS, mode); 
 				}
-				if (r_info[MON_HERA].cur_num == 0 && r_info[MON_HERA].max_num == 1)
+				if (r_info[MON_HERA].max_num == 1)
 				{
 					summon_named_creature(m_idx, y, x, MON_HERA, mode);
 				}
@@ -3795,23 +3794,21 @@ msg_format("%sは無傷の球の呪文を唱えた。", m_name);
 			{
 				int num = randint1(4);
 				msg_format("%^s summons help!", m_name);
-				if (one_in_(3) && r_info[MON_ARTEMIS].cur_num == 0 && r_info[MON_ARTEMIS].max_num == 1)
+				if (one_in_(3) && r_info[MON_ARTEMIS].max_num == 1)
 				{
-					summon_named_creature(m_idx, y, x, MON_ARTEMIS, mode);
+					if (summon_named_creature(m_idx, y, x, MON_ARTEMIS, mode))
+						break;
 				}
-				else
+				for (k = 0; k < num; k++)
 				{
-					for (k = 0; k < num; k++)
-					{
-						summon_named_creature(m_idx, y, x, MON_FENGHUANG, mode);
-					}
+					summon_named_creature(m_idx, y, x, MON_FENGHUANG, mode);
 				}
 				break;
 			}
 			case MON_ARTEMIS:
 			{
 				msg_format("%^s summons help!", m_name);
-				if (r_info[MON_APOLLO].cur_num == 0 && r_info[MON_APOLLO].max_num == 1)
+				if (r_info[MON_APOLLO].max_num == 1)
 				{
 					summon_named_creature(m_idx, y, x, MON_APOLLO, mode);
 				}
@@ -3821,11 +3818,13 @@ msg_format("%sは無傷の球の呪文を唱えた。", m_name);
 			{
 				int num = randint1(4);
 				msg_format("%^s summons friends!", m_name);
-				if (one_in_(3) && r_info[MON_ZEUS].cur_num == 0 && r_info[MON_ZEUS].max_num == 1)
+				if (one_in_(3) && r_info[MON_ZEUS].max_num == 1)
 				{
-					summon_named_creature(m_idx, y, x, MON_ZEUS, mode);
+					if (summon_named_creature(m_idx, y, x, MON_ZEUS, mode))
+						break;
 				}
-				else if (one_in_(3) && r_info[MON_HERA].cur_num == 0 && r_info[MON_HERA].max_num == 1)
+				
+				if (one_in_(3) && r_info[MON_HERA].max_num == 1)
 				{
 					summon_named_creature(m_idx, y, x, MON_HERA, mode);
 				}
@@ -3852,11 +3851,11 @@ msg_format("%sは無傷の球の呪文を唱えた。", m_name);
 			{
 				int num = randint1(4);
 				msg_format("%^s summons aid!'", m_name);
-				if (one_in_(3) && r_info[MON_ARES].cur_num == 0 && r_info[MON_ARES].max_num == 1)
+				if (one_in_(3) && r_info[MON_ARES].max_num == 1)
 				{
 					summon_named_creature(m_idx, y, x, MON_ARES, mode);
 				}
-				else if (one_in_(3) && r_info[MON_HEPHAESTUS].cur_num == 0 && r_info[MON_HEPHAESTUS].max_num == 1)
+				else if (one_in_(3) && r_info[MON_HEPHAESTUS].max_num == 1)
 				{
 					summon_named_creature(m_idx, y, x, MON_HEPHAESTUS, mode);
 				}

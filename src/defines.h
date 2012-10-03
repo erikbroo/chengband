@@ -28,7 +28,7 @@
 #define FAKE_VERSION   0
 #define FAKE_VER_MAJOR 10
 #define FAKE_VER_MINOR 0
-#define FAKE_VER_PATCH 130
+#define FAKE_VER_PATCH 131
 
 
 /*
@@ -46,8 +46,8 @@
  */
 #define H_VER_MAJOR 0
 #define H_VER_MINOR 0
-#define H_VER_PATCH 130
-#define H_VER_EXTRA 2
+#define H_VER_PATCH 131
+#define H_VER_EXTRA 0
 
 
 #define ANGBAND_2_8_1
@@ -5495,7 +5495,7 @@ extern int PlayerUID;
 #define DF1_LAKE_MASK (DF1_LAKE_WATER | DF1_LAKE_LAVA | DF1_LAKE_RUBBLE | DF1_LAKE_TREE)
 
 #define DUNGEON_ANGBAND  1
-#define DUNGEON_GALGALS  2
+#define DUNGEON_CAMELOT  2
 #define DUNGEON_ORC      3
 #define DUNGEON_MAZE     4
 #define DUNGEON_DRAGON   5

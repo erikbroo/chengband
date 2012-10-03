@@ -2840,6 +2840,7 @@ static void a_m_aux_2(object_type *o_ptr, int level, int power)
 						break;
 					case EGO_ARMOR_HIGH_RESISTANCE:
 					{
+						one_high_resistance(o_ptr);
 						while (one_in_(3))
 							one_high_resistance(o_ptr);
 						break;

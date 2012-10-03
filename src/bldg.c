@@ -3098,21 +3098,40 @@ static void town_history(void)
  * Only accurate for the current weapon, because it includes
  * the current +dam of the player.
  */
-static void compare_weapon_aux2(object_type *o_ptr, int numblows,
+static void compare_weapon_aux2(int hand, 
 				int r, int c, int mult, cptr attr,
 				byte color, bool force)
 {
+	object_type *o_ptr = &inventory[INVEN_RARM + hand];
+	int numblows = p_ptr->weapon_info[hand].num_blow;
 	char tmp_str[80];
 
 	/* Effective dices */
-	int eff_dd = o_ptr->dd + p_ptr->weapon_info[0].to_dd;
-	int eff_ds = o_ptr->ds + p_ptr->weapon_info[0].to_ds;
+	int eff_dd = o_ptr->dd + p_ptr->weapon_info[hand].to_dd;
+	int eff_ds = o_ptr->ds + p_ptr->weapon_info[hand].to_ds;
+	int min, max;
 
 	/* Print the intro text */
-	c_put_str(color, attr, r, c);
+	sprintf(tmp_str, "%12s", attr);
+	c_put_str(color, tmp_str, r, c);
 
-	if (force)
-		mult = mult * 3 / 2 + 200;
+	if (prace_is_(RACE_DEMIGOD) && p_ptr->psubrace == DEMIGOD_HEPHAESTUS)
+	{
+		int old_mult = mult;
+		if (mult > 100)
+			mult += 100;
+		if (force)
+		{
+			mult = mult * 3 / 2 + 200;
+			if (old_mult == 100)
+				mult += 100;
+		}
+	}
+	else
+	{
+		if (force)
+			mult = mult * 3 / 2 + 200;
+	}
 
 	switch (o_ptr->name1)
 	{
@@ -3130,20 +3149,20 @@ static void compare_weapon_aux2(object_type *o_ptr, int numblows,
 	}
 	}
 		
-
+	min = numblows * (mult * eff_dd / 100 + o_ptr->to_d + p_ptr->weapon_info[hand].to_d);
+	max = numblows * (mult * eff_ds * eff_dd / 100 + o_ptr->to_d + p_ptr->weapon_info[hand].to_d);
 
 	/* Calculate the min and max damage figures */
-#ifdef JP
-sprintf(tmp_str, "１ターン: %d-%d ダメージ",
-#else
-	sprintf(tmp_str, "Attack: %d-%d damage",
-#endif
-
-	    (numblows * (mult * eff_dd / 100 + o_ptr->to_d + p_ptr->weapon_info[0].to_d)),
-	    (numblows * (mult * eff_ds * eff_dd / 100 + o_ptr->to_d + p_ptr->weapon_info[0].to_d)));
+	sprintf(tmp_str, " %d (%d-%d) [x%d.%02d]",
+		(min + max) / 2,
+	    min,
+	    max,
+		mult/100,
+		mult%100
+	);
 
 	/* Print the damage */
-	put_str(tmp_str, r, c + 8);
+	put_str(tmp_str, r, c + 12);
 }
 
 
@@ -3153,14 +3172,15 @@ sprintf(tmp_str, "１ターン: %d-%d ダメージ",
  * Only accurate for the current weapon, because it includes
  * the current number of blows for the player.
  */
-static void compare_weapon_aux1(object_type *o_ptr, int col, int r)
+static void compare_weapon_aux1(int hand, int col, int r)
 {
-	u32b flgs[TR_FLAG_SIZE];
-	int blow = p_ptr->weapon_info[0].num_blow;
+	object_type *o_ptr = &inventory[INVEN_RARM + hand];
+	u32b flgs[TR_FLAG_SIZE] = {0};
 	bool print_force_weapon = FALSE;
 
 	/* Get the flags of the weapon */
-	object_flags(o_ptr, flgs);
+	if (o_ptr->ident & IDENT_MENTAL)
+		object_flags(o_ptr, flgs);
 
 	if ((have_flag(flgs, TR_FORCE_WEAPON) || p_ptr->tim_force) && (p_ptr->csp > (o_ptr->dd * o_ptr->ds / 5)))
 	{
@@ -3174,59 +3194,56 @@ static void compare_weapon_aux1(object_type *o_ptr, int col, int r)
 	}
 
 	/* Print the relevant lines */
-#ifdef JP
-	if (print_force_weapon)     compare_weapon_aux2(o_ptr, blow, r++, col, 100, "理力:", TERM_L_BLUE, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_ANIMAL)) compare_weapon_aux2(o_ptr, blow, r++, col, 400, "動物:", TERM_YELLOW, print_force_weapon);
-	 else if (have_flag(flgs, TR_SLAY_ANIMAL)) compare_weapon_aux2(o_ptr, blow, r++, col, 250, "動物:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_EVIL))   compare_weapon_aux2(o_ptr, blow, r++, col, 350, "邪悪:", TERM_YELLOW, print_force_weapon);
-	 else if (have_flag(flgs, TR_SLAY_EVIL))   compare_weapon_aux2(o_ptr, blow, r++, col, 200, "邪悪:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_HUMAN))   compare_weapon_aux2(o_ptr, blow, r++, col, 400, "人間:", TERM_YELLOW, print_force_weapon);
-	 else if (have_flag(flgs, TR_SLAY_HUMAN))   compare_weapon_aux2(o_ptr, blow, r++, col, 250, "人間:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_UNDEAD)) compare_weapon_aux2(o_ptr, blow, r++, col, 500, "不死:", TERM_YELLOW, print_force_weapon);
-	 else if (have_flag(flgs, TR_SLAY_UNDEAD)) compare_weapon_aux2(o_ptr, blow, r++, col, 300, "不死:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_DEMON))  compare_weapon_aux2(o_ptr, blow, r++, col, 500, "悪魔:", TERM_YELLOW, print_force_weapon);
-	 else if (have_flag(flgs, TR_SLAY_DEMON))  compare_weapon_aux2(o_ptr, blow, r++, col, 300, "悪魔:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_ORC))    compare_weapon_aux2(o_ptr, blow, r++, col, 500, "オーク:", TERM_YELLOW, print_force_weapon);
-	 else if (have_flag(flgs, TR_SLAY_ORC))    compare_weapon_aux2(o_ptr, blow, r++, col, 300, "オーク:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_TROLL))  compare_weapon_aux2(o_ptr, blow, r++, col, 500, "トロル:", TERM_YELLOW, print_force_weapon);
-	 else if (have_flag(flgs, TR_SLAY_TROLL))  compare_weapon_aux2(o_ptr, blow, r++, col, 300, "トロル:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_GIANT))  compare_weapon_aux2(o_ptr, blow, r++, col, 500, "巨人:", TERM_YELLOW, print_force_weapon);
-	 else if (have_flag(flgs, TR_SLAY_GIANT))  compare_weapon_aux2(o_ptr, blow, r++, col, 300, "巨人:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_DRAGON)) compare_weapon_aux2(o_ptr, blow, r++, col, 500, "竜:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_DRAGON)) compare_weapon_aux2(o_ptr, blow, r++, col, 300, "竜:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_BRAND_ACID))  compare_weapon_aux2(o_ptr, blow, r++, col, 250, "酸属性:", TERM_RED, print_force_weapon);
-	if (have_flag(flgs, TR_BRAND_ELEC))  compare_weapon_aux2(o_ptr, blow, r++, col, 250, "電属性:", TERM_RED, print_force_weapon);
-	if (have_flag(flgs, TR_BRAND_FIRE))  compare_weapon_aux2(o_ptr, blow, r++, col, 250, "炎属性:", TERM_RED, print_force_weapon);
-	if (have_flag(flgs, TR_BRAND_COLD))  compare_weapon_aux2(o_ptr, blow, r++, col, 250, "冷属性:", TERM_RED, print_force_weapon);
-	if (have_flag(flgs, TR_BRAND_POIS))  compare_weapon_aux2(o_ptr, blow, r++, col, 250, "毒属性:", TERM_RED, print_force_weapon);
-#else
-	if (print_force_weapon)     compare_weapon_aux2(o_ptr, blow, r++, col, 100, "Force:", TERM_L_BLUE, print_force_weapon);
-	if (p_ptr->tim_slay_sentient)   compare_weapon_aux2(o_ptr, blow, r++, col, 200, "Sentient:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_ANIMAL)) compare_weapon_aux2(o_ptr, blow, r++, col, 400, "Animals:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_ANIMAL)) compare_weapon_aux2(o_ptr, blow, r++, col, 250, "Animals:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_EVIL))   compare_weapon_aux2(o_ptr, blow, r++, col, 350, "Evil:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_EVIL))   compare_weapon_aux2(o_ptr, blow, r++, col, 200, "Evil:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_HUMAN))   compare_weapon_aux2(o_ptr, blow, r++, col, 400, "Human:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_HUMAN))   compare_weapon_aux2(o_ptr, blow, r++, col, 250, "Human:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_UNDEAD)) compare_weapon_aux2(o_ptr, blow, r++, col, 500, "Undead:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_UNDEAD)) compare_weapon_aux2(o_ptr, blow, r++, col, 300, "Undead:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_DEMON))  compare_weapon_aux2(o_ptr, blow, r++, col, 500, "Demons:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_DEMON))  compare_weapon_aux2(o_ptr, blow, r++, col, 300, "Demons:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_ORC))    compare_weapon_aux2(o_ptr, blow, r++, col, 500, "Orcs:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_ORC))    compare_weapon_aux2(o_ptr, blow, r++, col, 300, "Orcs:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_TROLL))  compare_weapon_aux2(o_ptr, blow, r++, col, 500, "Trolls:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_TROLL))  compare_weapon_aux2(o_ptr, blow, r++, col, 300, "Trolls:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_GIANT))  compare_weapon_aux2(o_ptr, blow, r++, col, 500, "Giants:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_GIANT))  compare_weapon_aux2(o_ptr, blow, r++, col, 300, "Giants:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_DRAGON)) compare_weapon_aux2(o_ptr, blow, r++, col, 500, "Dragons:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_DRAGON)) compare_weapon_aux2(o_ptr, blow, r++, col, 300, "Dragons:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_BRAND_ACID))  compare_weapon_aux2(o_ptr, blow, r++, col, 250, "Acid:", TERM_RED, print_force_weapon);
-	if (have_flag(flgs, TR_BRAND_ELEC))  compare_weapon_aux2(o_ptr, blow, r++, col, 250, "Elec:", TERM_RED, print_force_weapon);
-	if (have_flag(flgs, TR_BRAND_FIRE))  compare_weapon_aux2(o_ptr, blow, r++, col, 250, "Fire:", TERM_RED, print_force_weapon);
-	if (have_flag(flgs, TR_BRAND_COLD))  compare_weapon_aux2(o_ptr, blow, r++, col, 250, "Cold:", TERM_RED, print_force_weapon);
-	if (have_flag(flgs, TR_BRAND_POIS))  compare_weapon_aux2(o_ptr, blow, r++, col, 250, "Poison:", TERM_RED, print_force_weapon);
-#endif
-
+	if (print_force_weapon)     compare_weapon_aux2(hand, r++, col, 100, "Force:", TERM_L_BLUE, print_force_weapon);
+	if (p_ptr->tim_slay_sentient)   compare_weapon_aux2(hand, r++, col, 200, "Sentient:", TERM_YELLOW, print_force_weapon);
+	if (have_flag(flgs, TR_KILL_ANIMAL)) compare_weapon_aux2(hand, r++, col, 400, "Animals:", TERM_YELLOW, print_force_weapon);
+	else if (have_flag(flgs, TR_SLAY_ANIMAL)) compare_weapon_aux2(hand, r++, col, 250, "Animals:", TERM_YELLOW, print_force_weapon);
+	if (have_flag(flgs, TR_KILL_EVIL))   compare_weapon_aux2(hand, r++, col, 350, "Evil:", TERM_YELLOW, print_force_weapon);
+	else if (have_flag(flgs, TR_SLAY_EVIL))   compare_weapon_aux2(hand, r++, col, 200, "Evil:", TERM_YELLOW, print_force_weapon);
+	if (have_flag(flgs, TR_KILL_HUMAN))   compare_weapon_aux2(hand, r++, col, 400, "Human:", TERM_YELLOW, print_force_weapon);
+	else if (have_flag(flgs, TR_SLAY_HUMAN))   compare_weapon_aux2(hand, r++, col, 250, "Human:", TERM_YELLOW, print_force_weapon);
+	if (have_flag(flgs, TR_KILL_UNDEAD)) compare_weapon_aux2(hand, r++, col, 500, "Undead:", TERM_YELLOW, print_force_weapon);
+	else if (have_flag(flgs, TR_SLAY_UNDEAD)) compare_weapon_aux2(hand, r++, col, 300, "Undead:", TERM_YELLOW, print_force_weapon);
+	if (have_flag(flgs, TR_KILL_DEMON))  compare_weapon_aux2(hand, r++, col, 500, "Demons:", TERM_YELLOW, print_force_weapon);
+	else if (have_flag(flgs, TR_SLAY_DEMON))  compare_weapon_aux2(hand, r++, col, 300, "Demons:", TERM_YELLOW, print_force_weapon);
+	if (have_flag(flgs, TR_KILL_ORC))    compare_weapon_aux2(hand, r++, col, 500, "Orcs:", TERM_YELLOW, print_force_weapon);
+	else if (have_flag(flgs, TR_SLAY_ORC))    compare_weapon_aux2(hand, r++, col, 300, "Orcs:", TERM_YELLOW, print_force_weapon);
+	if (have_flag(flgs, TR_KILL_TROLL))  compare_weapon_aux2(hand, r++, col, 500, "Trolls:", TERM_YELLOW, print_force_weapon);
+	else if (have_flag(flgs, TR_SLAY_TROLL))  compare_weapon_aux2(hand, r++, col, 300, "Trolls:", TERM_YELLOW, print_force_weapon);
+	if (have_flag(flgs, TR_KILL_GIANT))  compare_weapon_aux2(hand, r++, col, 500, "Giants:", TERM_YELLOW, print_force_weapon);
+	else if (have_flag(flgs, TR_SLAY_GIANT))  compare_weapon_aux2(hand, r++, col, 300, "Giants:", TERM_YELLOW, print_force_weapon);
+	if (have_flag(flgs, TR_KILL_DRAGON)) compare_weapon_aux2(hand, r++, col, 500, "Dragons:", TERM_YELLOW, print_force_weapon);
+	else if (have_flag(flgs, TR_SLAY_DRAGON)) compare_weapon_aux2(hand, r++, col, 300, "Dragons:", TERM_YELLOW, print_force_weapon);
+	if ( have_flag(flgs, TR_BRAND_ACID) 
+	  || p_ptr->weapon_info[hand].brand_acid
+	  || (p_ptr->special_attack & ATTACK_ACID) )  
+	{
+		compare_weapon_aux2(hand, r++, col, 250, "Acid:", TERM_RED, print_force_weapon);
+	}
+	if ( have_flag(flgs, TR_BRAND_ELEC) 
+	  || p_ptr->weapon_info[hand].brand_elec
+	  || (p_ptr->special_attack & ATTACK_ELEC) )
+	{
+		compare_weapon_aux2(hand, r++, col, 250, "Elec:", TERM_RED, print_force_weapon);
+	}
+	if ( have_flag(flgs, TR_BRAND_FIRE) 
+	  || p_ptr->weapon_info[hand].brand_fire
+	  || (p_ptr->special_attack & ATTACK_FIRE) )
+	{
+		compare_weapon_aux2(hand, r++, col, 250, "Fire:", TERM_RED, print_force_weapon);
+	}
+	if ( have_flag(flgs, TR_BRAND_COLD) 
+	  || p_ptr->weapon_info[hand].brand_cold
+	  || (p_ptr->special_attack & ATTACK_COLD) )
+	{
+		compare_weapon_aux2(hand, r++, col, 250, "Cold:", TERM_RED, print_force_weapon);
+	}
+	if ( have_flag(flgs, TR_BRAND_POIS) 
+	  || p_ptr->weapon_info[hand].brand_pois
+	  || (p_ptr->special_attack & ATTACK_POIS) )
+	{
+		compare_weapon_aux2(hand, r++, col, 250, "Poison:", TERM_RED, print_force_weapon);
+	}
 }
 
 static int hit_chance(int to_h, int ac)
@@ -3251,15 +3268,17 @@ static int hit_chance(int to_h, int ac)
  * Only accurate for the current weapon, because it includes
  * various info about the player's +to_dam and number of blows.
  */
-static void list_weapon(object_type *o_ptr, int row, int col)
+static void list_weapon(int hand, int row, int col)
 {
+	object_type *o_ptr = &inventory[INVEN_RARM + hand];
 	char o_name[MAX_NLEN];
 	char tmp_str[80];
 
 	/* Effective dices */
-	int eff_dd = o_ptr->dd + p_ptr->weapon_info[0].to_dd;
-	int eff_ds = o_ptr->ds + p_ptr->weapon_info[0].to_ds;
+	int eff_dd = o_ptr->dd + p_ptr->weapon_info[hand].to_dd;
+	int eff_ds = o_ptr->ds + p_ptr->weapon_info[hand].to_ds;
 	int mult = 100;
+	int min, max;
 
 	/* Print the weapon name */
 	object_desc(o_name, o_ptr, OD_NAME_ONLY);
@@ -3267,9 +3286,9 @@ static void list_weapon(object_type *o_ptr, int row, int col)
 
 	/* Print the player's number of blows */
 #ifdef JP
-sprintf(tmp_str, "攻撃回数: %d", p_ptr->weapon_info[0].num_blow);
+sprintf(tmp_str, "攻撃回数: %d", p_ptr->weapon_info[hand].num_blow);
 #else
-	sprintf(tmp_str, "Number of Blows: %d", p_ptr->weapon_info[0].num_blow);
+	sprintf(tmp_str, "Number of Blows: %d", p_ptr->weapon_info[hand].num_blow);
 #endif
 
 	put_str(tmp_str, row+1, col);
@@ -3316,25 +3335,22 @@ c_put_str(TERM_YELLOW, "可能なダメージ:", row+5, col);
 
 
 	/* Damage for one blow (if it hits) */
-#ifdef JP
-sprintf(tmp_str, "攻撃一回につき %d-%d",
-#else
-	sprintf(tmp_str, "One Strike: %d-%d damage",
-#endif
+	min = mult*eff_dd/100 + o_ptr->to_d + p_ptr->weapon_info[hand].to_d;
+	max = mult*eff_ds*eff_dd/100 + o_ptr->to_d + p_ptr->weapon_info[hand].to_d;
 
-	    mult*eff_dd/100 + o_ptr->to_d + p_ptr->weapon_info[0].to_d,
-	    mult*eff_ds*eff_dd/100 + o_ptr->to_d + p_ptr->weapon_info[0].to_d);
+	sprintf(tmp_str, "One Strike: %d (%d-%d)",
+		(min + max)/2,
+	    min,
+	    max
+	);
 	put_str(tmp_str, row+6, col+1);
 
 	/* Damage for the complete attack (if all blows hit) */
-#ifdef JP
-sprintf(tmp_str, "１ターンにつき %d-%d",
-#else
-	sprintf(tmp_str, "One Attack: %d-%d damage",
-#endif
-
-	    p_ptr->weapon_info[0].num_blow * (mult*eff_dd/100 + o_ptr->to_d + p_ptr->weapon_info[0].to_d),
-	    p_ptr->weapon_info[0].num_blow * (mult*eff_ds*eff_dd/100 + o_ptr->to_d + p_ptr->weapon_info[0].to_d));
+	sprintf(tmp_str, "One Attack: %d (%d-%d)",
+			p_ptr->weapon_info[hand].num_blow * (min + max)/2,
+		    p_ptr->weapon_info[hand].num_blow * min,
+			p_ptr->weapon_info[hand].num_blow * max
+	);
 	put_str(tmp_str, row+7, col+1);
 }
 
@@ -3387,6 +3403,12 @@ static bool item_tester_hook_ammo(object_type *o_ptr)
  * Copies the weapons to compare into the weapon-slot and
  * compares the values for both weapons.
  */
+void display_weapon_info(int hand, int row, int col)
+{
+	list_weapon(hand, row, col);
+	compare_weapon_aux1(hand, col, row + 8);
+}
+
 static bool compare_weapons(void)
 {
 	int item, item2;
@@ -3467,9 +3489,7 @@ s = "比べるものがありません。";
 
 	character_xtra = old_character_xtra;
 
-	/* List the new values */
-	list_weapon(o1_ptr, row, 2);
-	compare_weapon_aux1(o1_ptr, 2, row + 8);
+	display_weapon_info(0, row, 2);
 
 	/* Copy second weapon into the weapon slot (if it's not already there) */
 	if (o2_ptr != i_ptr)
@@ -3485,9 +3505,7 @@ s = "比べるものがありません。";
 
 	character_xtra = old_character_xtra;
 
-	/* List the new values */
-	list_weapon(o2_ptr, row, 40);
-	compare_weapon_aux1(o2_ptr, 40, row + 8);
+	display_weapon_info(0, row, 40);
 
 	/* Copy back the original weapon into the weapon slot */
 	object_copy(i_ptr, &orig_weapon);
