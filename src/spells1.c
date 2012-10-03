@@ -7161,7 +7161,7 @@ static bool project_p(int who, cptr who_name, int r, int y, int x, int dam, int 
 		set_fast(4, FALSE);
 	}
 
-	if ((p_ptr->reflect || ((p_ptr->special_defense & KATA_FUUJIN) && !p_ptr->blind)) && (flg & PROJECT_REFLECTABLE) && !one_in_(10))
+	if ((p_ptr->reflect || ((p_ptr->special_defense & KATA_FUUJIN) && !p_ptr->blind)) && (flg & PROJECT_REFLECTABLE) && !one_in_(4))
 	{
 		byte t_y, t_x;
 		int max_attempts = 10;
@@ -7181,8 +7181,8 @@ static bool project_p(int who, cptr who_name, int r, int y, int x, int dam, int 
 		{
 			do
 			{
-				t_y = m_list[who].fy - 1 + randint1(3);
-				t_x = m_list[who].fx - 1 + randint1(3);
+				t_y = m_list[who].fy - 2 + randint0(5);
+				t_x = m_list[who].fx - 2 + randint0(5);
 				max_attempts--;
 			}
 			while (max_attempts && in_bounds2u(t_y, t_x) && !projectable(py, px, t_y, t_x));
@@ -7195,8 +7195,8 @@ static bool project_p(int who, cptr who_name, int r, int y, int x, int dam, int 
 		}
 		else
 		{
-			t_y = py - 1 + randint1(3);
-			t_x = px - 1 + randint1(3);
+			t_y = py - 2 + randint0(5);
+			t_x = px - 2 + randint0(5);
 		}
 
 		project(0, 0, t_y, t_x, dam, typ, (PROJECT_STOP|PROJECT_KILL|PROJECT_REFLECTABLE), monspell);
@@ -9930,7 +9930,7 @@ bool project(int who, int rad, int y, int x, int dam, int typ, int flg, int mons
 
 				if ((flg & PROJECT_REFLECTABLE) && cave[y][x].m_idx && (ref_ptr->flags2 & RF2_REFLECTING) &&
 				    ((cave[y][x].m_idx != p_ptr->riding) || !(flg & PROJECT_PLAYER)) &&
-				    (!who || dist_hack > 1) && !one_in_(10))
+				    (!who || dist_hack > 1) && !one_in_(4))
 				{
 					byte t_y, t_x;
 					int max_attempts = 10;
@@ -9938,8 +9938,8 @@ bool project(int who, int rad, int y, int x, int dam, int typ, int flg, int mons
 					/* Choose 'new' target */
 					do
 					{
-						t_y = y_saver - 1 + randint1(3);
-						t_x = x_saver - 1 + randint1(3);
+						t_y = y_saver - 2 + randint0(5);
+						t_x = x_saver - 2 + randint0(5);
 						max_attempts--;
 					}
 					while (max_attempts && in_bounds2u(t_y, t_x) && !projectable(y, x, t_y, t_x));

@@ -4345,11 +4345,36 @@ void calc_bonuses(void)
 			break;
 
 		case INVEN_LEFT:
-			if (have_flag(flgs, TR_BRAND_FIRE))   p_ptr->weapon_info[1].brand_fire = TRUE;
-			if (have_flag(flgs, TR_BRAND_COLD))   p_ptr->weapon_info[1].brand_cold = TRUE;
-			if (have_flag(flgs, TR_BRAND_ELEC))   p_ptr->weapon_info[1].brand_elec = TRUE;
-			if (have_flag(flgs, TR_BRAND_ACID))   p_ptr->weapon_info[1].brand_acid = TRUE;
-			if (have_flag(flgs, TR_BRAND_POIS))   p_ptr->weapon_info[1].brand_pois = TRUE;
+			if (have_flag(flgs, TR_BRAND_FIRE))
+			{
+				p_ptr->weapon_info[1].brand_fire = TRUE;
+				if (p_ptr->ryoute)
+					p_ptr->weapon_info[0].brand_fire = TRUE;
+			}
+			if (have_flag(flgs, TR_BRAND_COLD))
+			{
+				p_ptr->weapon_info[1].brand_cold = TRUE;
+				if (p_ptr->ryoute)
+					p_ptr->weapon_info[0].brand_cold = TRUE;
+			}
+			if (have_flag(flgs, TR_BRAND_ELEC))
+			{
+				p_ptr->weapon_info[1].brand_elec = TRUE;
+				if (p_ptr->ryoute)
+					p_ptr->weapon_info[0].brand_elec = TRUE;
+			}
+			if (have_flag(flgs, TR_BRAND_ACID))
+			{
+				p_ptr->weapon_info[1].brand_acid = TRUE;
+				if (p_ptr->ryoute)
+					p_ptr->weapon_info[0].brand_acid = TRUE;
+			}
+			if (have_flag(flgs, TR_BRAND_POIS))
+			{
+				p_ptr->weapon_info[1].brand_pois = TRUE;
+				if (p_ptr->ryoute)
+					p_ptr->weapon_info[0].brand_pois = TRUE;
+			}
 			break;
 
 		case INVEN_HANDS:

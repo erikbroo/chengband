@@ -906,7 +906,7 @@ else                            hooked_roff("モンスター");
 #ifdef JP
 		hooked_roff(format("%^sは矢の呪文を跳ね返す。", wd_he[msex]));
 #else
-		hooked_roff(format("%^s reflects bolt spells.  ", wd_he[msex]));
+		hooked_roff(format("%^s reflects bolt spells and arrows.  ", wd_he[msex]));
 #endif
 
 	}

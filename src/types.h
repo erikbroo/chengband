@@ -1520,6 +1520,7 @@ typedef struct martial_arts martial_arts;
 
 struct martial_arts
 {
+	cptr    name;
 	cptr    desc;       /* A verbose attack description */
 	int     min_level;  /* Minimum level to use */
 	int     chance;     /* Chance of 'success' */

@@ -716,7 +716,8 @@ static void do_cmd_wiz_hack_chris7(void)
 		return;
 	}
 
-	do_cmd_wiz_hack_chris7_imp(fff);
+	monk_dump_avg_dam(fff);
+/*	do_cmd_wiz_hack_chris7_imp(fff);*/
 
 	dun_level = old_dun_level;
 	object_level = old_object_level;

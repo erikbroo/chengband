@@ -1372,6 +1372,7 @@ extern int quest_number(int level);
 extern int random_quest_number(int level);
 extern bool tele_town(void);
 extern void display_weapon_info(int hand, int row, int col);
+extern int hit_chance(int hand, int to_h, int ac);
 
 /* util.c */
 extern errr path_parse(char *buf, int max, cptr file);
@@ -2053,6 +2054,10 @@ extern void remove_mirror(int y, int x);
 /* monk.c */
 extern void monk_double_attack_spell(int cmd, variant *res);
 extern void monk_posture_spell(int cmd, variant *res);
+extern void monk_dump_avg_dam(FILE *fff);
+extern int monk_get_attack_idx(void);
+extern void monk_get_attack_counts(int tot, int *counts);
+extern void monk_display_attack_info(int row, int col);
 
 /* necromancer.c */
 extern class_t *necromancer_get_class_t(void);

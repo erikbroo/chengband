@@ -3246,10 +3246,10 @@ static void compare_weapon_aux1(int hand, int col, int r)
 	}
 }
 
-static int hit_chance(int to_h, int ac)
+int hit_chance(int hand, int to_h, int ac)
 {
 	int chance = 0;
-	int meichuu = p_ptr->skills.thn + (p_ptr->weapon_info[0].to_h + to_h) * BTH_PLUS_ADJ;
+	int meichuu = p_ptr->skills.thn + (p_ptr->weapon_info[hand].to_h + to_h) * BTH_PLUS_ADJ;
 
 	if (meichuu <= 0) return 5;
 
@@ -3303,11 +3303,13 @@ sprintf(tmp_str, "To Hit:  0  50 100 150 200 (AC)");
 	put_str(tmp_str, row+2, col);
 
 	/* Print the weapons base damage dice */
-#ifdef JP
-sprintf(tmp_str, "        %2d  %2d  %2d  %2d  %2d (%%)", hit_chance(o_ptr->to_h, 0), hit_chance(o_ptr->to_h, 50), hit_chance(o_ptr->to_h, 100), hit_chance(o_ptr->to_h, 150), hit_chance(o_ptr->to_h, 200));
-#else
-sprintf(tmp_str, "        %2d  %2d  %2d  %2d  %2d (%%)", hit_chance(o_ptr->to_h, 0), hit_chance(o_ptr->to_h, 50), hit_chance(o_ptr->to_h, 100), hit_chance(o_ptr->to_h, 150), hit_chance(o_ptr->to_h, 200));
-#endif
+	sprintf(tmp_str, "        %2d  %2d  %2d  %2d  %2d (%%)", 
+		hit_chance(hand, o_ptr->to_h, 0), 
+		hit_chance(hand, o_ptr->to_h, 50), 
+		hit_chance(hand, o_ptr->to_h, 100), 
+		hit_chance(hand, o_ptr->to_h, 150), 
+		hit_chance(hand, o_ptr->to_h, 200)
+	);
 
 	put_str(tmp_str, row+3, col);
 

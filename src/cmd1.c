@@ -3204,11 +3204,11 @@ static bool py_attack_aux(int y, int x, bool *fear, bool *mdeath, s16b hand, int
 
 			if (monk_attack)
 			{
-				int special_effect = 0, stun_effect = 0, times = 0, max_times;
-				int min_level = 1;
-				martial_arts *ma_ptr = &ma_blows[0], *old_ptr = &ma_blows[0];
+				int special_effect = 0, stun_effect = 0;
+				martial_arts *ma_ptr = &ma_blows[monk_get_attack_idx()];
 				int resist_stun = 0;
 				int weight = 8;
+				int min_level;
 
 				if (r_ptr->flags1 & RF1_UNIQUE) resist_stun += 88;
 				if (r_ptr->flags3 & RF3_NO_STUN) resist_stun += 66;
@@ -3217,45 +3217,13 @@ static bool py_attack_aux(int y, int x, bool *fear, bool *mdeath, s16b hand, int
 				if ((r_ptr->flags3 & RF3_UNDEAD) || (r_ptr->flags3 & RF3_NONLIVING))
 					resist_stun += 66;
 
-				if (p_ptr->special_defense & KAMAE_BYAKKO)
-					max_times = (p_ptr->lev < 3 ? 1 : p_ptr->lev / 3);
-				else if (p_ptr->special_defense & KAMAE_SUZAKU)
-					max_times = 1;
-				else if (p_ptr->special_defense & KAMAE_GENBU)
-					max_times = 1;
-				else
-					max_times = (p_ptr->lev < 7 ? 1 : p_ptr->lev / 7);
-				/* Attempt 'times' */
-				for (times = 0; times < max_times; times++)
-				{
-					do
-					{
-						ma_ptr = &ma_blows[randint0(MAX_MA)];
-						if ((p_ptr->pclass == CLASS_FORCETRAINER) && (ma_ptr->min_level > 1)) min_level = ma_ptr->min_level + 3;
-						else min_level = ma_ptr->min_level;
-					}
-					while ((min_level > p_ptr->lev) ||
-					       (randint1(p_ptr->lev) < ma_ptr->chance));
-
-					/* keep the highest level attack available we found */
-					if ((ma_ptr->min_level > old_ptr->min_level) &&
-					    !p_ptr->stun && !p_ptr->confused)
-					{
-						old_ptr = ma_ptr;
-					}
-					else
-					{
-						ma_ptr = old_ptr;
-					}
-				}
-
 				if (p_ptr->pclass == CLASS_FORCETRAINER) min_level = MAX(1, ma_ptr->min_level - 3);
 				else min_level = ma_ptr->min_level;
 
 				k = damroll(ma_ptr->dd + p_ptr->weapon_info[hand].to_dd, ma_ptr->ds + p_ptr->weapon_info[hand].to_ds);
 				k = tot_dam_aux_monk(k, m_ptr);
 
-				if (p_ptr->special_attack & ATTACK_SUIKEN) k *= 2;
+				if (p_ptr->special_attack & ATTACK_SUIKEN) k *= 2; /* Drunken Boxing! */
 
 				if (ma_ptr->effect == MA_KNEE)
 				{

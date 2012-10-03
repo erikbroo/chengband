@@ -3911,6 +3911,24 @@ void do_cmd_fire_aux2(int item, object_type *j_ptr, int sx, int sy, int tx, int 
 					armour /= 10;
 				}
 
+				if ( (r_ptr->flags2 & RF2_REFLECTING) 
+				  && one_in_((prace_is_(RACE_DEMIGOD) && p_ptr->psubrace == DEMIGOD_ARTEMIS) ? 4 : 2))
+				{
+					int max_attempts = 10;
+
+					do
+					{
+						ty = py - 2 + randint0(5);
+						tx = px - 2 + randint0(5);
+						max_attempts--;
+					}
+					while (max_attempts && in_bounds2u(ty, tx) && !projectable(y, x, ty, tx));
+
+					msg_print("The attack bounces!");
+					do_cmd_fire_aux2(item, j_ptr, x, y, tx, ty);
+					return;
+				}
+
 				/* A painted target (almost) always hits */
 				if ( p_ptr->painted_target 
 				  && p_ptr->painted_target_idx == c_ptr->m_idx 
