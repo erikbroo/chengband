@@ -4208,12 +4208,16 @@ void display_player(int mode)
 	else if (mode == 4)
 	{
 		bool display = FALSE;
-		if (object_is_melee_weapon(&inventory[INVEN_RARM]) && object_is_known(&inventory[INVEN_RARM]))
+		if ( ( object_is_melee_weapon(&inventory[INVEN_RARM]) 
+		    || (weaponmaster_get_toggle() == TOGGLE_SHIELD_BASH && object_is_shield(&inventory[INVEN_RARM])) ) 
+		   && object_is_known(&inventory[INVEN_RARM]) )
 		{
 			display_weapon_info(0, 0, 1);
 			display = TRUE;
 		}
-		if (object_is_melee_weapon(&inventory[INVEN_LARM]) && object_is_known(&inventory[INVEN_LARM]))
+		if ( ( object_is_melee_weapon(&inventory[INVEN_LARM]) 
+		    || (weaponmaster_get_toggle() == TOGGLE_SHIELD_BASH && object_is_shield(&inventory[INVEN_LARM])) ) 
+		   && object_is_known(&inventory[INVEN_LARM]) )
 		{
 			display_weapon_info(1, 0, 40);
 			display = TRUE;

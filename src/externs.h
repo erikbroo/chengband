@@ -730,7 +730,14 @@ extern bool test_hit_fire(int chance, int ac, int vis);
 extern bool random_opponent(int *y, int *x);
 extern bool test_hit_norm(int chance, int ac, int vis);
 extern s16b critical_shot(int weight, int plus, int dam);
-extern s16b critical_norm(int weight, int plus, int dam, s16b meichuu, int mode);
+
+typedef struct critical_s {
+	int mul; /* Scaled by 100 */
+	int to_d;
+	cptr desc;
+} critical_t;
+extern critical_t critical_norm(int weight, int plus, s16b meichuu, int mode);
+
 extern s16b tot_dam_aux(object_type *o_ptr, int tdam, monster_type *m_ptr, s16b hand, int mode, bool thrown);
 extern void search(void);
 extern void py_pickup_aux(int o_idx);
@@ -2054,9 +2061,8 @@ extern void remove_mirror(int y, int x);
 /* monk.c */
 extern void monk_double_attack_spell(int cmd, variant *res);
 extern void monk_posture_spell(int cmd, variant *res);
-extern void monk_dump_avg_dam(FILE *fff);
-extern int monk_get_attack_idx(void);
-extern void monk_get_attack_counts(int tot, int *counts);
+extern int  monk_get_attack_idx(void);
+extern critical_t monk_get_critical(martial_arts *ma_ptr);
 extern void monk_display_attack_info(int row, int col);
 
 /* necromancer.c */

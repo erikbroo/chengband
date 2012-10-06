@@ -28,7 +28,7 @@
 #define FAKE_VERSION   0
 #define FAKE_VER_MAJOR 10
 #define FAKE_VER_MINOR 0
-#define FAKE_VER_PATCH 131
+#define FAKE_VER_PATCH 132
 
 
 /*
@@ -46,7 +46,7 @@
  */
 #define H_VER_MAJOR 0
 #define H_VER_MINOR 0
-#define H_VER_PATCH 131
+#define H_VER_PATCH 132
 #define H_VER_EXTRA 0
 
 
@@ -2559,6 +2559,8 @@
 #define SV_POTION_BLOOD					67
 #define SV_POTION_GIANT_STRENGTH        68
 #define SV_POTION_STONE_SKIN            69
+#define SV_POTION_CLARITY               70
+#define SV_POTION_GREAT_CLARITY         71
 
 /* The "sval" codes for TV_FLASK */
 #define SV_FLASK_OIL                   0
@@ -2595,6 +2597,7 @@
 #define SV_FOOD_WAYBREAD                37
 #define SV_FOOD_PINT_OF_ALE             38
 #define SV_FOOD_PINT_OF_WINE            39
+#define SV_FOOD_AMBROSIA                40
 
 /* TV_RUNE */
 #define SV_RUNE        1
@@ -5513,6 +5516,7 @@ extern int PlayerUID;
 #define DUNGEON_NO_MELEE 17
 #define DUNGEON_CHAMELEON 18
 #define DUNGEON_DARKNESS 19
+#define DUNGEON_OLYMPUS  22
 #define DUNGEON_ARENA    25
 
 

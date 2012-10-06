@@ -3098,7 +3098,7 @@ static void town_history(void)
  * Only accurate for the current weapon, because it includes
  * the current +dam of the player.
  */
-static void compare_weapon_aux2(int hand, 
+static void compare_weapon_aux2(int hand, critical_t *crit,
 				int r, int c, int mult, cptr attr,
 				byte color, bool force)
 {
@@ -3107,9 +3107,21 @@ static void compare_weapon_aux2(int hand,
 	char tmp_str[80];
 
 	/* Effective dices */
-	int eff_dd = o_ptr->dd + p_ptr->weapon_info[hand].to_dd;
-	int eff_ds = o_ptr->ds + p_ptr->weapon_info[hand].to_ds;
+	int dd = o_ptr->dd + p_ptr->weapon_info[hand].to_dd;
+	int ds = o_ptr->ds + p_ptr->weapon_info[hand].to_ds;
+	int to_d = o_ptr->to_d;
+	int to_h = o_ptr->to_h;
 	int min, max;
+
+	if (weaponmaster_get_toggle() == TOGGLE_SHIELD_BASH && object_is_shield(o_ptr))
+	{
+		dd = 3 + p_ptr->weapon_info[hand].to_dd;
+		ds = k_info[o_ptr->k_idx].ac + p_ptr->weapon_info[hand].to_ds;
+		to_h = o_ptr->to_a;
+		to_d = o_ptr->to_a;
+		to_h += 2*o_ptr->to_h;
+		to_d += 2*o_ptr->to_d;
+	}
 
 	/* Print the intro text */
 	sprintf(tmp_str, "%12s", attr);
@@ -3148,9 +3160,12 @@ static void compare_weapon_aux2(int hand,
 			mult = mult * 11 / 9;
 	}
 	}
+
+	mult = mult * crit->mul / 100;
+	to_d = to_d + crit->to_d;
 		
-	min = numblows * (mult * eff_dd / 100 + o_ptr->to_d + p_ptr->weapon_info[hand].to_d);
-	max = numblows * (mult * eff_ds * eff_dd / 100 + o_ptr->to_d + p_ptr->weapon_info[hand].to_d);
+	min = numblows * (mult * dd / 100 + to_d + p_ptr->weapon_info[hand].to_d);
+	max = numblows * (mult * dd * ds / 100 + to_d + p_ptr->weapon_info[hand].to_d);
 
 	/* Calculate the min and max damage figures */
 	sprintf(tmp_str, " %d (%d-%d) [x%d.%02d]",
@@ -3172,7 +3187,7 @@ static void compare_weapon_aux2(int hand,
  * Only accurate for the current weapon, because it includes
  * the current number of blows for the player.
  */
-static void compare_weapon_aux1(int hand, int col, int r)
+static void compare_weapon_aux1(int hand, critical_t *crit, int col, int r)
 {
 	object_type *o_ptr = &inventory[INVEN_RARM + hand];
 	u32b flgs[TR_FLAG_SIZE] = {0};
@@ -3194,55 +3209,55 @@ static void compare_weapon_aux1(int hand, int col, int r)
 	}
 
 	/* Print the relevant lines */
-	if (print_force_weapon)     compare_weapon_aux2(hand, r++, col, 100, "Force:", TERM_L_BLUE, print_force_weapon);
-	if (p_ptr->tim_slay_sentient)   compare_weapon_aux2(hand, r++, col, 200, "Sentient:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_ANIMAL)) compare_weapon_aux2(hand, r++, col, 400, "Animals:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_ANIMAL)) compare_weapon_aux2(hand, r++, col, 250, "Animals:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_EVIL))   compare_weapon_aux2(hand, r++, col, 350, "Evil:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_EVIL))   compare_weapon_aux2(hand, r++, col, 200, "Evil:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_HUMAN))   compare_weapon_aux2(hand, r++, col, 400, "Human:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_HUMAN))   compare_weapon_aux2(hand, r++, col, 250, "Human:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_UNDEAD)) compare_weapon_aux2(hand, r++, col, 500, "Undead:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_UNDEAD)) compare_weapon_aux2(hand, r++, col, 300, "Undead:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_DEMON))  compare_weapon_aux2(hand, r++, col, 500, "Demons:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_DEMON))  compare_weapon_aux2(hand, r++, col, 300, "Demons:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_ORC))    compare_weapon_aux2(hand, r++, col, 500, "Orcs:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_ORC))    compare_weapon_aux2(hand, r++, col, 300, "Orcs:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_TROLL))  compare_weapon_aux2(hand, r++, col, 500, "Trolls:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_TROLL))  compare_weapon_aux2(hand, r++, col, 300, "Trolls:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_GIANT))  compare_weapon_aux2(hand, r++, col, 500, "Giants:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_GIANT))  compare_weapon_aux2(hand, r++, col, 300, "Giants:", TERM_YELLOW, print_force_weapon);
-	if (have_flag(flgs, TR_KILL_DRAGON)) compare_weapon_aux2(hand, r++, col, 500, "Dragons:", TERM_YELLOW, print_force_weapon);
-	else if (have_flag(flgs, TR_SLAY_DRAGON)) compare_weapon_aux2(hand, r++, col, 300, "Dragons:", TERM_YELLOW, print_force_weapon);
+	if (print_force_weapon)     compare_weapon_aux2(hand, crit, r++, col, 100, "Force:", TERM_L_BLUE, print_force_weapon);
+	if (p_ptr->tim_slay_sentient)   compare_weapon_aux2(hand, crit, r++, col, 200, "Sentient:", TERM_YELLOW, print_force_weapon);
+	if (have_flag(flgs, TR_KILL_ANIMAL)) compare_weapon_aux2(hand, crit, r++, col, 400, "Animals:", TERM_YELLOW, print_force_weapon);
+	else if (have_flag(flgs, TR_SLAY_ANIMAL)) compare_weapon_aux2(hand, crit, r++, col, 250, "Animals:", TERM_YELLOW, print_force_weapon);
+	if (have_flag(flgs, TR_KILL_EVIL))   compare_weapon_aux2(hand, crit, r++, col, 350, "Evil:", TERM_YELLOW, print_force_weapon);
+	else if (have_flag(flgs, TR_SLAY_EVIL))   compare_weapon_aux2(hand, crit, r++, col, 200, "Evil:", TERM_YELLOW, print_force_weapon);
+	if (have_flag(flgs, TR_KILL_HUMAN))   compare_weapon_aux2(hand, crit, r++, col, 400, "Human:", TERM_YELLOW, print_force_weapon);
+	else if (have_flag(flgs, TR_SLAY_HUMAN))   compare_weapon_aux2(hand, crit, r++, col, 250, "Human:", TERM_YELLOW, print_force_weapon);
+	if (have_flag(flgs, TR_KILL_UNDEAD)) compare_weapon_aux2(hand, crit, r++, col, 500, "Undead:", TERM_YELLOW, print_force_weapon);
+	else if (have_flag(flgs, TR_SLAY_UNDEAD)) compare_weapon_aux2(hand, crit, r++, col, 300, "Undead:", TERM_YELLOW, print_force_weapon);
+	if (have_flag(flgs, TR_KILL_DEMON))  compare_weapon_aux2(hand, crit, r++, col, 500, "Demons:", TERM_YELLOW, print_force_weapon);
+	else if (have_flag(flgs, TR_SLAY_DEMON))  compare_weapon_aux2(hand, crit, r++, col, 300, "Demons:", TERM_YELLOW, print_force_weapon);
+	if (have_flag(flgs, TR_KILL_ORC))    compare_weapon_aux2(hand, crit, r++, col, 500, "Orcs:", TERM_YELLOW, print_force_weapon);
+	else if (have_flag(flgs, TR_SLAY_ORC))    compare_weapon_aux2(hand, crit, r++, col, 300, "Orcs:", TERM_YELLOW, print_force_weapon);
+	if (have_flag(flgs, TR_KILL_TROLL))  compare_weapon_aux2(hand, crit, r++, col, 500, "Trolls:", TERM_YELLOW, print_force_weapon);
+	else if (have_flag(flgs, TR_SLAY_TROLL))  compare_weapon_aux2(hand, crit, r++, col, 300, "Trolls:", TERM_YELLOW, print_force_weapon);
+	if (have_flag(flgs, TR_KILL_GIANT))  compare_weapon_aux2(hand, crit, r++, col, 500, "Giants:", TERM_YELLOW, print_force_weapon);
+	else if (have_flag(flgs, TR_SLAY_GIANT))  compare_weapon_aux2(hand, crit, r++, col, 300, "Giants:", TERM_YELLOW, print_force_weapon);
+	if (have_flag(flgs, TR_KILL_DRAGON)) compare_weapon_aux2(hand, crit, r++, col, 500, "Dragons:", TERM_YELLOW, print_force_weapon);
+	else if (have_flag(flgs, TR_SLAY_DRAGON)) compare_weapon_aux2(hand, crit, r++, col, 300, "Dragons:", TERM_YELLOW, print_force_weapon);
 	if ( have_flag(flgs, TR_BRAND_ACID) 
 	  || p_ptr->weapon_info[hand].brand_acid
 	  || (p_ptr->special_attack & ATTACK_ACID) )  
 	{
-		compare_weapon_aux2(hand, r++, col, 250, "Acid:", TERM_RED, print_force_weapon);
+		compare_weapon_aux2(hand, crit, r++, col, 250, "Acid:", TERM_RED, print_force_weapon);
 	}
 	if ( have_flag(flgs, TR_BRAND_ELEC) 
 	  || p_ptr->weapon_info[hand].brand_elec
 	  || (p_ptr->special_attack & ATTACK_ELEC) )
 	{
-		compare_weapon_aux2(hand, r++, col, 250, "Elec:", TERM_RED, print_force_weapon);
+		compare_weapon_aux2(hand, crit, r++, col, 250, "Elec:", TERM_RED, print_force_weapon);
 	}
 	if ( have_flag(flgs, TR_BRAND_FIRE) 
 	  || p_ptr->weapon_info[hand].brand_fire
 	  || (p_ptr->special_attack & ATTACK_FIRE) )
 	{
-		compare_weapon_aux2(hand, r++, col, 250, "Fire:", TERM_RED, print_force_weapon);
+		compare_weapon_aux2(hand, crit, r++, col, 250, "Fire:", TERM_RED, print_force_weapon);
 	}
 	if ( have_flag(flgs, TR_BRAND_COLD) 
 	  || p_ptr->weapon_info[hand].brand_cold
 	  || (p_ptr->special_attack & ATTACK_COLD) )
 	{
-		compare_weapon_aux2(hand, r++, col, 250, "Cold:", TERM_RED, print_force_weapon);
+		compare_weapon_aux2(hand, crit, r++, col, 250, "Cold:", TERM_RED, print_force_weapon);
 	}
 	if ( have_flag(flgs, TR_BRAND_POIS) 
 	  || p_ptr->weapon_info[hand].brand_pois
 	  || (p_ptr->special_attack & ATTACK_POIS) )
 	{
-		compare_weapon_aux2(hand, r++, col, 250, "Poison:", TERM_RED, print_force_weapon);
+		compare_weapon_aux2(hand, crit, r++, col, 250, "Poison:", TERM_RED, print_force_weapon);
 	}
 }
 
@@ -3275,14 +3290,30 @@ static void list_weapon(int hand, int row, int col)
 	char tmp_str[80];
 
 	/* Effective dices */
-	int eff_dd = o_ptr->dd + p_ptr->weapon_info[hand].to_dd;
-	int eff_ds = o_ptr->ds + p_ptr->weapon_info[hand].to_ds;
+	int dd = o_ptr->dd + p_ptr->weapon_info[hand].to_dd;
+	int ds = o_ptr->ds + p_ptr->weapon_info[hand].to_ds;
+	int to_d = o_ptr->to_d;
+	int to_h = o_ptr->to_h;
 	int mult = 100;
 	int min, max;
+	critical_t crit = {0};
+	const int ct = 10 * 1000;
+	int i;
+
+	if (weaponmaster_get_toggle() == TOGGLE_SHIELD_BASH && object_is_shield(o_ptr))
+	{
+		dd = 3 + p_ptr->weapon_info[hand].to_dd;
+		ds = k_info[o_ptr->k_idx].ac + p_ptr->weapon_info[hand].to_ds;
+		to_h = o_ptr->to_a;
+		to_d = o_ptr->to_a;
+		to_h += 2*o_ptr->to_h;
+		to_d += 2*o_ptr->to_d;
+	}
 
 	/* Print the weapon name */
-	object_desc(o_name, o_ptr, OD_NAME_ONLY);
-	c_put_str(TERM_YELLOW, o_name, row, col);
+	object_desc(o_name, o_ptr, OD_NAME_ONLY | OD_OMIT_PREFIX);
+	sprintf(tmp_str, "%s (%dd%d) (+%d,+%d)", o_name, dd, ds, to_h, to_d);
+	c_put_str(TERM_YELLOW, tmp_str, row, col);
 
 	/* Print the player's number of blows */
 #ifdef JP
@@ -3304,11 +3335,11 @@ sprintf(tmp_str, "To Hit:  0  50 100 150 200 (AC)");
 
 	/* Print the weapons base damage dice */
 	sprintf(tmp_str, "        %2d  %2d  %2d  %2d  %2d (%%)", 
-		hit_chance(hand, o_ptr->to_h, 0), 
-		hit_chance(hand, o_ptr->to_h, 50), 
-		hit_chance(hand, o_ptr->to_h, 100), 
-		hit_chance(hand, o_ptr->to_h, 150), 
-		hit_chance(hand, o_ptr->to_h, 200)
+		hit_chance(hand, to_h, 0), 
+		hit_chance(hand, to_h, 50), 
+		hit_chance(hand, to_h, 100), 
+		hit_chance(hand, to_h, 150), 
+		hit_chance(hand, to_h, 200)
 	);
 
 	put_str(tmp_str, row+3, col);
@@ -3335,17 +3366,36 @@ c_put_str(TERM_YELLOW, "可能なダメージ:", row+5, col);
 	}
 	}
 
+	/* Compute Average Effects of Criticals by sampling */
+	for (i = 0; i < ct; i++)
+	{
+		critical_t tmp = critical_norm(o_ptr->weight, o_ptr->to_h, p_ptr->weapon_info[hand].to_h, 0);
+		if (tmp.desc)
+		{
+			crit.mul += tmp.mul;
+			crit.to_d += tmp.to_d;
+		}
+		else
+			crit.mul += 100;
+	}
+	crit.mul = crit.mul / ct;
+	crit.to_d = crit.to_d * 100 / ct;
+	sprintf(tmp_str, " Criticals: %d.%02dx +%d.%02d", crit.mul/100, crit.mul%100, crit.to_d/100, crit.to_d%100);
+	put_str(tmp_str, row+6, col+1);
+	crit.to_d /= 100;
+
+	mult = mult * crit.mul / 100;
+	to_d = to_d + crit.to_d;
 
 	/* Damage for one blow (if it hits) */
-	min = mult*eff_dd/100 + o_ptr->to_d + p_ptr->weapon_info[hand].to_d;
-	max = mult*eff_ds*eff_dd/100 + o_ptr->to_d + p_ptr->weapon_info[hand].to_d;
-
+	min = mult*dd/100 + to_d + p_ptr->weapon_info[hand].to_d;
+	max = mult*dd*ds/100 + to_d + p_ptr->weapon_info[hand].to_d;
 	sprintf(tmp_str, "One Strike: %d (%d-%d)",
 		(min + max)/2,
 	    min,
 	    max
 	);
-	put_str(tmp_str, row+6, col+1);
+	put_str(tmp_str, row+7, col+1);
 
 	/* Damage for the complete attack (if all blows hit) */
 	sprintf(tmp_str, "One Attack: %d (%d-%d)",
@@ -3353,7 +3403,9 @@ c_put_str(TERM_YELLOW, "可能なダメージ:", row+5, col);
 		    p_ptr->weapon_info[hand].num_blow * min,
 			p_ptr->weapon_info[hand].num_blow * max
 	);
-	put_str(tmp_str, row+7, col+1);
+	put_str(tmp_str, row+8, col+1);
+
+	compare_weapon_aux1(hand, &crit, col, row + 9);
 }
 
 
@@ -3408,7 +3460,6 @@ static bool item_tester_hook_ammo(object_type *o_ptr)
 void display_weapon_info(int hand, int row, int col)
 {
 	list_weapon(hand, row, col);
-	compare_weapon_aux1(hand, col, row + 8);
 }
 
 static bool compare_weapons(void)

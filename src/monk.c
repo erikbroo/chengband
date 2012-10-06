@@ -47,57 +47,70 @@ static int _get_attack_idx(int lvl, u32b defense)
 	return best_attack_idx;
 }
 
-void _get_attack_counts(int lvl, u32b defense, int tot, int *counts)
+typedef struct _attack_s {
+	int count;
+	int mul;
+	int to_d;
+} _attack_t;
+
+void _get_attack_counts(int tot, _attack_t *counts)
 {
 	int i;
+	_attack_t *_attack_ptr;
+	critical_t crit;
 
 	for (i = 0; i < MAX_MA; i++)
-		counts[i] = 0;
-
-	for (i = 0; i < tot; i++)
-		counts[_get_attack_idx(lvl, defense)]++;
-}
-
-void monk_get_attack_counts(int tot, int *counts)
-{
-	_get_attack_counts(p_ptr->lev, p_ptr->special_defense, tot, counts);
-}
-
-void monk_dump_avg_dam(FILE *fff)
-{
-	int lvl;
-	const int tot = 10*1000;
-
-	fprintf(fff, "int monk_ave_damage[PY_MAX_LEVEL+1][3] =\n");
-	fprintf(fff, "{\n");
-	fprintf(fff, "  {0, 0, 0},\n");
-
-	for (lvl = 1; lvl <= 50; lvl++)
 	{
-		int normal = 0, strong = 0, weak = 0;
-		int normal_counts[MAX_MA], strong_counts[MAX_MA], weak_counts[MAX_MA];
-		int i;
-
-		_get_attack_counts(lvl, 0, tot, normal_counts);
-		_get_attack_counts(lvl, KAMAE_BYAKKO, tot, strong_counts);
-		_get_attack_counts(lvl, KAMAE_GENBU, tot, weak_counts);
-
-		for (i = 0; i < MAX_MA; i++)
-		{
-			martial_arts *ma_ptr = &ma_blows[i];
-			int           dam = ma_ptr->dd * (ma_ptr->ds + 1) * 100 / 2;
-
-			normal += dam * normal_counts[i] / tot;
-			strong += dam * strong_counts[i] / tot;
-			weak   += dam * weak_counts[i]   / tot;
-		}
-
-		fprintf(fff, "  {%d, %d, %d},  /* L%d */\n", normal, strong, weak, lvl);
+		_attack_ptr = &counts[i];
+		_attack_ptr->count = 0;
+		_attack_ptr->mul = 0;
+		_attack_ptr->to_d = 0;
 	}
 
-	fprintf(fff, "};\n");
+	for (i = 0; i < tot; i++)
+	{
+		int attack_idx = _get_attack_idx(p_ptr->lev, p_ptr->special_defense);
+		martial_arts *ma_ptr = &ma_blows[attack_idx];
+
+		_attack_ptr = &counts[attack_idx];
+		_attack_ptr->count++;
+		
+		/* Crits depend on the attack chosen. The following won't be stable
+		   for attacks that occur infrequently, but hopefully things will just
+		   average out */
+		crit = monk_get_critical(ma_ptr);
+
+		if (crit.desc)
+		{
+			_attack_ptr->mul += crit.mul;
+			_attack_ptr->to_d += crit.to_d;
+		}
+		else
+			_attack_ptr->mul += 100;
+	}
 }
 
+static int _get_weight(void)
+{
+	int weight = 8;
+	if (p_ptr->special_defense & KAMAE_SUZAKU) weight = 4;
+	if ((p_ptr->pclass == CLASS_FORCETRAINER) && (p_ptr->magic_num1[0]))
+	{
+		weight += (p_ptr->magic_num1[0]/30);
+		if (weight > 20) weight = 20;
+	}
+	return weight * p_ptr->lev;
+}
+
+critical_t monk_get_critical(martial_arts *ma_ptr)
+{
+	int min_level = ma_ptr->min_level;
+	int weight = _get_weight();
+	
+	if (p_ptr->pclass == CLASS_FORCETRAINER) min_level = MAX(1, min_level - 3);
+
+	return critical_norm(_get_weight(), min_level, p_ptr->weapon_info[0].to_h, 0);
+}
 
 int monk_get_attack_idx(void)
 {
@@ -106,35 +119,51 @@ int monk_get_attack_idx(void)
 
 void monk_display_attack_info(int row, int col)
 {
-	int counts[MAX_MA];
+	_attack_t counts[MAX_MA];
 	int i;
 	const int tot = 10 * 1000;
 	char buf[128];
 	int tot_dam = 0;
+	int tot_mul = 0;
+	int tot_to_d = 0;
 	int blows = p_ptr->weapon_info[0].num_blow;
 	int to_d = p_ptr->weapon_info[0].to_d * 100;
 	int r = row, c = col;
+	critical_t crit;
 
-	sprintf(buf, "%-15s %6s %6s %6s", "Attack", "Dice", "Pct", "Dam");
+	sprintf(buf, "%-15s %6s %6s %7s", "Attack", "Dice", "Pct", "Dam");
 	c_put_str(TERM_YELLOW, buf, r++, c);
 
-	monk_get_attack_counts(tot, counts);
+	_get_attack_counts(tot, counts);
 	for (i = 0; i < MAX_MA; i++)
 	{
 		martial_arts *ma_ptr = &ma_blows[i];
 		int dd = ma_ptr->dd + p_ptr->weapon_info[0].to_dd;
 		int ds = ma_ptr->ds + p_ptr->weapon_info[0].to_ds;
 		char tmp[20];
-		int dam = dd * (ds + 1) * 100 * counts[i] / (2 * tot);
+		int dam = dd * (ds + 1) * 100 * counts[i].count / (2 * tot);
 
 		tot_dam += dam;
+		tot_mul += counts[i].mul;
+		tot_to_d += counts[i].to_d;
 
 		sprintf(tmp, "%dd%d", dd, ds);
-		sprintf(buf, "%-15s %6s %3d.%02d%% %2d.%02d", ma_ptr->name, tmp, counts[i]/100, counts[i]%100, dam/100, dam%100);
+		sprintf(buf, "%-15s %6s %3d.%02d%% %3d.%02d", ma_ptr->name, tmp, counts[i].count/100, counts[i].count%100, dam/100, dam%100);
 		put_str(buf, r++, c);
 	}
 
-	sprintf(buf, "%20s %2d.%02d", "Total:", tot_dam/100, tot_dam%100);
+	sprintf(buf, "%20s %3d.%02d  +%3d", "Total:", tot_dam/100, tot_dam%100, to_d/100);
+	put_str(buf, r++, c + 10);
+
+	crit.mul = tot_mul/tot;
+	crit.to_d = tot_to_d*100/tot;
+	sprintf(buf, "%20s %3d.%02dx +%3d.%02d", "Criticals:", crit.mul/100, crit.mul%100, crit.to_d/100, crit.to_d%100);
+	put_str(buf, r++, c + 10);
+
+	/* Account for criticals in all that follows ... */
+	tot_dam = tot_dam * crit.mul/100;
+	to_d = to_d + crit.to_d;
+	sprintf(buf, "%20s %3d.%02d  +%3d.%02d", "One Strike:", tot_dam/100, tot_dam%100, to_d/100, to_d%100);
 	put_str(buf, r++, c + 10);
 
 	r = row;

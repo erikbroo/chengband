@@ -1354,7 +1354,7 @@ msg_format("その%sを%sのに十分なマジックポイントがない。",prayer,
 #ifdef JP
 msg_format("%sをうまく唱えられなかった！", prayer);
 #else
-		msg_format("You failed to get the %s off!", prayer);
+		msg_format("You failed to cast %s!", do_spell(increment ? p_ptr->realm2 : p_ptr->realm1, spell % 32, SPELL_NAME));
 #endif
 
 		if (take_mana && prace_is_(RACE_DEMIGOD) && p_ptr->psubrace == DEMIGOD_ATHENA) 

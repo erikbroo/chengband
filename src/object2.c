@@ -640,13 +640,13 @@ s16b get_obj_num(int level)
 	{
 		/* Objects are sorted by depth */
 		if (table[i].level > level) break;
-
 		table[i].prob3 = 0;
 
 		if (table[i].max_level && table[i].max_level < level) continue;
 
 		k_idx = table[i].index;
 		k_ptr = &k_info[k_idx];
+		if (k_ptr->tval == TV_FOOD && k_ptr->sval == SV_FOOD_AMBROSIA && dungeon_type != DUNGEON_OLYMPUS) continue;
 
 		/* Hack -- prevent embedded chests */
 		if (opening_chest && (k_ptr->tval == TV_CHEST)) continue;

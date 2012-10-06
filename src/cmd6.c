@@ -348,6 +348,21 @@ static void do_cmd_eat_food_aux(int item)
 			}
 #endif
 
+			case SV_FOOD_AMBROSIA:
+			{
+				msg_print("That tastes divine!");
+				set_poisoned(0, TRUE);
+				hp_player(damroll(15, 15));
+				do_res_stat(A_STR);
+				do_res_stat(A_INT);
+				do_res_stat(A_WIS);
+				do_res_stat(A_DEX);
+				do_res_stat(A_CON);
+				do_res_stat(A_CHR);
+				restore_level();
+				ident = TRUE;
+				break;
+			}
 
 			case SV_FOOD_WAYBREAD:
 			{
@@ -623,7 +638,7 @@ msg_print("生者の食物はあなたにとってほとんど栄養にならない。");
 
 		set_food(p_ptr->food + ((o_ptr->pval) / 20));
 	}
-	else if (o_ptr->tval == TV_FOOD && o_ptr->sval == SV_FOOD_WAYBREAD)
+	else if (o_ptr->tval == TV_FOOD && (o_ptr->sval == SV_FOOD_WAYBREAD || o_ptr->sval == SV_FOOD_AMBROSIA))
 	{
 		/* Waybread is always fully satisfying. */
 		set_food(MAX(p_ptr->food, PY_FOOD_MAX - 1));
@@ -1226,6 +1241,22 @@ msg_print("恐ろしい光景が頭に浮かんできた。");
 			update_stuff();
 			hp_player(5000);
 			ident = TRUE;
+			break;
+
+		case SV_POTION_CLARITY:
+			if (sp_player(damroll(5, 6) + 5))
+			{
+				msg_print("You feel your mind clear.");
+				ident = TRUE;
+			}
+			break;
+
+		case SV_POTION_GREAT_CLARITY:
+			if (sp_player(damroll(10, 10) + 15))
+			{
+				msg_print("You feel your mind clear.");
+				ident = TRUE;
+			}
 			break;
 
 		case SV_POTION_RESTORE_MANA:

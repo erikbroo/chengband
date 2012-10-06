@@ -193,6 +193,7 @@ static void death_scythe_miss(object_type *o_ptr, int hand, int mode)
 {
 	u32b flgs[TR_FLAG_SIZE];
 	int k;
+	critical_t crit;
 
 	/* Sound */
 	sound(SOUND_HIT);
@@ -296,7 +297,13 @@ static void death_scythe_miss(object_type *o_ptr, int hand, int mode)
 		k /= 10;
 	}
 
-	k = critical_norm(o_ptr->weight, o_ptr->to_h, k, p_ptr->weapon_info[hand].to_h, mode);
+	crit = critical_norm(o_ptr->weight, o_ptr->to_h, p_ptr->weapon_info[hand].to_h, mode);
+	if (crit.desc)
+	{
+		k = k * crit.mul/100 + crit.to_d;
+		msg_print(crit.desc);
+	}
+
 	if (one_in_(6))
 	{
 		int mult = 2;
@@ -453,9 +460,10 @@ s16b critical_shot(int weight, int plus, int dam)
  *
  * Factor in weapon weight, total plusses, player level.
  */
-s16b critical_norm(int weight, int plus, int dam, s16b meichuu, int mode)
+critical_t critical_norm(int weight, int plus, s16b meichuu, int mode)
 {
-	int i, k;
+	critical_t result = {0};
+	int i;
 	int roll = (p_ptr->pclass == CLASS_NINJA) ? 4444 : 5000;
 
 	if (p_ptr->enhanced_crit)
@@ -491,62 +499,42 @@ s16b critical_norm(int weight, int plus, int dam, s16b meichuu, int mode)
 	/* Chance */
 	if ((randint1(roll) <= i) || (mode == HISSATSU_MAJIN) || (mode == HISSATSU_3DAN))
 	{
-		k = weight + randint1(650);
+		int k = weight + randint1(650);
 		if ((mode == HISSATSU_MAJIN) || (mode == HISSATSU_3DAN)) k+= randint1(650);
 
 		if (k < 400)
 		{
-#ifdef JP
-			msg_print("手ごたえがあった！");
-#else
-			msg_print("It was a good hit!");
-#endif
-
-			dam = 2 * dam + 5;
+			result.desc = T("It was a good hit!", "手ごたえがあった！");
+			result.mul = 200;
+			result.to_d = 5;
 		}
 		else if (k < 700)
 		{
-#ifdef JP
-			msg_print("かなりの手ごたえがあった！");
-#else
-			msg_print("It was a great hit!");
-#endif
-
-			dam = 2 * dam + 10;
+			result.desc = T("It was a great hit!", "かなりの手ごたえがあった！");
+			result.mul = 200;
+			result.to_d = 10;
 		}
 		else if (k < 900)
 		{
-#ifdef JP
-			msg_print("会心の一撃だ！");
-#else
-			msg_print("It was a superb hit!");
-#endif
-
-			dam = 3 * dam + 15;
+			result.desc = T("It was a superb hit!", "会心の一撃だ！");
+			result.mul = 300;
+			result.to_d = 15;
 		}
 		else if (k < 1300)
 		{
-#ifdef JP
-			msg_print("最高の会心の一撃だ！");
-#else
-			msg_print("It was a *GREAT* hit!");
-#endif
-
-			dam = 3 * dam + 20;
+			result.desc = T("It was a *GREAT* hit!", "最高の会心の一撃だ！");
+			result.mul = 300;
+			result.to_d = 20;
 		}
 		else
 		{
-#ifdef JP
-			msg_print("比類なき最高の会心の一撃だ！");
-#else
-			msg_print("It was a *SUPERB* hit!");
-#endif
-
-			dam = ((7 * dam) / 2) + 25;
+			result.desc = T("It was a *SUPERB* hit!", "比類なき最高の会心の一撃だ！");
+			result.mul = 350;
+			result.to_d = 25;
 		}
 	}
 
-	return (dam);
+	return result;
 }
 
 
@@ -2673,6 +2661,7 @@ static void natural_attack(s16b m_idx, int attack, bool *fear, bool *mdeath)
 	int             dss, ddd;
 
 	cptr            atk_desc;
+	critical_t      crit;
 
 	switch (attack)
 	{
@@ -2764,7 +2753,12 @@ static void natural_attack(s16b m_idx, int attack, bool *fear, bool *mdeath)
 
 
 		k = damroll(ddd, dss);
-		k = critical_norm(n_weight, bonus, k, (s16b)bonus, 0);
+		crit = critical_norm(n_weight, bonus, (s16b)bonus, 0);
+		if (crit.desc)
+		{
+			k = k * crit.mul/100 + crit.to_d;
+			msg_print(crit.desc);
+		}
 
 		/* Apply the player damage bonuses */
 		k += p_ptr->to_d_m;
@@ -2866,6 +2860,7 @@ static bool py_attack_aux(int y, int x, bool *fear, bool *mdeath, s16b hand, int
 	int		num = 0, k, bonus, chance, vir;
 	int     to_h = 0, to_d = 0;
 	int     touch_ct = 0;
+	critical_t       crit;
 	cave_type       *c_ptr = &cave[y][x];
 
 	monster_type    *m_ptr = 0;
@@ -3207,18 +3202,12 @@ static bool py_attack_aux(int y, int x, bool *fear, bool *mdeath, s16b hand, int
 				int special_effect = 0, stun_effect = 0;
 				martial_arts *ma_ptr = &ma_blows[monk_get_attack_idx()];
 				int resist_stun = 0;
-				int weight = 8;
-				int min_level;
 
-				if (r_ptr->flags1 & RF1_UNIQUE) resist_stun += 88;
-				if (r_ptr->flags3 & RF3_NO_STUN) resist_stun += 66;
+				if (r_ptr->flags1 & RF1_UNIQUE) resist_stun += (10*r_ptr->level);
 				if (r_ptr->flags3 & RF3_NO_CONF) resist_stun += 33;
 				if (r_ptr->flags3 & RF3_NO_SLEEP) resist_stun += 33;
 				if ((r_ptr->flags3 & RF3_UNDEAD) || (r_ptr->flags3 & RF3_NONLIVING))
 					resist_stun += 66;
-
-				if (p_ptr->pclass == CLASS_FORCETRAINER) min_level = MAX(1, ma_ptr->min_level - 3);
-				else min_level = ma_ptr->min_level;
 
 				k = damroll(ma_ptr->dd + p_ptr->weapon_info[hand].to_dd, ma_ptr->ds + p_ptr->weapon_info[hand].to_ds);
 				k = tot_dam_aux_monk(k, m_ptr);
@@ -3267,14 +3256,13 @@ static bool py_attack_aux(int y, int x, bool *fear, bool *mdeath, s16b hand, int
 					msg_format(ma_ptr->desc, m_name);
 				}
 
-				if (p_ptr->special_defense & KAMAE_SUZAKU) weight = 4;
-				if ((p_ptr->pclass == CLASS_FORCETRAINER) && (p_ptr->magic_num1[0]))
-				{
-					weight += (p_ptr->magic_num1[0]/30);
-					if (weight > 20) weight = 20;
-				}
 
-				k = critical_norm(p_ptr->lev * weight, min_level, k, p_ptr->weapon_info[0].to_h, 0);
+				crit = monk_get_critical(ma_ptr);
+				if (crit.desc)
+				{
+					k = k * crit.mul/100 + crit.to_d;
+					msg_print(crit.desc);
+				}
 
 				if ((special_effect == MA_KNEE) && ((k + p_ptr->weapon_info[hand].to_d) < m_ptr->hp))
 				{
@@ -3305,7 +3293,7 @@ static bool py_attack_aux(int y, int x, bool *fear, bool *mdeath, s16b hand, int
 				}
 
 				/* Massive Hack: Monk stunning is now greatly biffed! */
-				if ((r_ptr->flags1 & RF1_UNIQUE) && r_ptr->level >= 50) stun_effect = 0;
+				if (r_ptr->flags1 & RF1_UNIQUE) stun_effect /= 2;
 				if (r_ptr->flags3 & RF3_NO_STUN) stun_effect = 0;
 				if (r_ptr->flagsr & RFR_RES_SOUN) stun_effect = 0;
 
@@ -3316,11 +3304,14 @@ static bool py_attack_aux(int y, int x, bool *fear, bool *mdeath, s16b hand, int
 				{
 					if (p_ptr->lev > randint1(r_ptr->level + resist_stun + 10))
 					{
-						/* Slight Hack: Everybody else has this reduction ... Why not monks?? */
 						if (MON_STUNNED(m_ptr))
-							stun_effect /= 2;
+							stun_effect /= 4;
 
-						if (set_monster_stunned(c_ptr->m_idx, stun_effect + MON_STUNNED(m_ptr)))
+						if (stun_effect == 0)
+						{
+							/* No message */
+						}
+						else if (set_monster_stunned(c_ptr->m_idx, stun_effect + MON_STUNNED(m_ptr)))
 						{
 #ifdef JP
 							msg_format("%^sはフラフラになった。", m_name);
@@ -3378,7 +3369,12 @@ static bool py_attack_aux(int y, int x, bool *fear, bool *mdeath, s16b hand, int
 				{
 					int bonus = 0;
 					if (mode == WEAPONMASTER_SMITE_EVIL && hand == 0 && (r_ptr->flags3 & RF3_EVIL)) bonus = 200;
-					k = critical_norm(o_ptr->weight, to_h, k, p_ptr->weapon_info[hand].to_h + bonus, mode);
+					crit = critical_norm(o_ptr->weight, to_h, p_ptr->weapon_info[hand].to_h + bonus, mode);
+					if (crit.desc)
+					{
+						k = k * crit.mul/100 + crit.to_d;
+						msg_print(crit.desc);
+					}
 				}
 
 				drain_result = k;

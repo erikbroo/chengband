@@ -755,22 +755,6 @@ static void _industrious_mortician_spell(int cmd, variant *res)
 	}
 }
 
-static int hit_chance(int to_h, int ac)
-{
-	int chance = 0;
-	int meichuu = p_ptr->skills.thn + (p_ptr->weapon_info[0].to_h + to_h) * BTH_PLUS_ADJ;
-
-	if (meichuu <= 0) return 5;
-
-	chance = 100 - ((ac * 75) / meichuu);
-
-	if (chance > 95) chance = 95;
-	if (chance < 5) chance = 5;
-	if (p_ptr->personality == PERS_LAZY)
-		chance = (chance*19+9)/20;
-	return chance;
-}
-
 bool _design_monkey_clone(void)
 {
 	int i;
@@ -802,7 +786,7 @@ bool _design_monkey_clone(void)
 			(o_ptr->dd * (o_ptr->ds + 1)/2 + p_ptr->weapon_info[0].to_d + o_ptr->to_d);
 
 		blows += p_ptr->weapon_info[0].num_blow;
-		acc = hit_chance(o_ptr->to_h, 150);
+		acc = hit_chance(0, o_ptr->to_h, 150);
 	}
 
 	if (buki_motteruka(INVEN_LARM))

@@ -2,6 +2,7 @@
 #   Object Auto-picker/Destroyer Sample Setting   #
 #=================================================#
 mushroom of restoring#!E
+ambrosia#!E
 potion of resist#!k!q
 potion of restore mana#!k!q
 
@@ -20,6 +21,7 @@ elven cloak
 armors:dragon
 mirror shield
 weapons:poison needle
+wizard cloak
 
 ?:[EQU $CLASS Mage High-Mage]
 rod of cold balls#!s!d!k
@@ -27,7 +29,6 @@ rod of fire balls#!s!d!k
 rod of lightning balls#!s!d!k
 rod of acid balls#!s!d!k
 wizardstaff
-wizard cloak
 ?:1
 
 rod of healing

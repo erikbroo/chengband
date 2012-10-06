@@ -5704,7 +5704,8 @@ msg_print("中断しました。");
 				}
 			}
 
-			fear_process_p();
+			if (randint1(200) < energy_use)
+				fear_process_p();
 
 			/* Handle monster detection */
 			if (repair_monsters)

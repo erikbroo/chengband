@@ -2166,7 +2166,7 @@ msg_format("%sは体力を回復したようだ。", m_name);
 					{
 						if (!(r_ptr->flagsr & RFR_RES_ALL))
 						{
-							int dam = damroll(2, 6);
+							int dam = _aura_dam_p();
 
 							/* Modify the damage */
 							dam = mon_damage_mod(m_ptr, dam, FALSE);
@@ -2200,7 +2200,7 @@ msg_format("%sは体力を回復したようだ。", m_name);
 				{
 					if (!(r_ptr->flagsr & RFR_RES_ALL))
 					{
-						int dam = damroll(2, 6);
+						int dam = _aura_dam_p();
 
 						/* Modify the damage */
 						dam = mon_damage_mod(m_ptr, dam, FALSE);
