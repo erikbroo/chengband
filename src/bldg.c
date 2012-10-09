@@ -3777,6 +3777,100 @@ const _gamble_shop_t _gamble_shop_scrolls[] = {
 	{ 0, 0, 0}
 };
 
+const _gamble_shop_t _gamble_shop_staves[] = {
+  { TV_STAFF, SV_STAFF_MSTORM, 5 }, 
+  { TV_STAFF, SV_STAFF_DESTRUCTION, 35 }, 
+  { TV_STAFF, SV_STAFF_HOLINESS, 30 }, 
+  { TV_STAFF, SV_STAFF_GENOCIDE, 4 }, 
+  { TV_STAFF, SV_STAFF_THE_MAGI, 1 }, 
+  { TV_STAFF, SV_STAFF_POWER, 20 }, 
+  { TV_STAFF, SV_STAFF_DISPEL_EVIL, 40 }, 
+  { TV_STAFF, SV_STAFF_SPEED, 35 }, 
+  { TV_STAFF, SV_STAFF_HEALING, 30 }, 
+  { TV_STAFF, SV_STAFF_DETECT_GOLD, 50 }, 
+  { TV_STAFF, SV_STAFF_TELEPORTATION, 50 }, 
+  { TV_STAFF, SV_STAFF_CURING, 50 }, 
+  { TV_STAFF, SV_STAFF_SLEEP_MONSTERS, 50 }, 
+  { TV_STAFF, SV_STAFF_SLOW_MONSTERS, 50 }, 
+  { TV_STAFF, SV_STAFF_ANIMATE_DEAD, 50 }, 
+  { TV_STAFF, SV_STAFF_EARTHQUAKES, 50 }, 
+  { TV_STAFF, SV_STAFF_PROBING, 50 }, 
+  { TV_STAFF, SV_STAFF_DETECT_EVIL, 50 }, 
+  { TV_STAFF, SV_STAFF_MAPPING, 50 }, 
+  { TV_STAFF, SV_STAFF_LITE, 50 }, 
+  { TV_STAFF, SV_STAFF_IDENTIFY, 50 }, 
+  { TV_STAFF, SV_STAFF_REMOVE_CURSE, 50 }, 
+  { TV_STAFF, SV_STAFF_STARLITE, 50 }, 
+  { TV_STAFF, SV_STAFF_DETECT_ITEM, 50 }, 
+  { TV_STAFF, SV_STAFF_DETECT_TRAP, 50 }, 
+  { 0, 0, 0}
+};
+
+const _gamble_shop_t _gamble_shop_wands[] = {
+  { TV_WAND, SV_WAND_GENOCIDE, 10 }, 
+  { TV_WAND, SV_WAND_STRIKING, 10 }, 
+  { TV_WAND, SV_WAND_ROCKETS, 5 }, 
+  { TV_WAND, SV_WAND_DRAGON_BREATH, 15 }, 
+  { TV_WAND, SV_WAND_DRAGON_COLD, 15 }, 
+  { TV_WAND, SV_WAND_DRAGON_FIRE, 15 }, 
+  { TV_WAND, SV_WAND_DISINTEGRATE, 10 }, 
+  { TV_WAND, SV_WAND_WONDER, 50 }, 
+  { TV_WAND, SV_WAND_COLD_BALL, 35 }, 
+  { TV_WAND, SV_WAND_FIRE_BALL, 35 }, 
+  { TV_WAND, SV_WAND_ELEC_BALL, 35 }, 
+  { TV_WAND, SV_WAND_ACID_BALL, 35 }, 
+  { TV_WAND, SV_WAND_COLD_BOLT, 50 }, 
+  { TV_WAND, SV_WAND_FIRE_BOLT, 50 }, 
+  { TV_WAND, SV_WAND_CHARM_MONSTER, 50 }, 
+  { TV_WAND, SV_WAND_ACID_BOLT, 50 }, 
+  { TV_WAND, SV_WAND_MAGIC_MISSILE, 50 }, 
+  { TV_WAND, SV_WAND_STINKING_CLOUD, 50 }, 
+  { TV_WAND, SV_WAND_POLYMORPH, 50 }, 
+  { TV_WAND, SV_WAND_DRAIN_LIFE, 30 }, 
+  { TV_WAND, SV_WAND_FEAR_MONSTER, 50 }, 
+  { TV_WAND, SV_WAND_CONFUSE_MONSTER, 50 }, 
+  { TV_WAND, SV_WAND_SLOW_MONSTER, 50 }, 
+  { TV_WAND, SV_WAND_SLEEP_MONSTER, 50 }, 
+  { TV_WAND, SV_WAND_LITE, 50 }, 
+  { TV_WAND, SV_WAND_STONE_TO_MUD, 50 }, 
+  { TV_WAND, SV_WAND_TELEPORT_AWAY, 50 }, 
+  { 0, 0, 0}
+};
+
+const _gamble_shop_t _gamble_shop_rods[] = {
+  { TV_ROD, SV_ROD_STONE_TO_MUD, 50 }, 
+  { TV_ROD, SV_ROD_HAVOC, 1 }, 
+  { TV_ROD, SV_ROD_COLD_BALL, 20 }, 
+  { TV_ROD, SV_ROD_FIRE_BALL, 20 }, 
+  { TV_ROD, SV_ROD_ELEC_BALL, 20 }, 
+  { TV_ROD, SV_ROD_ACID_BALL, 20 }, 
+  { TV_ROD, SV_ROD_COLD_BOLT, 50 }, 
+  { TV_ROD, SV_ROD_FIRE_BOLT, 50 }, 
+  { TV_ROD, SV_ROD_ELEC_BOLT, 50 }, 
+  { TV_ROD, SV_ROD_ACID_BOLT, 50 }, 
+  { TV_ROD, SV_ROD_POLYMORPH, 50 }, 
+  { TV_ROD, SV_ROD_DRAIN_LIFE, 15 }, 
+  { TV_ROD, SV_ROD_SLOW_MONSTER, 50 }, 
+  { TV_ROD, SV_ROD_SLEEP_MONSTER, 50 }, 
+  { TV_ROD, SV_ROD_LITE, 50 }, 
+  { TV_ROD, SV_ROD_DISARMING, 30 }, 
+  { TV_ROD, SV_ROD_TELEPORT_AWAY, 30 }, 
+  { TV_ROD, SV_ROD_PESTICIDE, 50 }, 
+  { TV_ROD, SV_ROD_SPEED, 4 }, 
+  { TV_ROD, SV_ROD_RESTORATION, 7 }, 
+  { TV_ROD, SV_ROD_HEALING, 3 }, 
+  { TV_ROD, SV_ROD_CURING, 15 }, 
+  { TV_ROD, SV_ROD_PROBING, 50 }, 
+  { TV_ROD, SV_ROD_DETECTION, 25 }, 
+  { TV_ROD, SV_ROD_MAPPING, 20 }, 
+  { TV_ROD, SV_ROD_ILLUMINATION, 50 }, 
+  { TV_ROD, SV_ROD_RECALL, 50 }, 
+  { TV_ROD, SV_ROD_IDENTIFY, 20 }, 
+  { TV_ROD, SV_ROD_DETECT_DOOR, 50 }, 
+  { TV_ROD, SV_ROD_DETECT_TRAP, 50 }, 
+  { 0, 0, 0}
+};
+
 static int _gamble_shop_roll(const _gamble_shop_t *choices)
 {
 	int tot = 0, roll;
@@ -3806,25 +3900,21 @@ static int _gamble_shop_roll(const _gamble_shop_t *choices)
 	return -1;
 }
 
-static bool _gamble_shop(const _gamble_shop_t *choices)
+static bool _gamble_shop_aux(object_type *o_ptr)
 {
-	int choice = _gamble_shop_roll(choices);
 	char buf[MAX_NLEN];
-	object_type forge = {0};
-	int k_idx = lookup_kind(choices[choice].tval, choices[choice].sval);
 	int slot, auto_pick_idx;
 
-	object_prep(&forge, k_idx);
-	identify_item(&forge);
-	forge.ident |= (IDENT_MENTAL);
-	object_desc(buf, &forge, 0);
+	identify_item(o_ptr);
+	o_ptr->ident |= (IDENT_MENTAL);
+	object_desc(buf, o_ptr, 0);
 
 	clear_bldg(5, 10);
 	
 	c_put_str(TERM_YELLOW, "You Win:", 5, 0);
 	put_str(buf, 5, 9);
 
-	auto_pick_idx = is_autopick(&forge);
+	auto_pick_idx = is_autopick(o_ptr);
 	if (auto_pick_idx >= 0)
 	{
 		if (autopick_list[auto_pick_idx].action & DO_AUTODESTROY)
@@ -3834,19 +3924,101 @@ static bool _gamble_shop(const _gamble_shop_t *choices)
 		}
 	}
 
-	if (!inven_carry_okay(&forge))
+	if (!inven_carry_okay(o_ptr))
 	{
 		msg_print("You cannot carry that many different items.");
 		return FALSE;
 	}
-	slot = inven_carry(&forge);
+	slot = inven_carry(o_ptr);
 	object_desc(buf, &inventory[slot], 0);
 	msg_format("You have %s (%c).", buf, index_to_label(slot));
 	handle_stuff();
 	return TRUE;
 }
 
+static bool _gamble_shop(const _gamble_shop_t *choices)
+{
+	object_type forge = {0};
+	int k_idx;
+	int choice = _gamble_shop_roll(choices);
 
+	if (choice < 0)
+	{
+		msg_print("Oops! Something went wrong.");
+		return FALSE;
+	}
+
+	k_idx = lookup_kind(choices[choice].tval, choices[choice].sval);
+	object_prep(&forge, k_idx);
+
+	return _gamble_shop_aux(&forge);
+}
+
+typedef bool (*object_p)(object_type *o_ptr);
+
+static bool _gamble_shop_object(object_p pred)
+{
+	object_type forge = {0};
+	int lvl = 40 + randint0(60);
+	int k_idx;
+	
+	for (;;)
+	{
+		k_idx = get_obj_num(lvl);
+		object_prep(&forge, k_idx);
+		if (pred && !pred(&forge))
+			continue;
+		apply_magic(&forge, lvl, AM_GOOD);
+		switch (forge.tval)
+		{
+			case TV_SPIKE:
+			case TV_SHOT:
+			case TV_ARROW:
+			case TV_BOLT:
+			{
+				if (!forge.name1 && !forge.name3)
+					forge.number = (byte)damroll(6, 7);
+			}
+		}
+		break;
+	}
+
+	return _gamble_shop_aux(&forge);
+}
+
+static bool _gamble_shop_artifact(void)
+{
+	object_type forge = {0};
+	int lvl = 70 + randint0(30);
+	int k_idx;
+	
+	for (;;)
+	{
+		k_idx = get_obj_num(lvl);
+		object_prep(&forge, k_idx);
+		if (!object_is_weapon(&forge) && !object_is_armour(&forge))
+			continue;
+		apply_magic(&forge, lvl, AM_GOOD | AM_GREAT | AM_SPECIAL);
+		switch (forge.tval)
+		{
+			case TV_SPIKE:
+			case TV_SHOT:
+			case TV_ARROW:
+			case TV_BOLT:
+			{
+				if (!forge.name1 && !forge.name3)
+					forge.number = (byte)damroll(6, 7);
+			}
+		}
+
+		if (!forge.art_name)
+			continue;
+
+		break;
+	}
+
+	return _gamble_shop_aux(&forge);
+}
 
 /*
  * Enchant item
@@ -3864,20 +4036,17 @@ static int _enchant_color(menu_choices choices, int which) {
 	return TERM_WHITE;	
 }
 
-static bool enchant_item(int cost, int to_hit, int to_dam, int to_ac)
+static bool enchant_item(int cost, int to_hit, int to_dam, int to_ac, bool is_guild)
 {
 	int         i, item;
 	bool        okay = FALSE;
 	object_type *o_ptr;
 	cptr        q, s;
-	int         maxenchant = 5 + (p_ptr->lev / 5);
+	int         maxenchant;
 	int         mul = 1;
 	char        tmp_str[MAX_NLEN];
 
 	clear_bldg(4, 18);
-
-	prt(format("  Based on your skill, we can improve up to +%d.", maxenchant), 5, 0);
-	prt(format("  The price for the service will depend on the item you choose."), 7, 0);
 
 	/* Which Item? Client sets item_tester_hook! */
 	item_tester_no_ryoute = TRUE;
@@ -3888,6 +4057,10 @@ static bool enchant_item(int cost, int to_hit, int to_dam, int to_ac)
 
 	if (o_ptr->tval == TV_ARROW || o_ptr->tval == TV_BOLT || o_ptr->tval == TV_SHOT)
 		maxenchant = (p_ptr->lev / 5);
+	else if (is_guild)
+		maxenchant = 5 + (p_ptr->lev / 5);
+	else
+		maxenchant = 2 + (p_ptr->lev / 5);
 
 	/* Streamline. Nothing is more fun then enchanting Twilight (-40,-60)->(+10, +10), I 
 	   admit. But other players might not share my love of carpal tunnel syndrome! */
@@ -3926,7 +4099,7 @@ static bool enchant_item(int cost, int to_hit, int to_dam, int to_ac)
 				{
 					int j;
 					for (j = 10; j < v; j++)
-						m = m * 3 / 2;
+						m = m * 5 / 3;
 				}
 				else
 					m += v - 10;
@@ -3945,6 +4118,8 @@ static bool enchant_item(int cost, int to_hit, int to_dam, int to_ac)
 			{
 				int new_cost = new_object_cost(&copy);
 				choices[i].cost = (new_cost - old_cost)*m;
+				if (is_guild)
+					choices[i].cost /= 2;
 			}
 		}
 		if (!i)
@@ -4873,13 +5048,17 @@ static void bldg_process_command(building_type *bldg, int i)
 	int bcost;
 	bool paid = FALSE;
 	int amt;
+	bool is_guild = FALSE;
 
 	/* Flush messages XXX XXX XXX */
 	msg_flag = FALSE;
 	msg_print(NULL);
 
 	if (is_owner(bldg))
+	{
 		bcost = bldg->member_costs[i];
+		is_guild = TRUE;
+	}
 	else
 		bcost = bldg->other_costs[i];
 
@@ -4956,11 +5135,11 @@ msg_print("お金が足りません！");
 		break;
 	case BACT_ENCHANT_WEAPON:
 		item_tester_hook = object_allow_enchant_melee_weapon;
-		enchant_item(bcost, 1, 1, 0);
+		enchant_item(bcost, 1, 1, 0, is_guild);
 		break;
 	case BACT_ENCHANT_ARMOR:
 		item_tester_hook = object_is_armour;
-		enchant_item(bcost, 0, 0, 1);
+		enchant_item(bcost, 0, 0, 1, is_guild);
 		break;
 	case BACT_RECHARGE:
 		building_recharge();
@@ -5007,11 +5186,11 @@ msg_print("お金が足りません！");
 		break;
 	case BACT_ENCHANT_ARROWS:
 		item_tester_hook = item_tester_hook_ammo;
-		enchant_item(bcost, 1, 1, 0);
+		enchant_item(bcost, 1, 1, 0, is_guild);
 		break;
 	case BACT_ENCHANT_BOW:
 		item_tester_tval = TV_BOW;
-		enchant_item(bcost, 1, 1, 0);
+		enchant_item(bcost, 1, 1, 0, is_guild);
 		break;
 	case BACT_RECALL:
 		if (recall_player(1)) paid = TRUE;
@@ -5135,6 +5314,24 @@ msg_print("お金が足りません！");
 		break;
 	case BACT_GAMBLE_SHOP_SCROLL:
 		paid = _gamble_shop(_gamble_shop_scrolls);
+		break;
+	case BACT_GAMBLE_SHOP_STAFF:
+		paid = _gamble_shop(_gamble_shop_staves);
+		break;
+	case BACT_GAMBLE_SHOP_WAND:
+		paid = _gamble_shop(_gamble_shop_wands);
+		break;
+	case BACT_GAMBLE_SHOP_ROD:
+		paid = _gamble_shop(_gamble_shop_rods);
+		break;
+	case BACT_GAMBLE_SHOP_ARMOR:
+		paid = _gamble_shop_object(object_is_armour);
+		break;
+	case BACT_GAMBLE_SHOP_WEAPON:
+		paid = _gamble_shop_object(object_is_weapon);
+		break;
+	case BACT_GAMBLE_SHOP_ARTIFACT:
+		paid = _gamble_shop_artifact();
 		break;
 	}
 

@@ -352,10 +352,10 @@ B:6:A:1:防御について調べる:150:150:a:46:0
 
 B:$7:N:Fighters Hall:Barak:Human
 B:7:N:戦士の集会所:バラク:人間
-B:$7:A:0:Enchant weapon:400:800:w:23:0
-B:7:A:0:武器を強化する:400:800:w:23:0
-B:$7:A:1:Enchant armor:300:600:a:24:0
-B:7:A:1:防具を強化する:300:600:a:24:0
+B:$7:A:0:Enchant weapon:0:0:w:23:0
+B:7:A:0:武器を強化する:0:0:w:23:0
+B:$7:A:1:Enchant armor:0:0:a:24:0
+B:7:A:1:防具を強化する:0:0:a:24:0
 B:$7:C:*:None
 B:$7:C:Warrior:Owner
 B:$7:C:Samurai:Owner
@@ -389,8 +389,8 @@ B:$11:N:Archers Guild:Trallin:Half-elf
 B:11:N:アーチャーのギルド:トゥラリン:ハーフエルフ
 B:$11:A:0:Enchant missiles:20:40:a:30:0
 B:11:A:0:矢や石等を強化する:20:40:a:30:0
-B:$11:A:1:Enchant bow:400:800:b:31:0
-B:11:A:1:弓を強化する:400:800:b:31:0
+B:$11:A:1:Enchant bow:0:0:b:31:0
+B:11:A:1:弓を強化する:0:0:b:31:0
 B:$11:C:*:None
 B:$11:C:Ranger:Owner
 B:$11:C:Archer:Owner

@@ -28,7 +28,7 @@
 #define FAKE_VERSION   0
 #define FAKE_VER_MAJOR 10
 #define FAKE_VER_MINOR 0
-#define FAKE_VER_PATCH 133
+#define FAKE_VER_PATCH 134
 
 
 /*
@@ -46,7 +46,7 @@
  */
 #define H_VER_MAJOR 0
 #define H_VER_MINOR 0
-#define H_VER_PATCH 133
+#define H_VER_PATCH 134
 #define H_VER_EXTRA 0
 
 
@@ -4743,7 +4743,12 @@ extern int PlayerUID;
 #define BACT_EVAL_AC		        46
 #define BACT_GAMBLE_SHOP_POTION     47
 #define BACT_GAMBLE_SHOP_SCROLL     48
-#define MAX_BACT                    49
+#define BACT_GAMBLE_SHOP_STAFF      49
+#define BACT_GAMBLE_SHOP_WAND       50
+#define BACT_GAMBLE_SHOP_ROD        51
+#define BACT_GAMBLE_SHOP_ARMOR      52
+#define BACT_GAMBLE_SHOP_WEAPON     53
+#define BACT_GAMBLE_SHOP_ARTIFACT   54
 
 /*
  * Quest status
