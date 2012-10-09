@@ -3579,7 +3579,7 @@ static errr parse_line_building(char *buf)
 		{
 			if (tokenize(s + 2, 2, zz, 0) == 2)
 			{
-				int c = bldg_member_code(zz[1]);
+				int c = get_bldg_member_code(zz[1]);
 
 				if (c < 0)
 					return PARSE_ERROR_GENERIC;
@@ -3609,7 +3609,7 @@ static errr parse_line_building(char *buf)
 		{
 			if (tokenize(s + 2, 2, zz, 0) == 2)
 			{
-				int c = bldg_member_code(zz[1]);
+				int c = get_bldg_member_code(zz[1]);
 
 				if (c < 0)
 					return PARSE_ERROR_GENERIC;
@@ -3635,13 +3635,25 @@ static errr parse_line_building(char *buf)
 		/* Building Realms */
 		case 'M':
 		{
-			if (tokenize(s+2, MAX_MAGIC, zz, 0) == MAX_MAGIC)
+			if (tokenize(s + 2, 2, zz, 0) == 2)
 			{
-				for (i = 0; i < MAX_MAGIC; i++)
-				{
-					building[index].member_realm[i+1] = atoi(zz[i]);
-				}
+				int c = get_bldg_member_code(zz[1]);
 
+				if (c < 0)
+					return PARSE_ERROR_GENERIC;
+
+				if (strcmp(zz[0], "*") == 0)
+				{
+					for (i = 0; i <= MAX_REALM; i++)
+						building[index].member_realm[i] = c;
+				}
+				else
+				{
+					int idx = get_realm_idx(zz[0]);
+					if (idx < 0 || idx > MAX_REALM)
+						return PARSE_ERROR_GENERIC;
+					building[index].member_realm[idx] = c;
+				}
 				break;
 			}
 

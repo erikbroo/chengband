@@ -16,7 +16,7 @@
 /* hack as in leave_store in store.c */
 static bool leave_bldg = FALSE;
 
-int bldg_member_code(cptr name)
+int get_bldg_member_code(cptr name)
 {
 	if (strcmpi(name, "None") == 0)
 		return BUILDING_NON_MEMBER;

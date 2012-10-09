@@ -1590,7 +1590,7 @@ struct building_type
 
 	s16b member_class[MAX_CLASS];   /* which classes are part of guild */
 	s16b member_race[MAX_RACES];    /* which races are part of guild */
-	s16b member_realm[MAX_MAGIC+1]; /* which realms are part of guild */
+	s16b member_realm[MAX_REALM+1]; /* which realms are part of guild */
 };
 
 

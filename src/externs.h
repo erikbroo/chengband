@@ -855,6 +855,7 @@ extern void do_cmd_use(void);
 extern void do_cmd_magic_eater(bool only_browse);
 
 /* do-spell.c */
+extern int get_realm_idx(cptr name);
 extern bool repose_of_the_dead;
 extern int beam_chance(void);
 extern void cast_wonder(int dir);
@@ -1369,7 +1370,7 @@ extern void store_init(int town_num, int store_num);
 extern void move_to_black_market(object_type * o_ptr);
 
 /* bldg.c */
-extern int bldg_member_code(cptr name);
+extern int get_bldg_member_code(cptr name);
 extern bool get_nightmare(int r_idx);
 extern void have_nightmare(int r_idx);
 extern void battle_monsters(void);

@@ -13911,3 +13911,14 @@ cptr do_spell(int realm, int spell, int mode)
 	_current_realm_hack = 0;
 	return result;
 }
+
+int get_realm_idx(cptr name)
+{
+	int i;
+	for (i = 0; i < MAX_REALM; i++)
+	{
+		if (strcmpi(name, realm_names[i]) == 0)
+			return i;
+	}
+	return -1;
+}
