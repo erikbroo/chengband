@@ -10,7 +10,7 @@ int get_class_idx(cptr name)
 	int i;
 	for (i = 0; i < MAX_CLASS; i++)
 	{
-		if (strcmp(name, class_info[i].title) == 0)
+		if (strcmpi(name, class_info[i].title) == 0)
 			return i;
 	}
 	return -1;

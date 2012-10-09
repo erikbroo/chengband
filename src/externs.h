@@ -1369,6 +1369,7 @@ extern void store_init(int town_num, int store_num);
 extern void move_to_black_market(object_type * o_ptr);
 
 /* bldg.c */
+extern int bldg_member_code(cptr name);
 extern bool get_nightmare(int r_idx);
 extern void have_nightmare(int r_idx);
 extern void battle_monsters(void);
@@ -1933,6 +1934,7 @@ extern bool magic_barrier(int m_idx);
 extern bool multiply_barrier(int m_idx);
 
 /* races.c */
+extern int get_race_idx(cptr name);
 extern race_t *get_race_t(void);      /* Actual Race (cf Mimics) */
 extern race_t *get_true_race_t(void); /* True Race */
 extern race_t *get_race_t_aux(int prace, int psubrace);

@@ -3564,32 +3564,68 @@ static errr parse_line_building(char *buf)
 			return (PARSE_ERROR_TOO_FEW_ARGUMENTS);
 		}
 
-		/* Building Classes */
+		/* Building Classes 
+			The old way:
+			B:$7:C:2:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:2:0:0:2:2:2:0:0:0:0:0:2:0:0:2:0:2:2:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0
+
+			The new way:
+			B:$7:C:*:None to set a default
+			B:$7:C:Warrior:Owner to set an owner
+			B:$7:C:Ranger:Member to set a member
+			(You probably should always specify a default first since I am unsure if
+			code cleans up properly.)
+		*/
 		case 'C':
 		{
-			if (tokenize(s + 2, MAX_CLASS, zz, 0) == MAX_CLASS)
+			if (tokenize(s + 2, 2, zz, 0) == 2)
 			{
-				for (i = 0; i < MAX_CLASS; i++)
-				{
-					building[index].member_class[i] = atoi(zz[i]);
-				}
+				int c = bldg_member_code(zz[1]);
 
+				if (c < 0)
+					return PARSE_ERROR_GENERIC;
+
+				if (strcmp(zz[0], "*") == 0)
+				{
+					for (i = 0; i < MAX_CLASS; i++)
+						building[index].member_class[i] = c;
+				}
+				else
+				{
+					int idx = get_class_idx(zz[0]);
+					if (idx < 0 || idx >= MAX_CLASS)
+						return PARSE_ERROR_GENERIC;
+					building[index].member_class[idx] = c;
+				}
 				break;
 			}
 
 			return (PARSE_ERROR_TOO_FEW_ARGUMENTS);
 		}
 
-		/* Building Races */
+		/* Building Races 
+			Same as with classes ...
+		*/
 		case 'R':
 		{
-			if (tokenize(s+2, MAX_RACES, zz, 0) == MAX_RACES)
+			if (tokenize(s + 2, 2, zz, 0) == 2)
 			{
-				for (i = 0; i < MAX_RACES; i++)
-				{
-					building[index].member_race[i] = atoi(zz[i]);
-				}
+				int c = bldg_member_code(zz[1]);
 
+				if (c < 0)
+					return PARSE_ERROR_GENERIC;
+
+				if (strcmp(zz[0], "*") == 0)
+				{
+					for (i = 0; i < MAX_RACES; i++)
+						building[index].member_race[i] = c;
+				}
+				else
+				{
+					int idx = get_race_idx(zz[0]);
+					if (idx < 0 || idx >= MAX_RACES)
+						return PARSE_ERROR_GENERIC;
+					building[index].member_race[idx] = c;
+				}
 				break;
 			}
 

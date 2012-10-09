@@ -16,6 +16,20 @@
 /* hack as in leave_store in store.c */
 static bool leave_bldg = FALSE;
 
+int bldg_member_code(cptr name)
+{
+	if (strcmpi(name, "None") == 0)
+		return BUILDING_NON_MEMBER;
+
+	if (strcmpi(name, "Owner") == 0)
+		return BUILDING_OWNER;
+
+	if (strcmpi(name, "Member") == 0)
+		return BUILDING_MEMBER;
+
+	return -1;
+}
+
 static bool is_owner(building_type *bldg)
 {
 	if (bldg->member_class[p_ptr->pclass] == BUILDING_OWNER)
