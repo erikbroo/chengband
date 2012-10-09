@@ -3747,6 +3747,36 @@ const _gamble_shop_t _gamble_shop_potions[] = {
 	{ 0, 0, 0}
 };
 
+const _gamble_shop_t _gamble_shop_scrolls[] = {
+	{ TV_SCROLL, SV_SCROLL_TELEPORT_LEVEL, 39},
+	{ TV_SCROLL, SV_SCROLL_RUNE_OF_PROTECTION, 30},
+	{ TV_SCROLL, SV_SCROLL_STAR_DESTRUCTION, 30},
+	{ TV_SCROLL, SV_SCROLL_ACQUIREMENT, 30},
+	{ TV_SCROLL, SV_SCROLL_MASS_GENOCIDE, 20},
+	{ TV_SCROLL, SV_SCROLL_GENOCIDE, 20},
+	{ TV_SCROLL, SV_SCROLL_STAR_ACQUIREMENT, 10},
+	{ TV_SCROLL, SV_SCROLL_BRAND_WEAPON, 10},
+	{ TV_SCROLL, SV_SCROLL_MADNESS, 10},
+	{ TV_SCROLL, SV_SCROLL_ARTIFACT, 1},
+	{ TV_SCROLL, SV_SCROLL_PHASE_DOOR, 50},
+	{ TV_SCROLL, SV_SCROLL_TELEPORT, 50},
+	{ TV_SCROLL, SV_SCROLL_REMOVE_CURSE, 50},
+	{ TV_SCROLL, SV_SCROLL_STAR_ENCHANT_WEAPON, 50},
+	{ TV_SCROLL, SV_SCROLL_STAR_ENCHANT_ARMOR, 50},
+	{ TV_SCROLL, SV_SCROLL_DETECT_ITEM, 50},
+	{ TV_SCROLL, SV_SCROLL_DETECT_GOLD, 50},
+	{ TV_SCROLL, SV_SCROLL_LIGHT, 50},
+	{ TV_SCROLL, SV_SCROLL_MAPPING, 50},
+	{ TV_SCROLL, SV_SCROLL_MONSTER_CONFUSION, 50},
+	{ TV_SCROLL, SV_SCROLL_RECHARGING, 50},
+	{ TV_SCROLL, SV_SCROLL_BLESSING, 50},
+	{ TV_SCROLL, SV_SCROLL_HOLY_PRAYER, 50},
+	{ TV_SCROLL, SV_SCROLL_PROTECTION_FROM_EVIL, 50},
+	{ TV_SCROLL, SV_SCROLL_DETECT_INVIS, 50},
+	{ TV_SCROLL, SV_SCROLL_DISPEL_UNDEAD, 50},
+	{ 0, 0, 0}
+};
+
 static int _gamble_shop_roll(const _gamble_shop_t *choices)
 {
 	int tot = 0, roll;
@@ -3759,7 +3789,8 @@ static int _gamble_shop_roll(const _gamble_shop_t *choices)
 			break;
 		tot += entry->prob;
 	}
-	roll = randint0(tot);
+
+	roll = randint1(tot);
 
 	for (i = 0; ; i++)
 	{
@@ -3790,7 +3821,7 @@ static bool _gamble_shop(const _gamble_shop_t *choices)
 
 	clear_bldg(5, 10);
 	
-	c_put_str(TERM_YELLOW, "You win:", 5, 0);
+	c_put_str(TERM_YELLOW, "You Win:", 5, 0);
 	put_str(buf, 5, 9);
 
 	auto_pick_idx = is_autopick(&forge);
@@ -5101,6 +5132,9 @@ msg_print("お金が足りません！");
 		break;
 	case BACT_GAMBLE_SHOP_POTION:
 		paid = _gamble_shop(_gamble_shop_potions);
+		break;
+	case BACT_GAMBLE_SHOP_SCROLL:
+		paid = _gamble_shop(_gamble_shop_scrolls);
 		break;
 	}
 
