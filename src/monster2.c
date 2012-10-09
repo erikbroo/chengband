@@ -4182,8 +4182,9 @@ bool alloc_horde(int y, int x)
 		r_ptr = &r_info[r_idx];
 
 		if (r_ptr->flags1 & RF1_UNIQUE) continue;
-
 		if (r_idx == MON_HAGURE) continue;
+		if (r_ptr->flags4 & RF4_THROW) continue;
+
 		break;
 	}
 	if (attempts < 1) return FALSE;

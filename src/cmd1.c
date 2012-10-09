@@ -3548,7 +3548,13 @@ static bool py_attack_aux(int y, int x, bool *fear, bool *mdeath, s16b hand, int
 			);
 
 			/* Hack: Monster AC now reduces damage */
-			k -= (k * ((MON_AC(r_ptr, m_ptr) < 200) ? MON_AC(r_ptr, m_ptr) : 200) / 1200);
+			{
+				int ac = MON_AC(r_ptr, m_ptr); 
+				int adj;
+				ac = MIN(ac, 200);
+				adj = k * ac / 1200;
+				k -= adj;
+			}
 
 			if (duelist_attack)
 			{

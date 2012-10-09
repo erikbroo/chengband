@@ -4,6 +4,18 @@
 /****************************************************************
  * Public Entrypoints
  ****************************************************************/
+int get_race_idx(cptr name)
+{
+	int i;
+	for (i = 0; i < MAX_RACES; i++)
+	{
+		race_t *race_ptr = get_race_t_aux(i, 0);
+		if (strcmp(name, race_ptr->name) == 0)
+			return i;
+	}
+	return -1;
+}
+
 race_t *get_race_t_aux(int prace, int psubrace)
 {
 	race_t *result = NULL;

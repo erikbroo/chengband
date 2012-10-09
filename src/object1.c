@@ -801,7 +801,7 @@ return "¥¢¥ó¥Ç¥Ã¥É¾¤´­ : 666+d333 ¥¿¡¼¥óËè";
 #ifdef JP
 return "¶²Éİ½üµî & 30 hp ²óÉü : 10 ¥¿¡¼¥óËè";
 #else
-				return "remove fear & heal 30 hp every 10 turns";
+				return "heal 30 hp every 10 turns";
 #endif
 
 			}
@@ -819,7 +819,7 @@ return "4d8 hp & ½ı²óÉü : 3+d3 ¥¿¡¼¥óËè";
 #ifdef JP
 return "¶²Éİ½üµî/ÆÇ¾Ã¤· : 5 ¥¿¡¼¥óËè";
 #else
-				return "remove fear and cure poison every 5 turns";
+				return "cure poison every 5 turns";
 #endif
 
 			}

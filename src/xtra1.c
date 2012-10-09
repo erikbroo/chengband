@@ -5356,10 +5356,6 @@ void calc_bonuses(void)
 	/* Obtain the "hold" value */
 	hold = adj_str_hold[p_ptr->stat_ind[A_STR]];
 
-	if (p_ptr->ryoute)
-		hold *= 2;
-
-
 	/* Examine the "current bow" */
 	o_ptr = &inventory[INVEN_BOW];
 
@@ -5377,7 +5373,6 @@ void calc_bonuses(void)
 		/* Heavy Bow */
 		p_ptr->heavy_shoot = TRUE;
 	}
-
 
 	/* Compute "extra shots" if needed */
 	if (o_ptr->k_idx)
@@ -5513,6 +5508,9 @@ void calc_bonuses(void)
 			info_ptr->to_dd += p_ptr->lev/23;
 
 		/* It is hard to hold a heavy weapon */
+		if (p_ptr->ryoute)
+			hold *= 2;
+
 		if (hold < o_ptr->weight / 10)
 		{
 			/* Hard to wield a heavy weapon */

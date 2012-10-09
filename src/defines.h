@@ -28,7 +28,7 @@
 #define FAKE_VERSION   0
 #define FAKE_VER_MAJOR 10
 #define FAKE_VER_MINOR 0
-#define FAKE_VER_PATCH 132
+#define FAKE_VER_PATCH 133
 
 
 /*
@@ -46,7 +46,7 @@
  */
 #define H_VER_MAJOR 0
 #define H_VER_MINOR 0
-#define H_VER_PATCH 132
+#define H_VER_PATCH 133
 #define H_VER_EXTRA 0
 
 
@@ -3182,8 +3182,9 @@
 #define GF_PSI_STORM 133
 #define GF_MANA_CLASH 134
 #define GF_ANTIMAGIC 135
+#define GF_ROCK      136
 
-#define MAX_GF				136
+#define MAX_GF				137
 
 /*
  * Some things which induce learning

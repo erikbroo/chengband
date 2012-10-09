@@ -3239,6 +3239,8 @@ void do_cmd_debug(void)
 	/* Magic Mapping */
 	case 'm':
 		map_area(DETECT_RAD_ALL * 3);
+		(void)detect_monsters_invis(255);
+		(void)detect_monsters_normal(255);
 		break;
 
 	/* Mutation */

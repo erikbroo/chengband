@@ -126,7 +126,8 @@ static s32b _activation_p(object_type *o_ptr)
 	{
 		switch (o_ptr->name1)
 		{
-		case ART_GALADRIEL: return 500;
+		case ART_GALADRIEL: return 1500;
+		case ART_STONE_LORE: return 5000;
 		case ART_ELENDIL: return 5000;
 		case ART_JUDGE: return 20000;
 		case ART_CARLAMMAS: return 10000;
@@ -204,7 +205,6 @@ static s32b _activation_p(object_type *o_ptr)
 		case ART_HELLFIRE: return 5000;
 		case ART_CRIMSON: return 2000;
 		case ART_PALANTIR: return 12000;
-		case ART_STONE_LORE: return 1000;
 		case ART_BOROMIR: return 1000;
 		case ART_FARAMIR: return 1000;
 		case ART_HIMRING: return 10000;

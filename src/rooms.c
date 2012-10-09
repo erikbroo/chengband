@@ -1655,18 +1655,12 @@ static bool vault_aux_giant(int r_idx)
 {
 	monster_race *r_ptr = &r_info[r_idx];
 
-	/* Validate the monster */
 	if (!vault_monster_okay(r_idx)) return (FALSE);
-
-	/* Require giant */
 	if (!(r_ptr->flags3 & RF3_GIANT)) return (FALSE);
-
+	if (r_ptr->flags4 & RF4_THROW) return FALSE;
 	if (r_ptr->flags3 & RF3_GOOD) return (FALSE);
-
-	/* Decline undead */
 	if (r_ptr->flags3 & RF3_UNDEAD) return (FALSE);
 
-	/* Okay */
 	return (TRUE);
 }
 
@@ -1964,7 +1958,7 @@ static vault_aux_type pit_types[] =
 #ifdef JP
 	{"オーク",       vault_aux_orc,      NULL,               5, 6},
 	{"トロル",       vault_aux_troll,    NULL,              20, 6},
-	{"ジャイアント", vault_aux_giant,    NULL,              50, 6},
+	{"ジャイアント", vault_aux_giant,    NULL,              20, 6},
 	{"狂気",         vault_aux_cthulhu,  NULL,              80, 2},
 	{"シンボル(善)", vault_aux_symbol_g, vault_prep_symbol, 70, 1},
 	{"シンボル(悪)", vault_aux_symbol_e, vault_prep_symbol, 70, 1},
@@ -1976,7 +1970,7 @@ static vault_aux_type pit_types[] =
 #else
 	{"orc",          vault_aux_orc,      NULL,               5, 6},
 	{"troll",        vault_aux_troll,    NULL,              20, 6},
-	{"giant",        vault_aux_giant,    NULL,              50, 6},
+	{"giant",        vault_aux_giant,    NULL,              20, 6},
 	{"lovecraftian", vault_aux_cthulhu,  NULL,              80, 2},
 	{"symbol good",  vault_aux_symbol_g, vault_prep_symbol, 70, 1},
 	{"symbol evil",  vault_aux_symbol_e, vault_prep_symbol, 70, 1},

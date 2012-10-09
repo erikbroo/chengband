@@ -1697,6 +1697,13 @@ msg_print("地面に落とされた。");
 					/* Prevent rewarding both artifact and "default" object */
 					if (!d_info[dungeon_type].final_object) k_idx = 0;
 				}
+				else
+				{
+					object_type forge;
+					create_replacement_art(a_idx, &forge);
+					drop_here(&forge, y, x);
+					if (!d_info[dungeon_type].final_object) k_idx = 0;
+				}
 			}
 
 			/* Hack: Lonely Mountain grants first realm's spellbook.

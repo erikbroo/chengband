@@ -1996,6 +1996,7 @@ extern race_t *vampire_lord_get_race_t(void);
 /* classes.c */
 extern class_t *get_class_t(void);
 extern class_t *get_class_t_aux(int pclass, int psubclass);
+extern int get_class_idx(cptr name);
 extern caster_info *get_caster_info(void);
 extern int get_class_powers(spell_info* spells, int max);
 extern int get_powers_aux(spell_info* spells, int max, power_info* table);

@@ -4,6 +4,18 @@
 
 #include "angband.h"
 
+int get_class_idx(cptr name)
+{
+	/* For now, read the global table. Not all classes have been ported to the new code system */
+	int i;
+	for (i = 0; i < MAX_CLASS; i++)
+	{
+		if (strcmp(name, class_info[i].title) == 0)
+			return i;
+	}
+	return -1;
+}
+
 /* Goal: This should be the one and only switch off of p_ptr->pclass in the
    entire system! */
 class_t *get_class_t_aux(int pclass, int psubclass)

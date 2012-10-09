@@ -2850,15 +2850,17 @@ msg_format("%^s%s", m_name, monmessage);
 	bool blocked_magic = FALSE;
 
 		if (ticked_off || is_glyph_grid(&cave[py][px]))
-			freq += (30 + r_ptr->level/5);
+			freq += r_ptr->level/2;
 		else if (pack_ptr)
 		{
 			switch (pack_ptr->ai)
 			{
 			case AI_SHOOT:
 			case AI_LURE:
-			case AI_FEAR:
 				freq += 30;
+				break;
+			case AI_FEAR:
+				freq += 15;
 				break;
 			}
 		}

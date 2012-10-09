@@ -135,6 +135,7 @@ static byte spell_color(int type)
 			case GF_CONFUSION:      return (mh_attr(4));
 			case GF_SOUND:          return (0x09);
 			case GF_SHARDS:         return (0x08);
+			case GF_ROCK:         return (0x08);
 			case GF_FORCE:          return (0x09);
 			case GF_INERT:        return (0x09);
 			case GF_GRAVITY:        return (0x09);
@@ -916,6 +917,7 @@ static bool project_f(int who, int r, int y, int x, int dam, int typ)
 		case GF_SEEKER:
 		case GF_SUPER_RAY:
 		case GF_SHARDS:
+		case GF_ROCK:
 		case GF_ROCKET:
 		case GF_SOUND:
 		case GF_DISENCHANT:
@@ -1373,6 +1375,7 @@ static bool project_f(int who, int r, int y, int x, int dam, int typ)
 		}
 
 		case GF_SHARDS:
+		case GF_ROCK:
 		case GF_ROCKET:
 		{
 			if (is_mirror_grid(c_ptr))
@@ -1669,6 +1672,7 @@ note_kill = "砕け散ってしまった！";
 			/* Hack -- break potions and such */
 			case GF_ICE:
 			case GF_SHARDS:
+			case GF_ROCK:
 			case GF_FORCE:
 			case GF_SOUND:
 			{
@@ -2591,6 +2595,7 @@ note = "には耐性がある。";
 
 		/* Shards -- Shard breathers resist */
 		case GF_SHARDS:
+		case GF_ROCK:
 		{
 			if (seen) obvious = TRUE;
 
@@ -2655,11 +2660,7 @@ note = "には耐性がある。";
 
 			if (r_ptr->flagsr & RFR_RES_ALL)
 			{
-#ifdef JP
-				note = "には完全な耐性がある！";
-#else
-				note = " is immune.";
-#endif
+				note = T(" is immune.", "には完全な耐性がある！");
 				dam = 0;
 				if (is_original_ap_and_seen(m_ptr)) r_ptr->r_flagsr |= (RFR_RES_ALL);
 				break;
@@ -2670,12 +2671,14 @@ note = "には耐性がある。";
 			}
 			else if (r_ptr->flags3 & RF3_NO_STUN)
 			{
+				if (is_original_ap_and_seen(m_ptr)) r_ptr->r_flags3 |= (RF3_NO_STUN);
 			}
 			else if (MON_STUNNED(m_ptr))
 			{
 				note = " is already stunned.";
 			}
-			else if (mon_save_p(m_ptr->r_idx, A_CHR))
+			else if (mon_save_p(m_ptr->r_idx, A_CHR) 
+			      || ((r_ptr->flags1 & RF1_UNIQUE) && mon_save_p(m_ptr->r_idx, A_CHR)) )
 			{
 				note = " resists stunning.";
 			}
@@ -7286,7 +7289,7 @@ static bool project_p(int who, cptr who_name, int r, int y, int x, int dam, int 
 		switch (typ)
 		{
 		case GF_ACID: case GF_ELEC: case GF_POIS: case GF_COLD: case GF_FIRE:
-		case GF_PLASMA: case GF_WATER: case GF_LITE: case GF_DARK: case GF_SHARDS:
+		case GF_PLASMA: case GF_WATER: case GF_LITE: case GF_DARK: case GF_SHARDS: case GF_ROCK:
 		case GF_SOUND: case GF_CONFUSION: case GF_FORCE: case GF_ICE: case GF_CHAOS:
 		case GF_NETHER: case GF_DISENCHANT: case GF_NEXUS: case GF_ROCKET: case GF_DISINTEGRATE:
 			dam -= p_ptr->lev * p_ptr->lev / 50;
@@ -7673,6 +7676,39 @@ static bool project_p(int who, cptr who_name, int r, int y, int x, int dam, int 
 			break;
 		}
 
+		case GF_ROCK:
+		{
+			if (fuzzy) msg_print("You are hit by something solid!");
+			/* Boulders can have sharp edges that cut the player, or large
+			   flat surfaces that stun the player */
+			if (one_in_(2))
+			{
+				if (!p_ptr->resist_shard && !CHECK_MULTISHADOW())
+				{
+					(void)set_cut(p_ptr->cut + dam/2, FALSE);
+				}
+				if (!p_ptr->resist_shard || one_in_(13))
+				{
+					inven_damage(set_cold_destroy, 2);
+				}
+			}
+			else
+			{
+				if (!p_ptr->resist_sound && !CHECK_MULTISHADOW())
+				{
+					int k = (randint1((dam > 90) ? 35 : (dam / 3 + 5)));
+					(void)set_stun(p_ptr->stun + k, FALSE);
+				}
+
+				if (!p_ptr->resist_sound || one_in_(13))
+				{
+					inven_damage(set_cold_destroy, 2);
+				}
+			}
+
+			get_damage = take_hit(DAMAGE_ATTACK, dam, killer, monspell);
+			break;
+		}
 		/* Shards -- mostly cutting */
 		case GF_SHARDS:
 		{
