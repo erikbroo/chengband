@@ -4740,8 +4740,9 @@ extern int PlayerUID;
 #define BACT_POKER                  43
 #define BACT_IDENT_ONE              44
 #define BACT_RECHARGE_ALL           45
-#define BACT_EVAL_AC		    46
-#define MAX_BACT                    47
+#define BACT_EVAL_AC		        46
+#define BACT_GAMBLE_SHOP_POTION     47
+#define MAX_BACT                    48
 
 /*
  * Quest status

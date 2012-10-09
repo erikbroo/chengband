@@ -241,7 +241,6 @@ prt(" ESC) 建物を出る", 23, 0);
 
 }
 
-
 /*
  * arena commands
  */
@@ -3635,7 +3634,7 @@ static bool eval_ac(int iAC)
 		"when you are attacked by normal melee attacks with power=60.";
 #endif
 
-	int protection, protection_old;
+	int protection;
 	int col, row = 2;
 	int lvl;
 	char buf[80*20], *t;
@@ -3645,7 +3644,6 @@ static bool eval_ac(int iAC)
 
 	/* ダメージ軽減率を計算 */
 	protection = 100 * MIN(iAC, 200) / 333;
-	protection_old = 100 * MIN(iAC, 150) / 250;
 
 	screen_save();
 	clear_bldg(0, 22);
@@ -3660,15 +3658,13 @@ static bool eval_ac(int iAC)
 	put_str("ダメージ期待値  :", row + 2, 0);
 #else
 	put_str(format("Your current AC : %3d", iAC), row++, 0);
-	put_str(format("Protection rate : %3d%% (Was %3d%%)", protection, protection_old), row++, 0);
+	put_str(format("Protection rate : %3d%%", protection), row++, 0);
 	row++;
 
 	put_str("Level of Monster:", row + 0, 0);
 	put_str("Dodge Rate      :", row + 1, 0);
 	put_str("Average Damage  :", row + 2, 0);
 #endif
-	put_str("Old Dodge Rate  :", row + 3, 0);
-	put_str("Old Avg Damage  :", row + 4, 0);
     
 	for (col = 17 + 1, lvl = 0; lvl <= 100; lvl += 10, col += 5)
 	{
@@ -3685,23 +3681,6 @@ static bool eval_ac(int iAC)
 		/* 100点の攻撃に対してのダメージ期待値を計算 */
 		average = (100 - dodge) * (100 - protection) / 100;
 		put_str(format("%3d", average), row + 2, col);
-	}
-
-	for (col = 17 + 1, lvl = 0; lvl <= 100; lvl += 10, col += 5)
-	{
-		int quality = 60 + lvl * 3; /* attack quality with power 60 */
-		int dodge;   /* 回避率(%) */
-		int average; /* ダメージ期待値 */
-
-		put_str(format("%3d", lvl), row + 0, col);
-
-		/* 回避率を計算 */
-		dodge = 5 + (MIN(100, 100 * (iAC * 3 / 4) / quality) * 9 + 5) / 10;
-		put_str(format("%3d%%", dodge), row + 3, col);
-
-		/* 100点の攻撃に対してのダメージ期待値を計算 */
-		average = (100 - dodge) * (100 - protection_old) / 100;
-		put_str(format("%3d", average), row + 4, col);
 	}
 
 	/* Display note */
@@ -3723,6 +3702,119 @@ static bool eval_ac(int iAC)
 	/* Done */
 	return (TRUE);
 }
+
+typedef struct _gamble_shop_s {
+	int tval;
+	int sval;
+	int prob;
+} _gamble_shop_t;
+
+const _gamble_shop_t _gamble_shop_potions[] = {
+	{ TV_POTION, SV_POTION_SPEED, 50},
+	{ TV_POTION, SV_POTION_CURING, 38},
+	{ TV_POTION, SV_POTION_RESISTANCE, 30},
+	{ TV_POTION, SV_POTION_HEALING, 30},
+	{ TV_POTION, SV_POTION_STAR_HEALING, 10},
+	{ TV_POTION, SV_POTION_RESTORE_MANA, 10},
+	{ TV_POTION, SV_POTION_INC_STR, 3},
+	{ TV_POTION, SV_POTION_INC_INT, 3},
+	{ TV_POTION, SV_POTION_INC_WIS, 3},
+	{ TV_POTION, SV_POTION_INC_DEX, 3},
+	{ TV_POTION, SV_POTION_INC_CON, 3},
+	{ TV_POTION, SV_POTION_INC_CHR, 3},
+	{ TV_POTION, SV_POTION_POLYMORPH, 3},
+	{ TV_POTION, SV_POTION_NEW_LIFE, 3},
+	{ TV_POTION, SV_POTION_LIFE, 3},
+	{ TV_POTION, SV_POTION_STONE_SKIN, 1},
+	{ TV_POTION, SV_POTION_INVULNERABILITY, 1},
+	{ TV_POTION, SV_POTION_AUGMENTATION, 1},
+	{ TV_POTION, SV_POTION_HEROISM, 50},
+	{ TV_POTION, SV_POTION_BOLDNESS, 50},
+	{ TV_POTION, SV_POTION_CURE_LIGHT, 50},
+	{ TV_POTION, SV_POTION_CURE_SERIOUS, 50},
+	{ TV_POTION, SV_POTION_CURE_CRITICAL, 50},
+	{ TV_POTION, SV_POTION_RESTORE_EXP, 50},
+	{ TV_POTION, SV_POTION_DETECT_INVIS, 50},
+	{ TV_POTION, SV_POTION_RES_STR, 50},
+	{ TV_POTION, SV_POTION_RES_INT, 50},
+	{ TV_POTION, SV_POTION_RES_WIS, 50},
+	{ TV_POTION, SV_POTION_RES_DEX, 50},
+	{ TV_POTION, SV_POTION_RES_CON, 50},
+	{ TV_POTION, SV_POTION_RES_CHR, 50},
+	{ TV_POTION, SV_POTION_CLARITY, 50},
+	{ TV_POTION, SV_POTION_RESIST_HEAT, 50},
+	{ TV_POTION, SV_POTION_RESIST_COLD, 50},
+	{ 0, 0, 0}
+};
+
+static int _gamble_shop_roll(const _gamble_shop_t *choices)
+{
+	int tot = 0, roll;
+	int i = 0;
+
+	for (i = 0; ; i++)
+	{
+		const _gamble_shop_t *entry = choices + i;
+		if (!entry->prob)
+			break;
+		tot += entry->prob;
+	}
+	roll = randint0(tot);
+
+	for (i = 0; ; i++)
+	{
+		const _gamble_shop_t *entry = choices + i;
+		if (!entry->prob)
+			break;
+
+		roll -= entry->prob;
+		if (roll <= 0)
+			return i;
+	}
+
+	return -1;
+}
+
+static bool _gamble_shop(const _gamble_shop_t *choices)
+{
+	int choice = _gamble_shop_roll(choices);
+	char buf[MAX_NLEN];
+	object_type forge = {0};
+	int k_idx = lookup_kind(choices[choice].tval, choices[choice].sval);
+	int slot, auto_pick_idx;
+
+	object_prep(&forge, k_idx);
+	identify_item(&forge);
+	forge.ident |= (IDENT_MENTAL);
+	object_desc(buf, &forge, 0);
+
+	clear_bldg(5, 10);
+	
+	c_put_str(TERM_YELLOW, "You win:", 5, 0);
+	put_str(buf, 5, 9);
+
+	auto_pick_idx = is_autopick(&forge);
+	if (auto_pick_idx >= 0)
+	{
+		if (autopick_list[auto_pick_idx].action & DO_AUTODESTROY)
+		{
+			msg_format("You destroy %s.", buf);
+			return TRUE;
+		}
+	}
+
+	if (!inven_carry_okay(&forge))
+	{
+		msg_print("You cannot carry that many different items.");
+		return FALSE;
+	}
+	slot = inven_carry(&forge);
+	object_desc(buf, &inventory[slot], 0);
+	msg_format("You have %s (%c).", buf, index_to_label(slot));
+	handle_stuff();
+	return TRUE;
+}
+
 
 
 /*
@@ -5006,6 +5098,9 @@ msg_print("お金が足りません！");
 		break;
 	case BACT_EVAL_AC:
 		paid = eval_ac(p_ptr->dis_ac + p_ptr->dis_to_a);
+		break;
+	case BACT_GAMBLE_SHOP_POTION:
+		paid = _gamble_shop(_gamble_shop_potions);
 		break;
 	}
 
