@@ -278,6 +278,7 @@ static void wr_monster(monster_type *m_ptr)
 
 	wr_byte(m_ptr->drop_ct);
 	wr_byte(m_ptr->stolen_ct);
+	wr_u16b(m_ptr->summon_ct);
 }
 
 
@@ -293,6 +294,7 @@ static void wr_lore(int r_idx)
 	wr_s16b(r_ptr->r_deaths);
 	wr_s16b(r_ptr->r_pkills);
 	wr_s16b(r_ptr->r_akills);
+	wr_s16b(r_ptr->r_skills);
 	wr_s16b(r_ptr->r_tkills);
 
 	/* Count wakes and ignores */

@@ -5665,7 +5665,7 @@ bool polymorph_monster(int y, int x)
 		if (place_monster_aux(0, y, x, new_r_idx, mode))
 		{
 			m_list[hack_m_idx_ii].nickname = back_m.nickname;
-			m_list[hack_m_idx_ii].parent_m_idx = back_m.parent_m_idx;
+			mon_set_parent(&m_list[hack_m_idx_ii], back_m.parent_m_idx);
 			m_list[hack_m_idx_ii].hold_o_idx = back_m.hold_o_idx;
 
 			/* Success */

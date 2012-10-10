@@ -566,6 +566,15 @@ static void rd_monster(monster_type *m_ptr)
 		rd_byte(&m_ptr->drop_ct);
 		rd_byte(&m_ptr->stolen_ct);
 	}
+
+	if (h_older_than(0, 0, 135, 2))
+	{
+		m_ptr->summon_ct = 0;
+	}
+	else
+	{
+		rd_u16b(&m_ptr->summon_ct);
+	}
 }
 
 
@@ -627,6 +636,10 @@ static void rd_lore(int r_idx)
 	rd_s16b(&r_ptr->r_deaths);
 	rd_s16b(&r_ptr->r_pkills);
 	rd_s16b(&r_ptr->r_akills);
+	if (h_older_than(0, 0, 135, 1))
+		r_ptr->r_skills = 0;
+	else
+		rd_s16b(&r_ptr->r_skills);
 	rd_s16b(&r_ptr->r_tkills);
 
 	/* Count wakes and ignores */

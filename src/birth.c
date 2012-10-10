@@ -3694,6 +3694,7 @@ static void player_wipe(void)
 
 		/* Clear all kills in this life */
 		r_ptr->r_akills = 0;
+		r_ptr->r_skills = 0;
 		r_ptr->stolen_ct = 0;
 
 		/* Wipe out pact alliances from previous character 

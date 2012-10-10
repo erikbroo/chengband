@@ -148,6 +148,34 @@ cptr funny_comments[MAX_SAN_COMMENT] =
 
 };
 
+monster_type *mon_get_parent(monster_type *m_ptr)
+{
+	monster_type *result = NULL;
+	if (m_ptr->parent_m_idx)
+	{
+		result = &m_list[m_ptr->parent_m_idx];
+		if (!result->r_idx)
+			result = NULL;
+	}
+	return result;
+}
+
+void mon_set_parent(monster_type *m_ptr, int pm_idx)
+{
+	monster_type *pm_ptr;
+
+	if (pm_idx == m_ptr->parent_m_idx)
+		return;
+
+	pm_ptr = mon_get_parent(m_ptr);
+	if (pm_ptr && pm_ptr->summon_ct)
+		pm_ptr->summon_ct--;
+
+	m_ptr->parent_m_idx = pm_idx;
+	pm_ptr = mon_get_parent(m_ptr);
+	if (pm_ptr && pm_ptr->summon_ct < MAX_SHORT)
+		pm_ptr->summon_ct++;
+}
 
 /*
  * Set the target of counter attack
@@ -242,6 +270,7 @@ void delete_monster_idx(int i)
 	if (MON_MONFEAR(m_ptr)) (void)set_monster_monfear(i, 0);
 	if (MON_INVULNER(m_ptr)) (void)set_monster_invulner(i, 0, FALSE);
 
+	mon_set_parent(m_ptr, 0);
 
 	/* Hack -- remove target monster */
 	if (i == target_who) target_who = 0;
@@ -391,7 +420,10 @@ static void compact_monsters_aux(int i1, int i2)
 			monster_type *m2_ptr = &m_list[i];
 
 			if (m2_ptr->parent_m_idx == i1)
+			{
+				/* Don't call mon_set_parent() ... its the same parent! */
 				m2_ptr->parent_m_idx = i2;
+			}
 		}
 	}
 
@@ -795,35 +827,20 @@ s16b m_pop(void)
 	/* Normal allocation */
 	if (m_max < max_m_idx)
 	{
-		/* Access the next hole */
 		i = m_max;
-
-		/* Expand the array */
 		m_max++;
-
-		/* Count monsters */
 		m_cnt++;
-
-		/* Return the index */
+		WIPE(&m_list[i], monster_type);
 		return (i);
 	}
-
-
 	/* Recycle dead monsters */
 	for (i = 1; i < m_max; i++)
 	{
 		monster_type *m_ptr;
-
-		/* Acquire monster */
 		m_ptr = &m_list[i];
-
-		/* Skip live monsters */
 		if (m_ptr->r_idx) continue;
-
-		/* Count monsters */
 		m_cnt++;
-
-		/* Use this monster */
+		WIPE(m_ptr, monster_type);
 		return (i);
 	}
 
@@ -2190,6 +2207,10 @@ void monster_desc(char *desc, monster_type *m_ptr, int mode)
 			strcat(desc, " [Guard Position]");
 			break;
 		}
+	}
+	if (p_ptr->wizard && m_ptr->summon_ct)
+	{
+		strcat(desc, format("(%d summons)", m_ptr->summon_ct));
 	}
 }
 
@@ -3572,11 +3593,11 @@ msg_print("守りのルーンが壊れた！");
 		/* Your pet summons its pet. */
 		if (is_pet(&m_list[who]))
 			mode |= PM_FORCE_PET;
-		m_ptr->parent_m_idx = who;
+		mon_set_parent(m_ptr, who);
 	}
 	else
 	{
-		m_ptr->parent_m_idx = 0;
+		mon_set_parent(m_ptr, 0);
 	}
 
 	if (r_ptr->flags7 & RF7_CHAMELEON)
@@ -4428,6 +4449,58 @@ bool summon_specific(int who, int y1, int x1, int lev, int type, u32b mode)
 	/* Save the "summon" type */
 	summon_specific_type = type;
 
+	/* Limit monster summons. But try to bring one back if possible */
+	if (who > 0 && m_list[who].summon_ct >= MAX_SUMMONS)
+	{
+		int i;
+		int monsters[1024];
+		int ct = 0;
+		monster_type *m_ptr;
+
+		/* Build a list of potential returnees */
+		for (i = 1; i < max_m_idx; i++)
+		{
+			m_ptr = &m_list[i];
+			if (!m_ptr->r_idx) continue;
+			if (m_ptr->parent_m_idx != who) continue;
+			if (!summon_specific_aux(m_ptr->r_idx)) continue;
+			if (los(m_ptr->fy, m_ptr->fx, y1, x1)) continue;
+			monsters[ct++] = i;
+			if (ct == 1024) break;
+		}
+
+		/* Choose one randomly */
+		if (ct)
+		{
+			int oy, ox;
+			char buf[MAX_NLEN];
+	
+			i = monsters[randint0(ct)];
+			m_ptr = &m_list[i];
+
+			oy = m_ptr->fy;
+			ox = m_ptr->fx;
+			cave[oy][ox].m_idx = 0;
+
+			cave[y][x].m_idx = i;
+			m_ptr->fy = y;
+			m_ptr->fx = x;
+
+			reset_target(m_ptr);
+			update_mon(i, TRUE);
+			lite_spot(oy, ox);
+			lite_spot(y, x);
+			if (r_info[m_ptr->r_idx].flags7 & (RF7_LITE_MASK | RF7_DARK_MASK))
+				p_ptr->update |= (PU_MON_LITE);
+
+			monster_desc(buf, m_ptr, 0);
+			msg_format("%^s returns!", buf);
+
+			return TRUE;
+		}
+		return FALSE;
+	}
+
 	summon_unique_okay = (mode & PM_ALLOW_UNIQUE) ? TRUE : FALSE;
 	summon_cloned_okay = (mode & PM_ALLOW_CLONED) ? TRUE : FALSE;
 
@@ -4493,22 +4566,38 @@ bool summon_named_creature (int who, int oy, int ox, int r_idx, u32b mode)
 	bool result = FALSE;
 	int x, y, i;
 	monster_race *r_ptr;
+	bool do_return = FALSE;
 
 	if (r_idx >= max_r_idx) return FALSE;
 	if (p_ptr->inside_arena) return FALSE;
 	if (!mon_scatter(r_idx, &y, &x, oy, ox, 2)) return FALSE;
 
 	r_ptr = &r_info[r_idx];
-	if (!(r_ptr->flags7 & RF7_GUARDIAN) && r_ptr->cur_num < r_ptr->max_num)
-		result = place_monster_aux(who, y, x, r_idx, (mode | PM_NO_KAGE));
 
-	if (!result && (r_ptr->flags1 & RF1_UNIQUE) && one_in_(2))
+	if (who > 0 && m_list[who].summon_ct >= MAX_SUMMONS)
+	{
+		do_return = TRUE;
+	}
+	else
+	{
+		if (!(r_ptr->flags7 & RF7_GUARDIAN) && r_ptr->cur_num < r_ptr->max_num)
+			result = place_monster_aux(who, y, x, r_idx, (mode | PM_NO_KAGE));
+		
+		if (!result && (r_ptr->flags1 & RF1_UNIQUE) && one_in_(2))
+			do_return = TRUE;
+	}
+
+	if (do_return)
 	{
 		for (i = 1; i < max_m_idx; i++)
 		{
 		monster_type *m_ptr = &m_list[i];
+		char buf[MAX_NLEN];
 
 			if (m_ptr->r_idx != r_idx) continue;
+			if (who > 0 && m_ptr->parent_m_idx != who) continue;
+			if (los(m_ptr->fy, m_ptr->fx, oy, ox)) continue;
+
 			oy = m_ptr->fy;
 			ox = m_ptr->fx;
 			cave[oy][ox].m_idx = 0;
@@ -4523,6 +4612,9 @@ bool summon_named_creature (int who, int oy, int ox, int r_idx, u32b mode)
 			lite_spot(y, x);
 			if (r_info[m_ptr->r_idx].flags7 & (RF7_LITE_MASK | RF7_DARK_MASK))
 				p_ptr->update |= (PU_MON_LITE);
+
+			monster_desc(buf, m_ptr, 0);
+			msg_format("%^s returns!", buf);
 
 			result = TRUE;
 			break;

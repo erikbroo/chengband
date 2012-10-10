@@ -4912,7 +4912,7 @@ void do_cmd_store(void)
 	/* Maintain the store max. 10 times */
 	if (maintain_num > 10) maintain_num = 10;
 
-	if (maintain_num && which != STORE_GENERAL)
+	if (maintain_num && which != STORE_GENERAL && which != STORE_BOOK)
 	{
 		int xp = town[p_ptr->town_num].store[which].last_exp;
 		xp += MIN(MAX(xp / 20, 1000), 100000);

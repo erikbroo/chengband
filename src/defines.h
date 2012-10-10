@@ -28,7 +28,7 @@
 #define FAKE_VERSION   0
 #define FAKE_VER_MAJOR 10
 #define FAKE_VER_MINOR 0
-#define FAKE_VER_PATCH 134
+#define FAKE_VER_PATCH 135
 
 
 /*
@@ -46,12 +46,14 @@
  */
 #define H_VER_MAJOR 0
 #define H_VER_MINOR 0
-#define H_VER_PATCH 134
-#define H_VER_EXTRA 0
+#define H_VER_PATCH 135
+#define H_VER_EXTRA 2
 
 
 #define ANGBAND_2_8_1
 #define ZANGBAND
+
+#define MAX_SUMMONS 50
 
 /*
  * Number of grids in each block (vertically)
@@ -5191,6 +5193,8 @@ extern int PlayerUID;
 #define MON_JULIAN        794
 #define MON_BLACK_REAVER  798
 #define MON_CAINE         799
+#define MON_MASTER_Q      800
+#define MON_G_DRACONIC_Q  801
 #define MON_VECNA		  804
 #define MON_GERARD        807
 #define MON_UNGOLIANT     808
@@ -5301,6 +5305,7 @@ extern int PlayerUID;
 #define MON_TONBERRY	  1087
 #define MON_NINJA_TONBERRY  1088
 #define MON_MASTER_TONBERRY 1089
+#define MON_THE_HOARD    1090
 #define MON_VARIANT_MAINTAINER 1094
 #define MON_MONKEY_CLONE  1095
 #define MON_ZEUS		  1096

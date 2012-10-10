@@ -1042,6 +1042,8 @@ extern void pack_on_damage_monster(int m_idx);
 extern pack_info_t *pack_info_ptr(int m_idx);
 extern void pack_choose_ai(int m_idx);
 
+extern monster_type *mon_get_parent(monster_type *m_ptr);
+extern void mon_set_parent(monster_type *m_ptr, int pm_idx);
 extern s16b m_pop(void);
 extern errr get_mon_num_prep(monster_hook_type monster_hook, monster_hook_type monster_hook2);
 extern s16b get_mon_num(int level);

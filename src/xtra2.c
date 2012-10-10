@@ -819,8 +819,25 @@ byte get_monster_drop_ct(monster_type *m_ptr)
 	if ((r_ptr->flags2 & RF2_MULTIPLY) && r_ptr->r_akills > 1200)
 		number = 0;
 
-	if (m_ptr->parent_m_idx && r_ptr->r_akills > 1200)
-		number = 0;
+	/* No more farming summoners for drops (The Hoard, That Bat, Draconic Qs, etc) */
+	if (m_ptr->parent_m_idx && !(r_ptr->flags1 & RF1_UNIQUE))
+	{
+		monster_type *pm_ptr = &m_list[m_ptr->parent_m_idx];
+
+		if (pm_ptr->r_idx)
+		{
+			int max_kills = 250;
+			monster_race *pr_ptr = &r_info[pm_ptr->r_idx];
+
+			if (pr_ptr->flags1 & RF1_UNIQUE)
+				max_kills = 100;
+			else if (pr_ptr->d_char == 'Q')
+				max_kills = 100;
+
+			if (pr_ptr->r_skills > max_kills)
+				number = 0;
+		}
+	}
 
 	return number;
 }
@@ -1985,10 +2002,8 @@ static void get_exp_from_mon(int dam, monster_type *m_ptr)
 	/* Do division first to prevent overflaw */
 	s64b_div(&new_exp, &new_exp_frac, div_h, div_l);
 
-	/* Special penalty for mutiply-monster 
-	   Also, no more farming The Queen Ant for levelling
-	*/
-	if ((r_ptr->flags2 & RF2_MULTIPLY) || (m_ptr->r_idx == MON_DAWN) || m_ptr->parent_m_idx)
+	/* Special penalty for mutiply-monster	*/
+	if ((r_ptr->flags2 & RF2_MULTIPLY) || (m_ptr->r_idx == MON_DAWN))
 	{
 		int monnum_penarty = r_ptr->r_akills / 800;
 		if (monnum_penarty > 8) monnum_penarty = 8;
@@ -1997,6 +2012,27 @@ static void get_exp_from_mon(int dam, monster_type *m_ptr)
 		{
 			/* Divide by 2 */
 			s64b_RSHIFT(new_exp, new_exp_frac, 1);
+		}
+	}
+
+	/* Farming Summoners for xp is now biffed! */
+	if (m_ptr->parent_m_idx)
+	{
+		monster_type *pm_ptr = &m_list[m_ptr->parent_m_idx];
+
+		if (pm_ptr->r_idx)
+		{
+			monster_race *pr_ptr = &r_info[pm_ptr->r_idx];
+			int           biff;
+
+			if (pr_ptr->flags1 & RF1_UNIQUE)
+				biff = pr_ptr->r_skills / 100;
+			else
+				biff = pr_ptr->r_skills / 250;
+			
+			if (biff > 8) biff = 8;
+			while (biff--)
+				s64b_RSHIFT(new_exp, new_exp_frac, 1);
 		}
 	}
 
@@ -2201,6 +2237,18 @@ bool mon_take_hit(int m_idx, int dam, bool *fear, cptr note)
 
 		/* Count all monsters killed */
 		if (r_ptr->r_akills < MAX_SHORT) r_ptr->r_akills++;
+
+		/* Count all summons killed */
+		if (m_ptr->parent_m_idx)
+		{
+			monster_type *pm_ptr = &m_list[m_ptr->parent_m_idx];
+			if (pm_ptr->r_idx)
+			{
+				monster_race *pr_ptr = &r_info[pm_ptr->r_idx];
+				if (pr_ptr->r_skills < MAX_SHORT)
+					pr_ptr->r_skills++;
+			}
+		}
 
 		/* Recall even invisible uniques or winners */
 		if ((m_ptr->ml && !p_ptr->image) || (r_ptr->flags1 & RF1_UNIQUE))

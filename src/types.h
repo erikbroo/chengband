@@ -361,6 +361,8 @@ struct monster_race
 	s16b r_akills;			/* Count all monsters killed in this life */
 	s16b r_tkills;			/* Count monsters killed in all lives */
 
+	s16b r_skills;          /* Count all summons killed in this life */
+
 	byte r_wake;			/* Number of times woken up (?) */
 	byte r_ignore;			/* Number of times ignored (?) */
 
@@ -627,6 +629,7 @@ struct monster_type
 
 	byte drop_ct;        
 	byte stolen_ct;
+	u16b summon_ct;
 
 	/* Hack below this point ... TODO: Clean up timed monster effects
 	   to use a linked list of { type; dur; extra; } or something similar.

@@ -2412,7 +2412,7 @@ static void process_monster(int m_idx)
 		*/
 		if (!is_pet(m_ptr))
 		{
-			m_ptr->parent_m_idx = 0;
+			mon_set_parent(m_ptr, 0);
 		}
 		else 
 		{
@@ -4942,7 +4942,7 @@ void monster_gain_exp(int m_idx, int s_idx)
 			if (!p_ptr->image) r_info[old_r_idx].r_xtra1 |= MR1_SINKA;
 
 			/* Now you feel very close to this pet. */
-			m_ptr->parent_m_idx = 0;
+			mon_set_parent(m_ptr, 0);
 		}
 		update_mon(m_idx, FALSE);
 		lite_spot(m_ptr->fy, m_ptr->fx);

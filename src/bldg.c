@@ -3999,18 +3999,6 @@ static bool _gamble_shop_artifact(void)
 		if (!object_is_weapon(&forge) && !object_is_armour(&forge))
 			continue;
 		apply_magic(&forge, lvl, AM_GOOD | AM_GREAT | AM_SPECIAL);
-		switch (forge.tval)
-		{
-			case TV_SPIKE:
-			case TV_SHOT:
-			case TV_ARROW:
-			case TV_BOLT:
-			{
-				if (!forge.name1 && !forge.name3)
-					forge.number = (byte)damroll(6, 7);
-			}
-		}
-
 		if (!forge.art_name)
 			continue;
 

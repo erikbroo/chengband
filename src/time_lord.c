@@ -113,7 +113,7 @@ static void _change_monster_race(int m_idx, int new_r_idx)
 				msg_format(T("%^s changed into %s.", "%sは%sに進化した。"), m_name, r_name + r_ptr->name);
 		}
 		if (!p_ptr->image) r_info[old_r_idx].r_xtra1 |= MR1_SINKA;
-		m_ptr->parent_m_idx = 0;
+		mon_set_parent(m_ptr, 0);
 	}
 	update_mon(m_idx, FALSE);
 	lite_spot(m_ptr->fy, m_ptr->fx);
