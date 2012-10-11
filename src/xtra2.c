@@ -816,7 +816,7 @@ byte get_monster_drop_ct(monster_type *m_ptr)
 		number = 0; /* Pets drop no stuff */
 
 	/* No more farming quartz veins for millions in gold */
-	if ((r_ptr->flags2 & RF2_MULTIPLY) && r_ptr->r_akills > 1200)
+	if ((r_ptr->flags2 & RF2_MULTIPLY) && r_ptr->r_akills > 600)
 		number = 0;
 
 	/* No more farming summoners for drops (The Hoard, That Bat, Draconic Qs, etc) */
@@ -939,6 +939,9 @@ void monster_death(int m_idx, bool drop_item)
 		else
 			hp_player_aux(30);
 	}
+
+	if (r_ptr->flags2 & RF2_MULTIPLY) 
+		num_repro_kill++;
 
 	y = m_ptr->fy;
 	x = m_ptr->fx;
@@ -2005,7 +2008,7 @@ static void get_exp_from_mon(int dam, monster_type *m_ptr)
 	/* Special penalty for mutiply-monster	*/
 	if ((r_ptr->flags2 & RF2_MULTIPLY) || (m_ptr->r_idx == MON_DAWN))
 	{
-		int monnum_penarty = r_ptr->r_akills / 800;
+		int monnum_penarty = r_ptr->r_akills / 400;
 		if (monnum_penarty > 8) monnum_penarty = 8;
 
 		while (monnum_penarty--)

@@ -628,6 +628,7 @@ void wipe_m_list(void)
 
 	/* Hack -- reset "reproducer" count */
 	num_repro = 0;
+	num_repro_kill = 0;
 
 	/* Hack -- no more target */
 	target_who = 0;
@@ -2718,6 +2719,9 @@ void update_mon(int m_idx, bool full)
 
 		/* Save the distance */
 		m_ptr->cdis = d;
+
+		if (m_ptr->cdis <= 2)
+			do_disturb = TRUE;
 	}
 
 	/* Extract distance */
@@ -3678,9 +3682,7 @@ msg_print("守りのルーンが壊れた！");
 	/* Give a random starting energy */
 	if (!ironman_nightmare)
 	{
-		/*m_ptr->energy_need = ENERGY_NEED() - (s16b)randint0(100);*/
-		m_ptr->energy_need = ENERGY_NEED();
-		/*m_ptr->energy_need = ENERGY_NEED() - (s16b)randint0(30);*/
+		m_ptr->energy_need = ENERGY_NEED() - (s16b)randint0(100);
 	}
 	else
 	{
@@ -4453,7 +4455,7 @@ bool summon_specific(int who, int y1, int x1, int lev, int type, u32b mode)
 	if (who > 0 && m_list[who].summon_ct >= MAX_SUMMONS)
 	{
 		int i;
-		int monsters[1024];
+		int monsters[MAX_SUMMONS];
 		int ct = 0;
 		monster_type *m_ptr;
 
@@ -4466,7 +4468,7 @@ bool summon_specific(int who, int y1, int x1, int lev, int type, u32b mode)
 			if (!summon_specific_aux(m_ptr->r_idx)) continue;
 			if (los(m_ptr->fy, m_ptr->fx, y1, x1)) continue;
 			monsters[ct++] = i;
-			if (ct == 1024) break;
+			if (ct == MAX_SUMMONS) break;
 		}
 
 		/* Choose one randomly */
@@ -4650,6 +4652,15 @@ bool multiply_monster(int m_idx, bool clone, u32b mode)
 	{
 		m_list[hack_m_idx_ii].smart |= SM_CLONED;
 		m_list[hack_m_idx_ii].mflag2 |= MFLAG2_NOPET;
+	}
+
+	/* Discourage farming ... */
+	if (num_repro_kill >= 50)
+	{
+		m_list[hack_m_idx_ii].mspeed += 5 * num_repro_kill / 50;
+		m_list[hack_m_idx_ii].maxhp += m_list[hack_m_idx_ii].maxhp * num_repro_kill / 50;
+		m_list[hack_m_idx_ii].hp = m_list[hack_m_idx_ii].maxhp;
+		m_list[hack_m_idx_ii].ac_adj += 10 * num_repro_kill / 50;
 	}
 
 	return TRUE;

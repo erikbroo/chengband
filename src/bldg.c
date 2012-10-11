@@ -3927,7 +3927,9 @@ static bool _gamble_shop_aux(object_type *o_ptr)
 	if (!inven_carry_okay(o_ptr))
 	{
 		msg_print("You cannot carry that many different items.");
-		return FALSE;
+		/* Charge the player anyway. Otherwise, they can get whatever object
+		   they want by playing games with their inventory! */
+		return TRUE;
 	}
 	slot = inven_carry(o_ptr);
 	object_desc(buf, &inventory[slot], 0);

@@ -1013,7 +1013,8 @@ static void wr_saved_floor(saved_floor_type *sf_ptr)
 	}
 
 	wr_u16b(base_level);
-	wr_u16b(num_repro);
+	wr_s16b(num_repro);
+	wr_s16b(num_repro_kill);
 	wr_u16b((u16b)py);
 	wr_u16b((u16b)px);
 	wr_u16b(cur_hgt);

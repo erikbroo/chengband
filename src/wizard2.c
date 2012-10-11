@@ -19,10 +19,10 @@
 void do_cmd_rerate_aux(void)
 {
 	/* Minimum hitpoints at highest level */
-	int min_value = p_ptr->hitdie + ((PY_MAX_LEVEL + 2) * (p_ptr->hitdie + 1)) * 3 / 8;
+	int min_value = p_ptr->hitdie + ((PY_MAX_LEVEL - 1) * (p_ptr->hitdie + 1)) * 3 / 8;
 
 	/* Maximum hitpoints at highest level */
-	int max_value = p_ptr->hitdie + ((PY_MAX_LEVEL + 2) * (p_ptr->hitdie + 1)) * 5 / 8;
+	int max_value = p_ptr->hitdie + ((PY_MAX_LEVEL - 1) * (p_ptr->hitdie + 1)) * 5 / 8;
 
 	int i;
 
@@ -31,11 +31,6 @@ void do_cmd_rerate_aux(void)
 	{
 		/* Pre-calculate level 1 hitdice */
 		p_ptr->player_hp[0] = p_ptr->hitdie;
-
-		for (i = 1; i < 4; i++)
-		{
-			p_ptr->player_hp[0] += randint1(p_ptr->hitdie);
-		}
 
 		/* Roll the hitpoint values */
 		for (i = 1; i < PY_MAX_LEVEL; i++)
@@ -62,7 +57,7 @@ void do_cmd_rerate(bool display)
 
 	percent = (int)(((long)p_ptr->player_hp[PY_MAX_LEVEL - 1] * 200L) /
 		(2 * p_ptr->hitdie +
-		((PY_MAX_LEVEL - 1+3) * (p_ptr->hitdie + 1))));
+		((PY_MAX_LEVEL - 1) * (p_ptr->hitdie + 1))));
 
 
 	/* Update and redraw hitpoints */

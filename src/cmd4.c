@@ -9194,7 +9194,7 @@ static void do_cmd_knowledge_stat(void)
 	{
 		percent = (int)(((long)p_ptr->player_hp[PY_MAX_LEVEL - 1] * 200L) /
 			(2 * p_ptr->hitdie +
-			((PY_MAX_LEVEL - 1+3) * (p_ptr->hitdie + 1))));
+			((PY_MAX_LEVEL - 1) * (p_ptr->hitdie + 1))));
 
 #ifdef JP
 		if (p_ptr->knowledge & KNOW_HPRATE) fprintf(fff, "現在の体力ランク : %d/100\n\n", percent);

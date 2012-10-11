@@ -118,6 +118,7 @@ s16b cur_wid;			/* Current dungeon width */
 s16b dun_level;			/* Current dungeon level */
 s16b unique_count;
 s16b num_repro;			/* Current reproducer count */
+s16b num_repro_kill;
 s16b object_level;		/* Current object creation level */
 s16b monster_level;		/* Current monster creation level */
 s16b base_level;        /* Base dungeon level */

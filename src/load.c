@@ -2057,6 +2057,10 @@ static errr rd_saved_floor(saved_floor_type *sf_ptr)
 
 	rd_s16b(&base_level);
 	rd_s16b(&num_repro);
+	if (h_older_than(0, 0, 135, 4))
+		num_repro_kill = 0;
+	else
+		rd_s16b(&num_repro_kill);
 
 	rd_u16b(&tmp16u);
 	py = (int)tmp16u;
@@ -2854,9 +2858,22 @@ note(format("ヒットポイント配列が大きすぎる(%u)！", tmp16u));
 	}
 
 	/* Read the player_hp array */
-	for (i = 0; i < tmp16u; i++)
 	{
-		rd_s16b(&p_ptr->player_hp[i]);
+		int adj = 0;
+		for (i = 0; i < tmp16u; i++)
+		{
+			rd_s16b(&p_ptr->player_hp[i]);
+			if (h_older_than(0, 0, 135, 3))
+			{
+				if (i == 0)
+				{
+					adj = p_ptr->player_hp[0] - p_ptr->hitdie;
+					p_ptr->player_hp[0] = p_ptr->hitdie;
+				}
+				else
+					p_ptr->player_hp[i] -= adj;
+			}
+		}
 	}
 
 	/* Important -- Initialize the sex */

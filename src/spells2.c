@@ -57,7 +57,7 @@ void self_knowledge(void)
 
 	percent = (int)(((long)p_ptr->player_hp[PY_MAX_LEVEL - 1] * 200L) /
 		(2 * p_ptr->hitdie +
-		((PY_MAX_LEVEL - 1+3) * (p_ptr->hitdie + 1))));
+		((PY_MAX_LEVEL - 1) * (p_ptr->hitdie + 1))));
 
 #ifdef JP
 sprintf(Dummy, "現在の体力ランク : %d/100", percent);
