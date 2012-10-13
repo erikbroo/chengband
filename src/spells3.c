@@ -279,7 +279,7 @@ bool cave_player_teleportable_bold(int y, int x, u32b mode)
 			if (!p_ptr->levitation && !p_ptr->can_swim) return FALSE;
 		}
 
-		if (have_flag(f_ptr->flags, FF_LAVA) && !p_ptr->immune_fire && !IS_INVULN())
+		if (have_flag(f_ptr->flags, FF_LAVA) && p_ptr->resist_fire != RESIST_IMMUNE && !IS_INVULN())
 		{
 			/* Always forbid deep lava */
 			if (have_flag(f_ptr->flags, FF_DEEP)) return FALSE;
@@ -5125,11 +5125,12 @@ msg_format("%sがダメージを受けた！", o_name);
 int acid_dam(int dam, cptr kb_str, int monspell)
 {
 	int get_damage;  
-	int inv = (dam < 30) ? 1 : (dam < 60) ? 2 : 3;
-	bool double_resist = IS_OPPOSE_ACID();
+	int inv = (dam < 30) ? 5 : (dam < 60) ? 10 : 15;
 
+	dam -= dam * p_ptr->resist_acid / 100;
+	
 	/* Total Immunity */
-	if (p_ptr->immune_acid || (dam <= 0))
+	if (dam <= 0)
 	{
 		learn_spell(monspell);
 		return 0;
@@ -5139,14 +5140,9 @@ int acid_dam(int dam, cptr kb_str, int monspell)
 	if (mut_present(MUT_VULN_ELEM)) dam *= 2;
 	if (p_ptr->special_defense & KATA_KOUKIJIN) dam += dam / 3;
 
-	/* Resist the damage */
-	if (p_ptr->resist_acid) dam = (dam + 2) / 3;
-	if (double_resist) dam = (dam + 2) / 3;
-
 	if (!CHECK_MULTISHADOW())
 	{
-		if ((!(double_resist || p_ptr->resist_acid)) &&
-		    one_in_(HURT_CHANCE))
+		if (p_ptr->resist_acid <= 0 && one_in_(HURT_CHANCE))
 			(void)do_dec_stat(A_CHR);
 
 		/* If any armor gets hit, defend the player */
@@ -5157,10 +5153,9 @@ int acid_dam(int dam, cptr kb_str, int monspell)
 	get_damage = take_hit(DAMAGE_ATTACK, dam, kb_str, monspell);
 
 	/* Inventory damage */
-	if (!(double_resist && p_ptr->resist_acid))
-	{
+	if (randint1(RESIST_DAMAGE_INVENTORY) > p_ptr->resist_acid)
 		inven_damage(set_acid_destroy, inv);
-	}
+
 	return get_damage;
 }
 
@@ -5171,11 +5166,12 @@ int acid_dam(int dam, cptr kb_str, int monspell)
 int elec_dam(int dam, cptr kb_str, int monspell)
 {
 	int get_damage;  
-	int inv = (dam < 30) ? 1 : (dam < 60) ? 2 : 3;
-	bool double_resist = IS_OPPOSE_ELEC();
+	int inv = (dam < 30) ? 5 : (dam < 60) ? 10 : 15;
+
+	dam -= dam * p_ptr->resist_elec / 100;
 
 	/* Total immunity */
-	if (p_ptr->immune_elec || (dam <= 0))
+	if (dam <= 0)
 	{
 		learn_spell(monspell);
 		return 0;
@@ -5184,21 +5180,18 @@ int elec_dam(int dam, cptr kb_str, int monspell)
 	/* Vulnerability (Ouch!) */
 	if (mut_present(MUT_VULN_ELEM)) dam *= 2;
 	if (p_ptr->special_defense & KATA_KOUKIJIN) dam += dam / 3;
-	if (prace_is_(RACE_ANDROID)) dam += dam / 3;
 
-	/* Resist the damage */
-	if (p_ptr->resist_elec) dam = (dam + 2) / 3;
-	if (double_resist) dam = (dam + 2) / 3;
-
-	if ((!(double_resist || p_ptr->resist_elec)) &&
-	    one_in_(HURT_CHANCE) && !CHECK_MULTISHADOW())
-		(void)do_dec_stat(A_DEX);
+	if (!CHECK_MULTISHADOW())
+	{
+		if (p_ptr->resist_elec <= 0 && one_in_(HURT_CHANCE))
+			(void)do_dec_stat(A_DEX);
+	}
 
 	/* Take damage */
 	get_damage = take_hit(DAMAGE_ATTACK, dam, kb_str, monspell);
 
 	/* Inventory damage */
-	if (!(double_resist && p_ptr->resist_elec))
+	if (randint1(RESIST_DAMAGE_INVENTORY) > p_ptr->resist_elec)
 		inven_damage(set_elec_destroy, inv);
 
 	return get_damage;
@@ -5211,11 +5204,12 @@ int elec_dam(int dam, cptr kb_str, int monspell)
 int fire_dam(int dam, cptr kb_str, int monspell)
 {
 	int get_damage;  
-	int inv = (dam < 30) ? 1 : (dam < 60) ? 2 : 3;
-	bool double_resist = IS_OPPOSE_FIRE();
+	int inv = (dam < 30) ? 5 : (dam < 60) ? 10 : 15;
+
+	dam -= dam * p_ptr->resist_fire / 100;
 
 	/* Totally immune */
-	if (p_ptr->immune_fire || (dam <= 0))
+	if (dam <= 0)
 	{
 		learn_spell(monspell);
 		return 0;
@@ -5223,22 +5217,19 @@ int fire_dam(int dam, cptr kb_str, int monspell)
 
 	/* Vulnerability (Ouch!) */
 	if (mut_present(MUT_VULN_ELEM)) dam *= 2;
-	if (prace_is_(RACE_ENT)) dam += dam / 3;
 	if (p_ptr->special_defense & KATA_KOUKIJIN) dam += dam / 3;
 
-	/* Resist the damage */
-	if (p_ptr->resist_fire) dam = (dam + 2) / 3;
-	if (double_resist) dam = (dam + 2) / 3;
-
-	if ((!(double_resist || p_ptr->resist_fire)) &&
-	    one_in_(HURT_CHANCE) && !CHECK_MULTISHADOW())
-		(void)do_dec_stat(A_STR);
+	if (!CHECK_MULTISHADOW())
+	{
+		if (p_ptr->resist_fire <= 0 && one_in_(HURT_CHANCE))
+			(void)do_dec_stat(A_STR);
+	}
 
 	/* Take damage */
 	get_damage = take_hit(DAMAGE_ATTACK, dam, kb_str, monspell);
 
 	/* Inventory damage */
-	if (!(double_resist && p_ptr->resist_fire))
+	if (randint1(RESIST_DAMAGE_INVENTORY) > p_ptr->resist_fire)
 		inven_damage(set_fire_destroy, inv);
 
 	return get_damage;
@@ -5251,11 +5242,12 @@ int fire_dam(int dam, cptr kb_str, int monspell)
 int cold_dam(int dam, cptr kb_str, int monspell)
 {
 	int get_damage;  
-	int inv = (dam < 30) ? 1 : (dam < 60) ? 2 : 3;
-	bool double_resist = IS_OPPOSE_COLD();
+	int inv = (dam < 30) ? 5 : (dam < 60) ? 10 : 15;
+
+	dam -= dam * p_ptr->resist_cold / 100;
 
 	/* Total immunity */
-	if (p_ptr->immune_cold || (dam <= 0))
+	if (dam <= 0)
 	{
 		learn_spell(monspell);
 		return 0;
@@ -5265,19 +5257,17 @@ int cold_dam(int dam, cptr kb_str, int monspell)
 	if (mut_present(MUT_VULN_ELEM)) dam *= 2;
 	if (p_ptr->special_defense & KATA_KOUKIJIN) dam += dam / 3;
 
-	/* Resist the damage */
-	if (p_ptr->resist_cold) dam = (dam + 2) / 3;
-	if (double_resist) dam = (dam + 2) / 3;
-
-	if ((!(double_resist || p_ptr->resist_cold)) &&
-	    one_in_(HURT_CHANCE) && !CHECK_MULTISHADOW())
-		(void)do_dec_stat(A_STR);
+	if (!CHECK_MULTISHADOW())
+	{
+		if (p_ptr->resist_cold <= 0 && one_in_(HURT_CHANCE))
+			(void)do_dec_stat(A_STR);
+	}
 
 	/* Take damage */
 	get_damage = take_hit(DAMAGE_ATTACK, dam, kb_str, monspell);
 
 	/* Inventory damage */
-	if (!(double_resist && p_ptr->resist_cold))
+	if (randint1(RESIST_DAMAGE_INVENTORY) > p_ptr->resist_cold)
 		inven_damage(set_cold_destroy, inv);
 
 	return get_damage;

@@ -2031,7 +2031,7 @@ else msg_format("%^sが酸のブレスを吐いた。", m_name);
 			else msg_format("%^s breathes acid.", m_name);
 #endif
 
-			dam = ((m_ptr->hp / 3) > 1600 ? 1600 : (m_ptr->hp / 3));
+			dam = MIN(m_ptr->hp / 3, 1000);
 			breath(y, x, m_idx, GF_ACID, dam, 0, TRUE, MS_BR_ACID, learnable);
 			update_smart_learn(m_idx, DRS_ACID);
 			break;
@@ -2053,7 +2053,7 @@ else msg_format("%^sが稲妻のブレスを吐いた。", m_name);
 			else msg_format("%^s breathes lightning.", m_name);
 #endif
 
-			dam = ((m_ptr->hp / 3) > 1600 ? 1600 : (m_ptr->hp / 3));
+			dam = MIN(m_ptr->hp / 3, 1000);
 			breath(y, x, m_idx, GF_ELEC, dam,0, TRUE, MS_BR_ELEC, learnable);
 			update_smart_learn(m_idx, DRS_ELEC);
 			break;
@@ -2075,7 +2075,7 @@ else msg_format("%^sが火炎のブレスを吐いた。", m_name);
 			else msg_format("%^s breathes fire.", m_name);
 #endif
 
-			dam = ((m_ptr->hp / 3) > 1600 ? 1600 : (m_ptr->hp / 3));
+			dam = MIN(m_ptr->hp / 3, 1000);
 			breath(y, x, m_idx, GF_FIRE, dam,0, TRUE, MS_BR_FIRE, learnable);
 			update_smart_learn(m_idx, DRS_FIRE);
 			break;
@@ -2097,7 +2097,7 @@ else msg_format("%^sが冷気のブレスを吐いた。", m_name);
 			else msg_format("%^s breathes frost.", m_name);
 #endif
 
-			dam = ((m_ptr->hp / 3) > 1600 ? 1600 : (m_ptr->hp / 3));
+			dam = MIN(m_ptr->hp / 3, 1000);
 			breath(y, x, m_idx, GF_COLD, dam,0, TRUE, MS_BR_COLD, learnable);
 			update_smart_learn(m_idx, DRS_COLD);
 			break;
@@ -2119,7 +2119,7 @@ else msg_format("%^sがガスのブレスを吐いた。", m_name);
 			else msg_format("%^s breathes gas.", m_name);
 #endif
 
-			dam = ((m_ptr->hp / 3) > 800 ? 800 : (m_ptr->hp / 3));
+			dam = MIN(m_ptr->hp / 3, 700);
 			breath(y, x, m_idx, GF_POIS, dam, 0, TRUE, MS_BR_POIS, learnable);
 			update_smart_learn(m_idx, DRS_POIS);
 			break;

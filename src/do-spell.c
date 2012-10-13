@@ -7455,7 +7455,7 @@ static cptr do_daemon_spell(int spell, int mode)
 		if (desc) return "一定時間、炎への耐性を得る。装備による耐性に累積する。";
 #else
 		if (name) return "Resist Fire";
-		if (desc) return "Gives resistance to fire, cold and electricity for a while. These resistances can be added to which from equipment for more powerful resistances.";
+		if (desc) return "Gives resistance to fire for a while. This resistance can be added to which from equipment for more powerful resistances.";
 #endif
     
 		{

@@ -1658,7 +1658,7 @@ sprintf(ouch, "%sを装備したダメージ", o_name);
 		}
 	}
 
-	if (have_flag(f_ptr->flags, FF_LAVA) && !IS_INVULN() && !p_ptr->immune_fire)
+	if (have_flag(f_ptr->flags, FF_LAVA) && !IS_INVULN())
 	{
 		int damage = 0;
 
@@ -1671,14 +1671,11 @@ sprintf(ouch, "%sを装備したダメージ", o_name);
 			damage = 3000 + randint0(2000);
 		}
 
+		damage -= damage * p_ptr->resist_fire / 100;
+		if (p_ptr->levitation) damage = damage / 5;
+
 		if (damage)
 		{
-			if (prace_is_(RACE_ENT)) damage += damage / 3;
-			if (p_ptr->resist_fire) damage = damage / 3;
-			if (IS_OPPOSE_FIRE()) damage = damage / 3;
-
-			if (p_ptr->levitation) damage = damage / 5;
-
 			damage = damage / 100 + (randint0(100) < (damage % 100));
 
 			if (p_ptr->levitation)
@@ -1726,47 +1723,38 @@ sprintf(ouch, "%sを装備したダメージ", o_name);
 
 	if (p_ptr->riding)
 	{
-		int damage;
-		if ((r_info[m_list[p_ptr->riding].r_idx].flags2 & RF2_AURA_FIRE) && !p_ptr->immune_fire)
+		if (r_info[m_list[p_ptr->riding].r_idx].flags2 & RF2_AURA_FIRE)
 		{
-			damage = r_info[m_list[p_ptr->riding].r_idx].level / 2;
-			if (prace_is_(RACE_ENT)) damage += damage / 3;
-			if (p_ptr->resist_fire) damage = damage / 3;
-			if (IS_OPPOSE_FIRE()) damage = damage / 3;
-#ifdef JP
-msg_print("熱い！");
-take_hit(DAMAGE_NOESCAPE, damage, "炎のオーラ", -1);
-#else
-			msg_print("It's hot!");
-			take_hit(DAMAGE_NOESCAPE, damage, "Fire aura", -1);
-#endif
+			int dam = r_info[m_list[p_ptr->riding].r_idx].level / 2;
+			dam -= dam * p_ptr->resist_fire / 100;
+
+			if (dam > 0)
+			{
+				msg_print("It's hot!");
+				take_hit(DAMAGE_NOESCAPE, dam, "Fire aura", -1);
+			}
 		}
-		if ((r_info[m_list[p_ptr->riding].r_idx].flags2 & RF2_AURA_ELEC) && !p_ptr->immune_elec)
+		if (r_info[m_list[p_ptr->riding].r_idx].flags2 & RF2_AURA_ELEC)
 		{
-			damage = r_info[m_list[p_ptr->riding].r_idx].level / 2;
-			if (prace_is_(RACE_ANDROID)) damage += damage / 3;
-			if (p_ptr->resist_elec) damage = damage / 3;
-			if (IS_OPPOSE_ELEC()) damage = damage / 3;
-#ifdef JP
-msg_print("痛い！");
-take_hit(DAMAGE_NOESCAPE, damage, "電気のオーラ", -1);
-#else
-			msg_print("It hurts!");
-			take_hit(DAMAGE_NOESCAPE, damage, "Elec aura", -1);
-#endif
+			int dam = r_info[m_list[p_ptr->riding].r_idx].level / 2;
+			dam -= dam * p_ptr->resist_elec / 100;
+
+			if (dam > 0)
+			{
+				msg_print("It hurts!");
+				take_hit(DAMAGE_NOESCAPE, dam, "Elec aura", -1);
+			}
 		}
-		if ((r_info[m_list[p_ptr->riding].r_idx].flags3 & RF3_AURA_COLD) && !p_ptr->immune_cold)
+		if (r_info[m_list[p_ptr->riding].r_idx].flags3 & RF3_AURA_COLD)
 		{
-			damage = r_info[m_list[p_ptr->riding].r_idx].level / 2;
-			if (p_ptr->resist_cold) damage = damage / 3;
-			if (IS_OPPOSE_COLD()) damage = damage / 3;
-#ifdef JP
-msg_print("冷たい！");
-take_hit(DAMAGE_NOESCAPE, damage, "冷気のオーラ", -1);
-#else
-			msg_print("It's cold!");
-			take_hit(DAMAGE_NOESCAPE, damage, "Cold aura", -1);
-#endif
+			int dam = r_info[m_list[p_ptr->riding].r_idx].level / 2;
+			dam -= dam * p_ptr->resist_cold / 100;
+
+			if (dam > 0)
+			{
+				msg_print("It's cold!");
+				take_hit(DAMAGE_NOESCAPE, dam, "Cold aura", -1);
+			}
 		}
 	}
 

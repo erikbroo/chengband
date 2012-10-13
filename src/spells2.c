@@ -34,6 +34,7 @@ void self_knowledge(void)
 	int v_nr = 0;
 	char v_string [8] [128];
 	char s_string [6] [128];
+	char r_string [5] [128];
 
 	u32b flgs[TR_FLAG_SIZE];
 
@@ -1529,155 +1530,34 @@ info[i++] = "あなたは強く物を投げる。";
 
 	}
 
-	if (p_ptr->immune_acid)
+	if (p_ptr->resist_acid)
 	{
-#ifdef JP
-info[i++] = "あなたは酸に対する完全なる免疫を持っている。";
-#else
-		info[i++] = "You are completely immune to acid.";
-#endif
-
-	}
-	else if (p_ptr->resist_acid && IS_OPPOSE_ACID())
-	{
-#ifdef JP
-info[i++] = "あなたは酸への強力な耐性を持っている。";
-#else
-		info[i++] = "You resist acid exceptionally well.";
-#endif
-
-	}
-	else if (p_ptr->resist_acid || IS_OPPOSE_ACID())
-	{
-#ifdef JP
-info[i++] = "あなたは酸への耐性を持っている。";
-#else
-		info[i++] = "You are resistant to acid.";
-#endif
-
+		sprintf(r_string[0], "You are %d%% resistant to acid.", p_ptr->resist_acid);
+		info[i++] = r_string[0];
 	}
 
-	if (p_ptr->immune_elec)
+	if (p_ptr->resist_elec)
 	{
-#ifdef JP
-info[i++] = "あなたは電撃に対する完全なる免疫を持っている。";
-#else
-		info[i++] = "You are completely immune to lightning.";
-#endif
-
-	}
-	else if (p_ptr->resist_elec && IS_OPPOSE_ELEC())
-	{
-#ifdef JP
-info[i++] = "あなたは電撃への強力な耐性を持っている。";
-#else
-		info[i++] = "You resist lightning exceptionally well.";
-#endif
-
-	}
-	else if (p_ptr->resist_elec || IS_OPPOSE_ELEC())
-	{
-#ifdef JP
-info[i++] = "あなたは電撃への耐性を持っている。";
-#else
-		info[i++] = "You are resistant to lightning.";
-#endif
-
+		sprintf(r_string[1], "You are %d%% resistant to lightning.", p_ptr->resist_elec);
+		info[i++] = r_string[1];
 	}
 
-	if (prace_is_(RACE_ANDROID) && !p_ptr->immune_elec)
+	if (p_ptr->resist_fire)
 	{
-#ifdef JP
-info[i++] = "あなたは電撃に弱い。";
-#else
-		info[i++] = "You are susceptible to damage from lightning.";
-#endif
-
+		sprintf(r_string[2], "You are %d%% resistant to fire.", p_ptr->resist_fire);
+		info[i++] = r_string[2];
 	}
 
-	if (p_ptr->immune_fire)
+	if (p_ptr->resist_cold)
 	{
-#ifdef JP
-info[i++] = "あなたは火に対する完全なる免疫を持っている。";
-#else
-		info[i++] = "You are completely immune to fire.";
-#endif
-
-	}
-	else if (p_ptr->resist_fire && IS_OPPOSE_FIRE())
-	{
-#ifdef JP
-info[i++] = "あなたは火への強力な耐性を持っている。";
-#else
-		info[i++] = "You resist fire exceptionally well.";
-#endif
-
-	}
-	else if (p_ptr->resist_fire || IS_OPPOSE_FIRE())
-	{
-#ifdef JP
-info[i++] = "あなたは火への耐性を持っている。";
-#else
-		info[i++] = "You are resistant to fire.";
-#endif
-
+		sprintf(r_string[3], "You are %d%% resistant to cold.", p_ptr->resist_cold);
+		info[i++] = r_string[3];
 	}
 
-	if (prace_is_(RACE_ENT) && !p_ptr->immune_fire)
+	if (p_ptr->resist_pois)
 	{
-#ifdef JP
-info[i++] = "あなたは火に弱い。";
-#else
-		info[i++] = "You are susceptible to damage from fire.";
-#endif
-
-	}
-
-	if (p_ptr->immune_cold)
-	{
-#ifdef JP
-info[i++] = "あなたは冷気に対する完全なる免疫を持っている。";
-#else
-		info[i++] = "You are completely immune to cold.";
-#endif
-
-	}
-	else if (p_ptr->resist_cold && IS_OPPOSE_COLD())
-	{
-#ifdef JP
-info[i++] = "あなたは冷気への強力な耐性を持っている。";
-#else
-		info[i++] = "You resist cold exceptionally well.";
-#endif
-
-	}
-	else if (p_ptr->resist_cold || IS_OPPOSE_COLD())
-	{
-#ifdef JP
-info[i++] = "あなたは冷気への耐性を持っている。";
-#else
-		info[i++] = "You are resistant to cold.";
-#endif
-
-	}
-
-	if (p_ptr->resist_pois && IS_OPPOSE_POIS())
-	{
-#ifdef JP
-info[i++] = "あなたは毒への強力な耐性を持っている。";
-#else
-		info[i++] = "You resist poison exceptionally well.";
-#endif
-
-	}
-	else if (p_ptr->resist_pois || IS_OPPOSE_POIS())
-	{
-#ifdef JP
-info[i++] = "あなたは毒への耐性を持っている。";
-#else
-		info[i++] = "You are resistant to poison.";
-#endif
-
+		sprintf(r_string[4], "You are %d%% resistant to poison.", p_ptr->resist_pois);
+		info[i++] = r_string[4];
 	}
 
 	if (p_ptr->resist_lite)

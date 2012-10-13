@@ -7416,17 +7416,15 @@ static bool project_p(int who, cptr who_name, int r, int y, int x, int dam, int 
 		/* Standard damage -- also poisons player */
 		case GF_POIS:
 		{
-			bool double_resist = IS_OPPOSE_POIS();
 #ifdef JP
 			if (fuzzy) msg_print("ÆÇ¤Ç¹¶·â¤µ¤ì¤¿¡ª");
 #else
 			if (fuzzy) msg_print("You are hit by poison!");
 #endif
 
-			if (p_ptr->resist_pois) dam = (dam + 2) / 3;
-			if (double_resist) dam = (dam + 2) / 3;
+			dam -= dam * p_ptr->resist_pois / 100;
 
-			if ((!(double_resist || p_ptr->resist_pois)) &&
+			if (p_ptr->resist_pois <= 0 &&
 			     one_in_(HURT_CHANCE) && !CHECK_MULTISHADOW())
 			{
 				do_dec_stat(A_CON);
@@ -7434,7 +7432,7 @@ static bool project_p(int who, cptr who_name, int r, int y, int x, int dam, int 
 
 			get_damage = take_hit(DAMAGE_ATTACK, dam, killer, monspell);
 
-			if (!(double_resist || p_ptr->resist_pois) && !CHECK_MULTISHADOW())
+			if (p_ptr->resist_pois <= 0 && !CHECK_MULTISHADOW())
 			{
 				set_poisoned(p_ptr->poisoned + randint0(dam) + 10, FALSE);
 			}
@@ -7444,17 +7442,15 @@ static bool project_p(int who, cptr who_name, int r, int y, int x, int dam, int 
 		/* Standard damage -- also poisons / mutates player */
 		case GF_NUKE:
 		{
-			bool double_resist = IS_OPPOSE_POIS();
 #ifdef JP
 			if (fuzzy) msg_print("Êü¼ÍÇ½¤Ç¹¶·â¤µ¤ì¤¿¡ª");
 #else
 			if (fuzzy) msg_print("You are hit by radiation!");
 #endif
 
-			if (p_ptr->resist_pois) dam = (2 * dam + 2) / 5;
-			if (double_resist) dam = (2 * dam + 2) / 5;
+			dam -= dam * p_ptr->resist_pois / 100;
 			get_damage = take_hit(DAMAGE_ATTACK, dam, killer, monspell);
-			if (!(double_resist || p_ptr->resist_pois) && !CHECK_MULTISHADOW())
+			if (p_ptr->resist_pois <= 0 && !CHECK_MULTISHADOW())
 			{
 				set_poisoned(p_ptr->poisoned + randint0(dam) + 10, FALSE);
 
@@ -7564,12 +7560,8 @@ static bool project_p(int who, cptr who_name, int r, int y, int x, int dam, int 
 				(void)set_stun(p_ptr->stun + k, FALSE);
 			}
 
-			if (!(p_ptr->resist_fire ||
-			      IS_OPPOSE_FIRE() ||
-			      p_ptr->immune_fire))
-			{
+			if (p_ptr->resist_fire <= 0)
 				inven_damage(set_acid_destroy, 3);
-			}
 
 			break;
 		}
@@ -8237,7 +8229,8 @@ static bool project_p(int who, cptr who_name, int r, int y, int x, int dam, int 
 			get_damage = take_hit(DAMAGE_ATTACK, dam, killer, monspell);
 			if (!p_ptr->resist_shard || one_in_(13))
 			{
-				if (!p_ptr->immune_fire) inven_damage(set_fire_destroy, 2);
+				if (randint1(RESIST_DAMAGE_INVENTORY) > p_ptr->resist_fire) 
+					inven_damage(set_fire_destroy, 2);
 				inven_damage(set_cold_destroy, 2);
 			}
 
@@ -8265,7 +8258,7 @@ static bool project_p(int who, cptr who_name, int r, int y, int x, int dam, int 
 					(void)set_stun(p_ptr->stun + randint1(15), FALSE);
 				}
 
-				if ((!(p_ptr->resist_cold || IS_OPPOSE_COLD())) || one_in_(12))
+				if (p_ptr->resist_cold <= 0 || one_in_(12))
 				{
 					if (!p_ptr->immune_cold) inven_damage(set_cold_destroy, 3);
 				}

@@ -4881,6 +4881,7 @@ msg_print("酸への耐性が薄れた気がする。");
 
 	/* Redraw status bar */
 	p_ptr->redraw |= (PR_STATUS);
+	p_ptr->update |= (PU_BONUS);
 
 	/* Disturb */
 	if (disturb_state) disturb(0, 0);
@@ -4950,6 +4951,7 @@ msg_print("電撃への耐性が薄れた気がする。");
 
 	/* Redraw status bar */
 	p_ptr->redraw |= (PR_STATUS);
+	p_ptr->update |= (PU_BONUS);
 
 	/* Disturb */
 	if (disturb_state) disturb(0, 0);
@@ -5020,6 +5022,7 @@ msg_print("火への耐性が薄れた気がする。");
 
 	/* Redraw status bar */
 	p_ptr->redraw |= (PR_STATUS);
+	p_ptr->update |= (PU_BONUS);
 
 	/* Disturb */
 	if (disturb_state) disturb(0, 0);
@@ -5089,6 +5092,7 @@ msg_print("冷気への耐性が薄れた気がする。");
 
 	/* Redraw status bar */
 	p_ptr->redraw |= (PR_STATUS);
+	p_ptr->update |= (PU_BONUS);
 
 	/* Disturb */
 	if (disturb_state) disturb(0, 0);
@@ -5159,6 +5163,7 @@ msg_print("毒への耐性が薄れた気がする。");
 
 	/* Redraw status bar */
 	p_ptr->redraw |= (PR_STATUS);
+	p_ptr->update |= (PU_BONUS);
 
 	/* Disturb */
 	if (disturb_state) disturb(0, 0);

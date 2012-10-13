@@ -3712,11 +3712,11 @@ void calc_bonuses(void)
 	p_ptr->sustain_con = FALSE;
 	p_ptr->sustain_dex = FALSE;
 	p_ptr->sustain_chr = FALSE;
-	p_ptr->resist_acid = FALSE;
-	p_ptr->resist_elec = FALSE;
-	p_ptr->resist_fire = FALSE;
-	p_ptr->resist_cold = FALSE;
-	p_ptr->resist_pois = FALSE;
+	p_ptr->resist_acid = 0;
+	p_ptr->resist_elec = 0;
+	p_ptr->resist_fire = 0;
+	p_ptr->resist_cold = 0;
+	p_ptr->resist_pois = 0;
 	p_ptr->resist_conf = FALSE;
 	p_ptr->resist_sound = FALSE;
 	p_ptr->resist_lite = FALSE;
@@ -4070,11 +4070,11 @@ void calc_bonuses(void)
 
 		p_ptr->telepathy = TRUE;
 		p_ptr->lite = TRUE;
-		p_ptr->resist_acid = TRUE;
-		p_ptr->resist_elec = TRUE;
-		p_ptr->resist_fire = TRUE;
-		p_ptr->resist_cold = TRUE;
-		p_ptr->resist_pois = TRUE;
+		p_ptr->resist_acid = RESIST_SINGLE;
+		p_ptr->resist_elec = RESIST_SINGLE;
+		p_ptr->resist_fire = RESIST_SINGLE;
+		p_ptr->resist_cold = RESIST_SINGLE;
+		p_ptr->resist_pois = RESIST_SINGLE;
 		p_ptr->resist_conf = TRUE;
 		p_ptr->resist_sound = TRUE;
 		p_ptr->resist_lite = TRUE;
@@ -4096,8 +4096,9 @@ void calc_bonuses(void)
 	/* Temporary shield */
 	else if (p_ptr->tsubureru || IS_STONE_SKIN() || p_ptr->magicdef)
 	{
-		p_ptr->to_a += 50;
-		p_ptr->dis_to_a += 50;
+		int bonus = 10 + 40*p_ptr->lev/50;
+		p_ptr->to_a += bonus;
+		p_ptr->dis_to_a += bonus;
 	}
 
 	if (p_ptr->tim_res_nether)
@@ -4475,11 +4476,11 @@ void calc_bonuses(void)
 		if (have_flag(flgs, TR_IM_ELEC)) p_ptr->immune_elec = TRUE;
 
 		/* Resistance flags */
-		if (have_flag(flgs, TR_RES_ACID))   p_ptr->resist_acid = TRUE;
-		if (have_flag(flgs, TR_RES_ELEC))   p_ptr->resist_elec = TRUE;
-		if (have_flag(flgs, TR_RES_FIRE))   p_ptr->resist_fire = TRUE;
-		if (have_flag(flgs, TR_RES_COLD))   p_ptr->resist_cold = TRUE;
-		if (have_flag(flgs, TR_RES_POIS))   p_ptr->resist_pois = TRUE;
+		if (have_flag(flgs, TR_RES_ACID))   p_ptr->resist_acid = RESIST_SINGLE;
+		if (have_flag(flgs, TR_RES_ELEC))   p_ptr->resist_elec = RESIST_SINGLE;
+		if (have_flag(flgs, TR_RES_FIRE))   p_ptr->resist_fire = RESIST_SINGLE;
+		if (have_flag(flgs, TR_RES_COLD))   p_ptr->resist_cold = RESIST_SINGLE;
+		if (have_flag(flgs, TR_RES_POIS))   p_ptr->resist_pois = RESIST_SINGLE;
 		if (have_flag(flgs, TR_RES_FEAR))   p_ptr->resist_fear = TRUE;
 		if (have_flag(flgs, TR_RES_CONF))   p_ptr->resist_conf = TRUE;
 		if (have_flag(flgs, TR_RES_SOUND))  p_ptr->resist_sound = TRUE;
@@ -4749,11 +4750,11 @@ void calc_bonuses(void)
 			{
 				p_ptr->to_a -= 50;
 				p_ptr->dis_to_a -= 50;
-				p_ptr->resist_acid = TRUE;
-				p_ptr->resist_fire = TRUE;
-				p_ptr->resist_elec = TRUE;
-				p_ptr->resist_cold = TRUE;
-				p_ptr->resist_pois = TRUE;
+				p_ptr->resist_acid = RESIST_SINGLE;
+				p_ptr->resist_fire = RESIST_SINGLE;
+				p_ptr->resist_elec = RESIST_SINGLE;
+				p_ptr->resist_cold = RESIST_SINGLE;
+				p_ptr->resist_pois = RESIST_SINGLE;
 				p_ptr->sh_fire = TRUE;
 				p_ptr->sh_elec = TRUE;
 				p_ptr->sh_cold = TRUE;
@@ -5943,11 +5944,11 @@ void calc_bonuses(void)
 		{
 			p_ptr->to_a -= 50;
 			p_ptr->dis_to_a -= 50;
-			p_ptr->resist_acid = TRUE;
-			p_ptr->resist_fire = TRUE;
-			p_ptr->resist_elec = TRUE;
-			p_ptr->resist_cold = TRUE;
-			p_ptr->resist_pois = TRUE;
+			p_ptr->resist_acid = RESIST_SINGLE;
+			p_ptr->resist_fire = RESIST_SINGLE;
+			p_ptr->resist_elec = RESIST_SINGLE;
+			p_ptr->resist_cold = RESIST_SINGLE;
+			p_ptr->resist_pois = RESIST_SINGLE;
 			p_ptr->sh_fire = TRUE;
 			p_ptr->sh_elec = TRUE;
 			p_ptr->sh_cold = TRUE;
@@ -6160,10 +6161,66 @@ void calc_bonuses(void)
 	if (down_saving) p_ptr->skills.sav /= 2;
 
 	/* Hack -- Each elemental immunity includes resistance */
-	if (p_ptr->immune_acid) p_ptr->resist_acid = TRUE;
-	if (p_ptr->immune_elec) p_ptr->resist_elec = TRUE;
-	if (p_ptr->immune_fire) p_ptr->resist_fire = TRUE;
-	if (p_ptr->immune_cold) p_ptr->resist_cold = TRUE;
+	if (p_ptr->immune_acid)
+	{
+		p_ptr->resist_acid = RESIST_IMMUNE;
+	}
+	else if (IS_OPPOSE_ACID())
+	{
+		if (!p_ptr->resist_acid)
+			p_ptr->resist_acid = RESIST_SINGLE;
+		else
+			p_ptr->resist_acid = RESIST_DOUBLE;
+	}
+
+	if (p_ptr->immune_elec)
+	{
+		p_ptr->resist_elec = RESIST_IMMUNE;
+	}
+	else if (IS_OPPOSE_ELEC())
+	{
+		if (!p_ptr->resist_elec)
+			p_ptr->resist_elec = RESIST_SINGLE;
+		else
+			p_ptr->resist_elec = RESIST_DOUBLE;
+	}
+	if (prace_is_(RACE_ANDROID)) /* Note: Immunity is only 90% resistance for an Android! */
+		p_ptr->resist_elec -= RESIST_VULNERABLE;
+
+	if (p_ptr->immune_fire)
+	{
+		p_ptr->resist_fire = RESIST_IMMUNE;
+	}
+	else if (IS_OPPOSE_FIRE())
+	{
+		if (!p_ptr->resist_fire)
+			p_ptr->resist_fire = RESIST_SINGLE;
+		else
+			p_ptr->resist_fire = RESIST_DOUBLE;
+	}
+	if (prace_is_(RACE_ENT)) /* Note: Immunity is only 90% resistance for an Ent! */
+		p_ptr->resist_fire -= RESIST_VULNERABLE;
+		
+			
+	if (p_ptr->immune_cold)
+	{
+		p_ptr->resist_cold = RESIST_IMMUNE;
+	}
+	else if (IS_OPPOSE_COLD())
+	{
+		if (!p_ptr->resist_cold)
+			p_ptr->resist_cold = RESIST_SINGLE;
+		else
+			p_ptr->resist_cold = RESIST_DOUBLE;
+	}
+
+	if (IS_OPPOSE_POIS())
+	{
+		if (!p_ptr->resist_pois)
+			p_ptr->resist_pois = RESIST_SINGLE;
+		else
+			p_ptr->resist_pois = RESIST_DOUBLE;
+	}
 
 	/* Determine player alignment */
 	for (i = 0, j = 0; i < 8; i++)

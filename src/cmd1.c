@@ -254,15 +254,15 @@ static void death_scythe_miss(object_type *o_ptr, int hand, int mode)
 
 		if (p_ptr->align < 0 && mult < 20)
 			mult = 20;
-		if (!(p_ptr->resist_acid || IS_OPPOSE_ACID() || p_ptr->immune_acid) && (mult < 25))
+		if (p_ptr->resist_acid <= 0 && mult < 25)
 			mult = 25;
-		if (!(p_ptr->resist_elec || IS_OPPOSE_ELEC() || p_ptr->immune_elec) && (mult < 25))
+		if (p_ptr->resist_elec <= 0 && mult < 25)
 			mult = 25;
-		if (!(p_ptr->resist_fire || IS_OPPOSE_FIRE() || p_ptr->immune_fire) && (mult < 25))
+		if (p_ptr->resist_fire <= 0 && mult < 25)
 			mult = 25;
-		if (!(p_ptr->resist_cold || IS_OPPOSE_COLD() || p_ptr->immune_cold) && (mult < 25))
+		if (p_ptr->resist_cold <= 0 && mult < 25)
 			mult = 25;
-		if (!(p_ptr->resist_pois || IS_OPPOSE_POIS()) && (mult < 25))
+		if (p_ptr->resist_pois <= 0 && mult < 25)
 			mult = 25;
 
 		if (p_ptr->tim_slay_sentient && p_ptr->ryoute)
@@ -2092,7 +2092,7 @@ static void hit_trap(bool break_trap)
 					dam = dam * 2;
 					(void)set_cut(p_ptr->cut + randint1(dam), FALSE);
 
-					if (p_ptr->resist_pois || IS_OPPOSE_POIS())
+					if (p_ptr->resist_pois)
 					{
 #ifdef JP
 						msg_print("しかし毒の影響はなかった！");
@@ -2354,7 +2354,7 @@ static void hit_trap(bool break_trap)
 			msg_print("A pungent green gas surrounds you!");
 #endif
 
-			if (!p_ptr->resist_pois && !IS_OPPOSE_POIS())
+			if (p_ptr->resist_pois <= 0)
 			{
 				(void)set_poisoned(p_ptr->poisoned + randint0(20) + 10, FALSE);
 			}
@@ -2528,7 +2528,6 @@ msg_print("まばゆい閃光が走った！");
 
 void touch_zap_player(int m_idx)
 {
-	int aura_damage = 0;
 	monster_type *m_ptr = &m_list[m_idx];
 	monster_race *r_ptr = &r_info[m_ptr->r_idx];
 
@@ -2549,102 +2548,92 @@ void touch_zap_player(int m_idx)
 
 	if (r_ptr->flags2 & RF2_AURA_FIRE)
 	{
-		if (p_ptr->immune_fire)
-		{
-		}
-		else if (p_ptr->lightning_reflexes)
+		if (p_ptr->lightning_reflexes)
 		{
 			msg_print("You strike so fast that you avoid getting burned.");
 		}
 		else
 		{
-			char aura_dam[80];
+			int dam = damroll(1 + (r_ptr->level / 26), 1 + (r_ptr->level / 17));
+			dam -= dam * p_ptr->resist_fire / 100;
 
-			aura_damage = damroll(1 + (r_ptr->level / 26), 1 + (r_ptr->level / 17));
+			if (dam > 0)
+			{
+				char buf[80];
+				
 
-			/* Hack -- Get the "died from" name */
-			monster_desc(aura_dam, m_ptr, MD_IGNORE_HALLU | MD_ASSUME_VISIBLE | MD_INDEF_VISIBLE);
+				monster_desc(buf, m_ptr, MD_IGNORE_HALLU | MD_ASSUME_VISIBLE | MD_INDEF_VISIBLE);
 
-#ifdef JP
-			msg_print("突然とても熱くなった！");
-#else
-			msg_print("You are suddenly very hot!");
-#endif
+	#ifdef JP
+				msg_print("突然とても熱くなった！");
+	#else
+				msg_print("You are suddenly very hot!");
+	#endif
 
-			if (prace_is_(RACE_ENT)) aura_damage += aura_damage / 3;
-			if (IS_OPPOSE_FIRE()) aura_damage = (aura_damage + 2) / 3;
-			if (p_ptr->resist_fire) aura_damage = (aura_damage + 2) / 3;
-
-			take_hit(DAMAGE_NOESCAPE, aura_damage, aura_dam, -1);
-			if (is_original_ap_and_seen(m_ptr)) r_ptr->r_flags2 |= RF2_AURA_FIRE;
-			handle_stuff();
+				take_hit(DAMAGE_NOESCAPE, dam, buf, -1);
+				if (is_original_ap_and_seen(m_ptr)) r_ptr->r_flags2 |= RF2_AURA_FIRE;
+				handle_stuff();
+			}
 		}
 	}
 
 	if (r_ptr->flags3 & RF3_AURA_COLD)
 	{
-		if (p_ptr->immune_cold)
-		{
-		}
-		else if (p_ptr->lightning_reflexes)
+		if (p_ptr->lightning_reflexes)
 		{
 			msg_print("You strike so fast that you avoid getting frozen.");
 		}
 		else
 		{
-			char aura_dam[80];
+			int dam = damroll(1 + (r_ptr->level / 26), 1 + (r_ptr->level / 17));
+			dam -= dam * p_ptr->resist_cold / 100;
 
-			aura_damage = damroll(1 + (r_ptr->level / 26), 1 + (r_ptr->level / 17));
+			if (dam > 0)
+			{
+				char buf[80];
 
-			/* Hack -- Get the "died from" name */
-			monster_desc(aura_dam, m_ptr, MD_IGNORE_HALLU | MD_ASSUME_VISIBLE | MD_INDEF_VISIBLE);
+				monster_desc(buf, m_ptr, MD_IGNORE_HALLU | MD_ASSUME_VISIBLE | MD_INDEF_VISIBLE);
 
-#ifdef JP
-			msg_print("突然とても寒くなった！");
-#else
-			msg_print("You are suddenly very cold!");
-#endif
+	#ifdef JP
+				msg_print("突然とても寒くなった！");
+	#else
+				msg_print("You are suddenly very cold!");
+	#endif
 
-			if (IS_OPPOSE_COLD()) aura_damage = (aura_damage + 2) / 3;
-			if (p_ptr->resist_cold) aura_damage = (aura_damage + 2) / 3;
-
-			take_hit(DAMAGE_NOESCAPE, aura_damage, aura_dam, -1);
-			if (is_original_ap_and_seen(m_ptr)) r_ptr->r_flags3 |= RF3_AURA_COLD;
-			handle_stuff();
+				take_hit(DAMAGE_NOESCAPE, dam, buf, -1);
+				if (is_original_ap_and_seen(m_ptr)) r_ptr->r_flags3 |= RF3_AURA_COLD;
+				handle_stuff();
+			}
 		}
 	}
 
 	if (r_ptr->flags2 & RF2_AURA_ELEC)
 	{
-		if (p_ptr->immune_elec)
-		{
-		}
-		else if (p_ptr->lightning_reflexes)
+		if (p_ptr->lightning_reflexes)
 		{
 			msg_print("You strike so fast that you avoid getting zapped.");
 		}
 		else
 		{
-			char aura_dam[80];
+			int dam = damroll(1 + (r_ptr->level / 26), 1 + (r_ptr->level / 17));
+			dam -= dam * p_ptr->resist_elec / 100;
 
-			aura_damage = damroll(1 + (r_ptr->level / 26), 1 + (r_ptr->level / 17));
+			if (dam > 0)
+			{
+				char buf[80];
 
-			/* Hack -- Get the "died from" name */
-			monster_desc(aura_dam, m_ptr, MD_IGNORE_HALLU | MD_ASSUME_VISIBLE | MD_INDEF_VISIBLE);
+				monster_desc(buf, m_ptr, MD_IGNORE_HALLU | MD_ASSUME_VISIBLE | MD_INDEF_VISIBLE);
 
-			if (prace_is_(RACE_ANDROID)) aura_damage += aura_damage / 3;
-			if (IS_OPPOSE_ELEC()) aura_damage = (aura_damage + 2) / 3;
-			if (p_ptr->resist_elec) aura_damage = (aura_damage + 2) / 3;
+	#ifdef JP
+				msg_print("電撃をくらった！");
+	#else
+				msg_print("You get zapped!");
+	#endif
 
-#ifdef JP
-			msg_print("電撃をくらった！");
-#else
-			msg_print("You get zapped!");
-#endif
-
-			take_hit(DAMAGE_NOESCAPE, aura_damage, aura_dam, -1);
-			if (is_original_ap_and_seen(m_ptr)) r_ptr->r_flags2 |= RF2_AURA_ELEC;
-			handle_stuff();
+				take_hit(DAMAGE_NOESCAPE, dam, buf, -1);
+				if (is_original_ap_and_seen(m_ptr)) r_ptr->r_flags2 |= RF2_AURA_ELEC;
+				handle_stuff();
+			}
 		}
 	}
 }
@@ -5481,10 +5470,10 @@ bool trap_can_be_ignored(int feat)
 		if (p_ptr->anti_tele) return TRUE;
 		break;
 	case TRAP_FIRE:
-		if (p_ptr->immune_fire) return TRUE;
+		if (p_ptr->resist_fire == RESIST_IMMUNE) return TRUE;
 		break;
 	case TRAP_ACID:
-		if (p_ptr->immune_acid) return TRUE;
+		if (p_ptr->resist_acid == RESIST_IMMUNE) return TRUE;
 		break;
 	case TRAP_BLIND:
 		if (p_ptr->resist_blind) return TRUE;
@@ -6506,7 +6495,7 @@ static bool run_test(void)
 				}
 
 				/* Lava */
-				else if (have_flag(f_ptr->flags, FF_LAVA) && (p_ptr->immune_fire || IS_INVULN()))
+				else if (have_flag(f_ptr->flags, FF_LAVA) && (p_ptr->resist_fire == RESIST_IMMUNE || IS_INVULN()))
 				{
 					/* Ignore */
 					notice = FALSE;

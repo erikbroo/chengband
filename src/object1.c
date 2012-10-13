@@ -1137,7 +1137,7 @@ return "ファイア・ボルト(9d8) : 8+d8 ターン毎";
 		case ART_RAILGUN:
 			return "beam of light (300) every turn";
 		case ART_KAMIKAZE_ROBE:
-			return "berserk and haste every 55 turns";
+			return "Speed Essentia every 111 turns";
 		case ART_BALLISTA:
 			return "piercing shot every 100 turns";
 		case ART_STONE_OF_NATURE:

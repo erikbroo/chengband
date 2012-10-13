@@ -6880,71 +6880,52 @@ static void spell_damcalc(monster_type *m_ptr, int typ, int dam, int limit, int 
 	switch (typ)
 	{
 	case GF_ELEC:
-		if (p_ptr->immune_elec)
-		{
-			dam = 0;
+		dam -= dam * p_ptr->resist_elec / 100;
+		if (dam == 0) 
 			ignore_wraith_form = TRUE;
-		}
 		else
-		{
+		{	/* TODO */
 			if (mut_present(MUT_VULN_ELEM)) dam *= 2;
 			if (p_ptr->special_defense & KATA_KOUKIJIN) dam += dam / 3;
 			if (prace_is_(RACE_ANDROID)) dam += dam / 3;
-			if (p_ptr->resist_elec) dam = (dam + 2) / 3;
-			if (IS_OPPOSE_ELEC())
-				dam = (dam + 2) / 3;
 		}
 		break;
 
 	case GF_POIS:
-		if (p_ptr->resist_pois) dam = (dam + 2) / 3;
-		if (IS_OPPOSE_POIS()) dam = (dam + 2) / 3;
+		dam -= dam * p_ptr->resist_pois / 100;
 		break;
 
 	case GF_ACID:
-		if (p_ptr->immune_acid)
-		{
-			dam = 0;
+		dam -= dam * p_ptr->resist_acid / 100;
+		if (dam == 0) 
 			ignore_wraith_form = TRUE;
-		}
 		else
-		{
+		{	/* TODO */
 			if (mut_present(MUT_VULN_ELEM)) dam *= 2;
 			if (p_ptr->special_defense & KATA_KOUKIJIN) dam += dam / 3;
-			if (p_ptr->resist_acid) dam = (dam + 2) / 3;
-			if (IS_OPPOSE_ACID()) dam = (dam + 2) / 3;
 		}
 		break;
 
 	case GF_COLD:
 	case GF_ICE:
-		if (p_ptr->immune_cold)
-		{
-			dam = 0;
+		dam -= dam * p_ptr->resist_cold / 100;
+		if (dam == 0) 
 			ignore_wraith_form = TRUE;
-		}
 		else
-		{
+		{	/* TODO */
 			if (mut_present(MUT_VULN_ELEM)) dam *= 2;
 			if (p_ptr->special_defense & KATA_KOUKIJIN) dam += dam / 3;
-			if (p_ptr->resist_cold) dam = (dam + 2) / 3;
-			if (IS_OPPOSE_COLD()) dam = (dam + 2) / 3;
 		}
 		break;
 
 	case GF_FIRE:
-		if (p_ptr->immune_fire)
-		{
-			dam = 0;
+		dam -= dam * p_ptr->resist_fire / 100;
+		if (dam == 0) 
 			ignore_wraith_form = TRUE;
-		}
 		else
-		{
+		{	/* TODO */
 			if (mut_present(MUT_VULN_ELEM)) dam *= 2;
-			if (prace_is_(RACE_ENT)) dam += dam / 3;
 			if (p_ptr->special_defense & KATA_KOUKIJIN) dam += dam / 3;
-			if (p_ptr->resist_fire) dam = (dam + 2) / 3;
-			if (IS_OPPOSE_FIRE()) dam = (dam + 2) / 3;
 		}
 		break;
 
@@ -7025,8 +7006,7 @@ static void spell_damcalc(monster_type *m_ptr, int typ, int dam, int limit, int 
 		break;
 
 	case GF_NUKE:
-		if (p_ptr->resist_pois) dam = (2 * dam + 2) / 5;
-		if (IS_OPPOSE_POIS()) dam = (2 * dam + 2) / 5;
+		dam -= dam * p_ptr->resist_pois / 100;
 		break;
 
 	case GF_DEATH_RAY:

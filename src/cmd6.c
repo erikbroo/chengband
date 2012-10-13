@@ -105,7 +105,7 @@ static void do_cmd_eat_food_aux(int item)
 		{
 			case SV_FOOD_POISON:
 			{
-				if (!(p_ptr->resist_pois || IS_OPPOSE_POIS()))
+				if (p_ptr->resist_pois <= 0)
 				{
 					if (set_poisoned(p_ptr->poisoned + randint0(10) + 10, FALSE))
 					{
@@ -899,7 +899,7 @@ static void do_cmd_quaff_potion_aux(int item)
 			break;
 
 		case SV_POTION_POISON:
-			if (!(p_ptr->resist_pois || IS_OPPOSE_POIS()))
+			if (p_ptr->resist_pois <= 0)
 			{
 				if (set_poisoned(p_ptr->poisoned + randint0(15) + 10, FALSE))
 				{
@@ -5335,9 +5335,8 @@ msg_print("あなたはフラキアに敵を締め殺すよう命じた。");
 			case ART_KAMIKAZE_ROBE:
 			{
 				msg_print("Your robe glows crimson...");
-				set_shero(device_power(20 + randint0(20)), FALSE);
-				set_fast(device_power(20 + randint0(20)), FALSE);
-				o_ptr->timeout = 55;
+				set_tim_speed_essentia(5 + randint1(5), FALSE);
+				o_ptr->timeout = 111;
 				break;
 			}
 			case ART_BALLISTA:

@@ -54,6 +54,11 @@
 #define ZANGBAND
 
 #define MAX_SUMMONS 50
+#define RESIST_SINGLE 60
+#define RESIST_DOUBLE 70
+#define RESIST_DAMAGE_INVENTORY 75
+#define RESIST_IMMUNE 100
+#define RESIST_VULNERABLE 10
 
 /*
  * Number of grids in each block (vertically)
