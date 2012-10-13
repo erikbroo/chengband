@@ -28,7 +28,7 @@
 #define FAKE_VERSION   0
 #define FAKE_VER_MAJOR 10
 #define FAKE_VER_MINOR 0
-#define FAKE_VER_PATCH 136
+#define FAKE_VER_PATCH 137
 
 
 /*
@@ -46,7 +46,7 @@
  */
 #define H_VER_MAJOR 0
 #define H_VER_MINOR 0
-#define H_VER_PATCH 136
+#define H_VER_PATCH 137
 #define H_VER_EXTRA 0
 
 
@@ -165,7 +165,6 @@
  */
 #define MAX_SEXES            2
 
-#define MAX_SEIKAKU          12
 
 /* The number of "patrons" available (for Chaos Warriors) */
 #define MAX_PATRON          16
@@ -575,24 +574,25 @@
  * Possible realms that can be chosen;
  * currently used only by birth.c and tables.c
  */
-#define CH_NONE         0x00
-#define CH_LIFE         0x01
-#define CH_SORCERY      0x02
-#define CH_NATURE       0x04
-#define CH_CHAOS        0x08
-#define CH_DEATH        0x10
-#define CH_TRUMP        0x20
-#define CH_ARCANE       0x40
-#define CH_ENCHANT      0x80
-#define CH_DAEMON       0x100
-#define CH_CRUSADE      0x200
-#define CH_NECROMANCY   0x400
+#define CH_NONE         0x000000
+#define CH_LIFE         0x000001
+#define CH_SORCERY      0x000002
+#define CH_NATURE       0x000004
+#define CH_CHAOS        0x000008
+#define CH_DEATH        0x000010
+#define CH_TRUMP        0x000020
+#define CH_ARCANE       0x000040
+#define CH_ENCHANT      0x000080
+#define CH_DAEMON       0x000100
+#define CH_CRUSADE      0x000200
+#define CH_NECROMANCY   0x000400
+#define CH_ARMAGEDDON   0x000800
+#define CH_MUSIC        0x008000	/* This is 16th bit */
+#define CH_HISSATSU     0x010000
+#define CH_HEX          0x020000
+#define CH_RAGE         0x040000
+#define CH_BURGLARY     0x080000
 
-#define CH_MUSIC        0x08000	/* This is 16th bit */
-#define CH_HISSATSU     0x10000
-#define CH_HEX          0x20000
-#define CH_RAGE         0x40000
-#define CH_BURGLARY     0x80000
 
 
 /*
@@ -610,7 +610,8 @@
 #define REALM_DAEMON       9
 #define REALM_CRUSADE      10
 #define REALM_NECROMANCY   11
-#define MAX_MAGIC          11
+#define REALM_ARMAGEDDON   12
+#define MAX_MAGIC          12
 #define MIN_TECHNIC        16
 #define REALM_MUSIC        16
 #define REALM_HISSATSU     17
@@ -880,6 +881,8 @@
 #define PERS_LUCKY	     9
 #define PERS_PATIENT	 10
 #define PERS_MUNCHKIN    11
+#define PERS_CRAVEN      12
+#define MAX_SEIKAKU      13
 
 /*** Screen Locations ***/
 
@@ -1940,6 +1943,7 @@
 #define TV_DAEMON_BOOK  98
 #define TV_CRUSADE_BOOK 99
 #define TV_NECROMANCY_BOOK 100
+#define TV_ARMAGEDDON_BOOK 101
 #define TV_MUSIC_BOOK   105
 #define TV_HISSATSU_BOOK 106
 #define TV_HEX_BOOK     107

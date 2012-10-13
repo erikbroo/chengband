@@ -13880,6 +13880,573 @@ static cptr do_burglary_spell(int spell, int mode)
 	return "";
 }
 
+static cptr do_armageddon_spell(int spell, int mode)
+{
+	bool name = (mode == SPELL_NAME) ? TRUE : FALSE;
+	bool desc = (mode == SPELL_DESC) ? TRUE : FALSE;
+	bool info = (mode == SPELL_INFO) ? TRUE : FALSE;
+	bool cast = (mode == SPELL_CAST) ? TRUE : FALSE;
+	bool fail = (mode == SPELL_FAIL) ? TRUE : FALSE;
+	bool spoil = (mode == SPELL_SPOIL_DESC) ? TRUE : FALSE;
+
+	int plev = p_ptr->lev;
+	int dir;
+
+	switch (spell)
+	{
+	/* Book of Elements */
+	case 0:
+		if (name) return "Lightning Bolt";
+		if (desc) return "Fires a bolt or beam of electricity.";
+    
+		{
+			int dice = 3 + plev / 4;
+			int sides = 8;
+
+			if (info) return info_damage(spell_power(dice), sides, 0);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_bolt_or_beam(beam_chance(), GF_ELEC, dir, spell_power(damroll(dice, sides)));
+			}
+		}
+		break;
+	case 1:
+		if (name) return "Frost Bolt";
+		if (desc) return "Fires a bolt or beam of cold.";
+    
+		{
+			int dice = 4 + plev / 4;
+			int sides = 8;
+
+			if (info) return info_damage(spell_power(dice), sides, 0);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_bolt_or_beam(beam_chance(), GF_COLD, dir, spell_power(damroll(dice, sides)));
+			}
+		}
+		break;
+	case 2:
+		if (name) return "Fire Bolt";
+		if (desc) return "Fires a bolt or beam of fire.";
+    
+		{
+			int dice = 5 + plev / 4;
+			int sides = 8;
+
+			if (info) return info_damage(spell_power(dice), sides, 0);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_bolt_or_beam(beam_chance(), GF_FIRE, dir, spell_power(damroll(dice, sides)));
+			}
+		}
+		break;
+	case 3:
+		if (name) return "Acid Bolt";
+		if (desc) return "Fires a bolt or beam of acid.";
+    
+		{
+			int dice = 5 + plev / 4;
+			int sides = 8;
+
+			if (info) return info_damage(spell_power(dice), sides, 0);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_bolt_or_beam(beam_chance(), GF_ACID, dir, spell_power(damroll(dice, sides)));
+			}
+		}
+		break;
+	case 4:
+		if (name) return "Lightning Ball";
+		if (desc) return "Fires a ball of electricity.";
+    
+		{
+			int dam = spell_power(3*plev/2 + 20);
+			int rad = 2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_ELEC, dir, dam, rad);
+			}
+		}
+		break;
+	case 5:
+		if (name) return "Frost Ball";
+		if (desc) return "Fires a ball of cold.";
+    
+		{
+			int dam = spell_power(3*plev/2 + 25);
+			int rad = 2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_COLD, dir, dam, rad);
+			}
+		}
+		break;
+	case 6:
+		if (name) return "Fire Ball";
+		if (desc) return "Fires a ball of fire.";
+    
+		{
+			int dam = spell_power(3*plev/2 + 30);
+			int rad = 2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_FIRE, dir, dam, rad);
+			}
+		}
+		break;
+	case 7:
+		if (name) return "Acid Ball";
+		if (desc) return "Fires a ball of acid.";
+    
+		{
+			int dam = spell_power(3*plev/2 + 35);
+			int rad = 2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_ACID, dir, dam, rad);
+			}
+		}
+		break;
+
+	/* Earth, Wind and Fire */
+	case 8:
+		if (name) return "Shard Bolt";
+		if (desc) return "Fires a bolt or beam of shards.";
+    
+		{
+			int dice = 7 + plev / 4;
+			int sides = 8;
+
+			if (info) return info_damage(spell_power(dice), sides, 0);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_bolt_or_beam(beam_chance(), GF_SHARDS, dir, spell_power(damroll(dice, sides)));
+			}
+		}
+		break;
+	case 9:
+		if (name) return "Gravity Bolt";
+		if (desc) return "Fires a bolt or beam of gravity.";
+    
+		{
+			int dice = 5 + plev / 4;
+			int sides = 8;
+
+			if (info) return info_damage(spell_power(dice), sides, 0);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_bolt_or_beam(beam_chance(), GF_GRAVITY, dir, spell_power(damroll(dice, sides)));
+			}
+		}
+		break;
+	case 10:
+		if (name) return "Plasma Bolt";
+		if (desc) return "Fires a bolt or beam of plasma.";
+    
+		{
+			int dice = 11 + plev / 4;
+			int sides = 8;
+
+			if (info) return info_damage(spell_power(dice), sides, 0);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_bolt_or_beam(beam_chance(), GF_PLASMA, dir, spell_power(damroll(dice, sides)));
+			}
+		}
+		break;
+	case 11:
+		if (name) return "Meteor";
+		if (desc) return "Fires a meteor.";
+    
+		{
+			int dam = spell_power(plev + 60);
+			int rad = 2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_METEOR, dir, dam, rad);
+			}
+		}
+		break;
+	case 12:
+		if (name) return "Thunderclap";
+		if (desc) return "Generates a ball of sound centered on you.";
+
+		{
+			int dam = spell_power((40 + plev)*2);
+			int rad = plev / 10 + 2;
+
+			if (info) return info_damage(0, 0, dam/2);
+
+			if (cast)
+			{
+				msg_print("BOOM!");
+				project(0, rad, py, px, dam, GF_SOUND, PROJECT_KILL | PROJECT_ITEM, -1);
+			}
+		}
+		break;
+
+	case 13:
+		if (name) return "Windblast";
+		if (desc) return "Fires a microburst of strong winds.";
+    
+		{
+			int dam = spell_power(plev + 40);
+			int rad = 2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_TELEKINESIS, dir, dam, rad);
+			}
+		}
+		break;
+	case 14:
+		if (name) return "Hellstorm";
+		if (desc) return "Generates a huge ball of fire centered on you.";
+
+		{
+			int dam = spell_power((6 * plev)*2);
+			int rad = 8;
+
+			if (info) return info_damage(0, 0, dam/2);
+
+			if (cast)
+				fire_ball(GF_FIRE, 0, dam, rad);
+		}
+		break;
+	case 15:
+		if (name) return "Rocket";
+		if (desc) return "Fires a rocket.";
+    
+		{
+			int dam = spell_power(60 + plev * 4);
+			int rad = 2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				msg_print("You launch a rocket!");
+				fire_rocket(GF_ROCKET, dir, dam, rad);
+			}
+		}
+		break;
+
+	/* Path of Destruction */
+	case 16:
+		if (name) return "Ice Bolt";
+		if (desc) return "Fires a bolt of ice.";
+    
+		{
+			int dice = 5 + plev/4;
+			int sides = 15;
+
+			if (info) return info_damage(spell_power(dice), sides, 0);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_bolt(GF_ICE, dir, spell_power(damroll(dice, sides)));
+			}
+		}
+		break;
+	case 17:
+		if (name) return "Water Ball";
+		if (desc) return "Fires a ball of water.";
+    
+		{
+			int dam = spell_power(2*plev + 30);
+			int rad = 2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_WATER, dir, dam, rad);
+			}
+		}
+		break;
+	case 18:
+		if (name) return "Breathe Lightning";
+		if (desc) return "Breathes a cone of electricity at chosen target.";
+    
+		{
+			int dam = spell_power(9*plev/2);
+			int rad = plev > 40 ? -3 : -2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_ELEC, dir, dam, rad);
+			}
+		}
+		break;
+	case 19:
+		if (name) return "Breathe Frost";
+		if (desc) return "Breathes a cone of cold at chosen target.";
+    
+		{
+			int dam = spell_power(9*plev/2);
+			int rad = plev > 40 ? -3 : -2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_COLD, dir, dam, rad);
+			}
+		}
+		break;
+	case 20:
+		if (name) return "Breathe Fire";
+		if (desc) return "Breathes a cone of fire at chosen target.";
+    
+		{
+			int dam = spell_power(5*plev);
+			int rad = plev > 40 ? -3 : -2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_FIRE, dir, dam, rad);
+			}
+		}
+		break;
+	case 21:
+		if (name) return "Breathe Acid";
+		if (desc) return "Breathes a cone of acid at chosen target.";
+    
+		{
+			int dam = spell_power(5*plev);
+			int rad = plev > 40 ? -3 : -2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_ACID, dir, dam, rad);
+			}
+		}
+		break;
+	case 22:
+		if (name) return "Breathe Plasma";
+		if (desc) return "Breathes a cone of plasma at chosen target.";
+    
+		{
+			int dam = spell_power(11*plev/2);
+			int rad = plev > 40 ? -3 : -2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_PLASMA, dir, dam, rad);
+			}
+		}
+		break;
+	case 23:
+		if (name) return "Breathe Gravity";
+		if (desc) return "Breathes a cone of gravity at chosen target.";
+    
+		{
+			int dam = spell_power(4*plev);
+			int rad = plev > 40 ? -3 : -2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_GRAVITY, dir, dam, rad);
+			}
+		}
+		break;
+
+	/* Day of Ragnarok */
+	case 24:
+		if (name) return "Mana Bolt";
+		if (desc) return "Fires a bolt of mana.";
+    
+		{
+			int dice = 1;
+			int sides = 5*plev;
+
+			if (info) return info_damage(dice, spell_power(sides), spell_power(50));
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_bolt(GF_MANA, dir, spell_power(damroll(dice, sides) + 50));
+			}
+		}
+		break;
+	case 25:
+		if (name) return "Plasma Ball";
+		if (desc) return "Fires a ball of plasma.";
+    
+		{
+			int dam = spell_power(2*plev + 90);
+			int rad = 3;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_PLASMA, dir, dam, rad);
+			}
+		}
+		break;
+	case 26:
+		if (name) return "Mana Ball";
+		if (desc) return "Fires a ball of pure mana.";
+    
+		{
+			int dam = spell_power(4*plev + 100);
+			int rad = 3;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_MANA, dir, dam, rad);
+			}
+		}
+		break;
+	case 27:
+		if (name) return "Breathe Sound";
+		if (desc) return "Breathes a cone of sound at chosen target.";
+    
+		{
+			int dam = spell_power(6*plev);
+			int rad = plev > 40 ? -3 : -2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_SOUND, dir, dam, rad);
+			}
+		}
+		break;
+	case 28:
+		if (name) return "Breathe Inertia";
+		if (desc) return "Breathes a cone of inertia at chosen target.";
+    
+		{
+			int dam = spell_power(7*plev);
+			int rad = plev > 40 ? -3 : -2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_INERT, dir, dam, rad);
+			}
+		}
+		break;
+	case 29:
+		if (name) return "Breathe Disintegration";
+		if (desc) return "Breathes a cone of disintegration at chosen target.";
+    
+		{
+			int dam = spell_power(8*plev);
+			int rad = plev > 40 ? -3 : -2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_DISINTEGRATE, dir, dam, rad);
+			}
+		}
+		break;
+	case 30:
+		if (name) return "Breathe Mana";
+		if (desc) return "Breathes a cone of mana at chosen target.";
+    
+		{
+			int dam = spell_power(9*plev);
+			int rad = plev > 40 ? -3 : -2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_MANA, dir, dam, rad);
+			}
+		}
+		break;
+	case 31:
+		if (name) return "Breathe Shards";
+		if (desc) return "Breathes a cone of shards at chosen target.";
+    
+		{
+			int dam = spell_power(10*plev);
+			int rad = plev > 40 ? -3 : -2;
+
+			if (info) return info_damage(0, 0, dam);
+
+			if (cast)
+			{
+				if (!get_aim_dir(&dir)) return NULL;
+				fire_ball(GF_SHARDS, dir, dam, rad);
+			}
+		}
+		break;
+	}
+	return "";
+}
 /*
  * Do everything for each spell
  */
@@ -13905,6 +14472,7 @@ cptr do_spell(int realm, int spell, int mode)
 	case REALM_HISSATSU: result = do_hissatsu_spell(spell, mode); break;
 	case REALM_HEX:      result = do_hex_spell(spell, mode); break;
 	case REALM_NECROMANCY: result = do_necromancy_spell(spell, mode); break;
+	case REALM_ARMAGEDDON: result = do_armageddon_spell(spell, mode); break;
 	case REALM_BURGLARY: result = do_burglary_spell(spell, mode); break;
 	}
 

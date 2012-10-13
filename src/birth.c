@@ -1871,6 +1871,7 @@ static cptr seikaku_jouhou[MAX_SEIKAKU] =
 
 "いかさまは、初心者の練習用の性格です。あらゆる能力が高くなっています。この性格を使えば勝利者になることは容易ですが、勝利しても全く自慢になりません。",
 
+"TRANSLATE",
 
 #else
 
@@ -1897,7 +1898,9 @@ static cptr seikaku_jouhou[MAX_SEIKAKU] =
 
 "A \"Patient\" person does things carefully.  Patient people have high constitution, and high resilience, but poor abilities in most other skills.  Also it directly influences your hit-points.",
 
-"\"Munchkin\" is a personality for beginners.  It raises all your stats and skills.  With this personality, you can win the game easily, but gain little honor in doing so."
+"\"Munchkin\" is a personality for beginners.  It raises all your stats and skills.  With this personality, you can win the game easily, but gain little honor in doing so.",
+
+"A \"Craven\" person is a coward, preferring to avoid a fight at any cost. Craven adventurers shoot and use devices well, and their stealth is impressive. But their stats and other skills are somewhat wanting.",
 #endif
 };
 
@@ -1963,6 +1966,10 @@ static cptr realm_jouhou[VALID_REALM] =
 "Crusade is a magic of 'Justice'.  It includes damage spells, which are greatly effective against foul and evil monsters, but have poor effects against good monsters.",
 
 "Necromancy allows communication with and ultimately control over the deceased. All direct damage afforded by this realm requires the caster to touch his or her opponent.  Any weapons or gloves will obstruct this macabre contact.",
+
+"Armageddon is the most deadly offensive realm. You won't be lacking for firepower here. "
+	"However, every spell is an offensive spell, so this realm suffers from a lack of any "
+	"utility spells.",
 
 "Music magic shows various effects as sing song.  There is two type of song; the one which shows effects instantly and the other one shows effect continuously until SP runs out.  But the latter type has a limit; only one song can be sing at the same time.",
 

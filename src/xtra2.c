@@ -1748,6 +1748,7 @@ msg_print("地面に落とされた。");
 				case REALM_RAGE: k_idx = 690; break;
 				case REALM_ARCANE: k_idx = 519; break;
 				case REALM_BURGLARY: k_idx = 703; break;
+				case REALM_ARMAGEDDON: k_idx = 721; break;
 				}
 			}
 
@@ -1770,6 +1771,7 @@ msg_print("地面に落とされた。");
 				case REALM_RAGE: k_idx = 691; break;
 				case REALM_ARCANE: k_idx = 519; break;
 				case REALM_BURGLARY: k_idx = 704; break;
+				case REALM_ARMAGEDDON: k_idx = 722; break;
 				}
 			}
 

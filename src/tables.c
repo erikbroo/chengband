@@ -3641,6 +3641,16 @@ player_seikaku seikaku_info[MAX_SEIKAKU] =
 		{20, 40, 30, 10, 40, 40,  80, 80},
 		 15, 1, 0, 50
 	},
+
+	{
+#ifdef JP
+		"TRANSLATE",
+#endif
+		"Craven",
+		{ -1, 0, 0, -1, -1, -3 },
+		{0, 5, -1, 5, 0, 0, -15, 10},
+		-1, 0, 0, 110
+	},
 };
 
 magic_type technic_info[NUM_TECHNIC][32] =
@@ -3862,7 +3872,7 @@ s32b realm_choices1[MAX_CLASS] =
 	(CH_LIFE | CH_SORCERY | CH_NATURE |
 	 CH_CHAOS | CH_DEATH | CH_TRUMP |
 	 CH_ARCANE | CH_ENCHANT | CH_DAEMON |
-	 CH_CRUSADE),                           /* Mage */
+	 CH_CRUSADE | CH_ARMAGEDDON),  /* Mage */
 	(CH_LIFE | CH_DEATH | CH_DAEMON |
 	 CH_CRUSADE),                           /* Priest */
 	(CH_SORCERY | CH_DEATH | CH_TRUMP |
@@ -3877,7 +3887,7 @@ s32b realm_choices1[MAX_CLASS] =
 	(CH_LIFE | CH_SORCERY | CH_NATURE |
 	 CH_CHAOS | CH_DEATH | CH_TRUMP |
 	 CH_ARCANE | CH_ENCHANT | CH_DAEMON |
-	 CH_CRUSADE | CH_HEX),                  /* High-Mage */
+	 CH_CRUSADE | CH_HEX | CH_ARMAGEDDON),  /* High-Mage */
 	(CH_ARCANE),                            /* Tourist */
 	(CH_NONE),                              /* Imitator */
 	(CH_TRUMP),                             /* Beastmaster */
@@ -3907,7 +3917,7 @@ s32b realm_choices1[MAX_CLASS] =
 	(CH_LIFE | CH_SORCERY | CH_NATURE |
 	 CH_CHAOS | CH_DEATH | CH_TRUMP |
 	 CH_ARCANE | CH_ENCHANT | CH_DAEMON |
-	 CH_CRUSADE),                              /* Blood-Mage */
+	 CH_CRUSADE | CH_ARMAGEDDON), /* Blood-Mage */
 	CH_NECROMANCY,			/* Necromancer */
 	CH_NONE,				/* Psion */
 	CH_RAGE,                /* Rage-Mage */
@@ -3922,11 +3932,11 @@ s32b realm_choices2[MAX_CLASS] =
 	(CH_LIFE | CH_SORCERY | CH_NATURE |
 	 CH_CHAOS | CH_DEATH | CH_TRUMP |
 	 CH_ARCANE | CH_ENCHANT | CH_DAEMON |
-	 CH_CRUSADE),                              /* Mage */
+	 CH_CRUSADE | CH_ARMAGEDDON),           /* Mage */
 	(CH_LIFE | CH_SORCERY | CH_NATURE |
 	 CH_CHAOS | CH_DEATH | CH_TRUMP |
 	 CH_ARCANE | CH_ENCHANT | CH_DAEMON |
-	 CH_CRUSADE),                              /* Priest */
+	 CH_CRUSADE | CH_ARMAGEDDON),           /* Priest */
 	(CH_NONE),                              /* Rogue */
 	(CH_SORCERY | CH_CHAOS | CH_DEATH |
 	 CH_TRUMP | CH_ARCANE | CH_DAEMON),     /* Ranger */
@@ -3934,7 +3944,7 @@ s32b realm_choices2[MAX_CLASS] =
 	(CH_LIFE | CH_NATURE | CH_CHAOS |
 	 CH_DEATH | CH_TRUMP | CH_ARCANE |
 	 CH_SORCERY | CH_ENCHANT | CH_DAEMON |
-	 CH_CRUSADE),                              /* Warrior-Mage */
+	 CH_CRUSADE | CH_ARMAGEDDON),           /* Warrior-Mage */
 	(CH_NONE),                              /* Chaos-Warrior */
 	(CH_NONE),                              /* Monk */
 	(CH_NONE),                              /* Mindcrafter */
@@ -3967,7 +3977,7 @@ s32b realm_choices2[MAX_CLASS] =
 	(CH_LIFE | CH_SORCERY | CH_NATURE |
 	 CH_CHAOS | CH_DEATH | CH_TRUMP |
 	 CH_ARCANE | CH_ENCHANT | CH_DAEMON |
-	 CH_CRUSADE),                              /* Blood-Mage */
+	 CH_CRUSADE | CH_ARMAGEDDON), /* Blood-Mage */
 	CH_NONE,                /* Necromancer */
 	CH_NONE,				/* Psion */
 	CH_NONE,                /* Rage-Mage */	
@@ -4020,7 +4030,7 @@ cptr realm_names[]
 	"Daemon",
 	"Crusade",
 	"Necromancy",
-	"unknown",
+	"Armageddon",
 	"unknown",
 	"unknown",
 	"unknown",

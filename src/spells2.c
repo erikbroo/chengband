@@ -2999,6 +2999,7 @@ bool detect_objects_magic(int range)
 			(tv == TV_DAEMON_BOOK) ||
 			(tv == TV_CRUSADE_BOOK) ||
 			(tv == TV_NECROMANCY_BOOK) ||
+			(tv == TV_ARMAGEDDON_BOOK) ||
 			(tv == TV_MUSIC_BOOK) ||
 			(tv == TV_HISSATSU_BOOK) ||
 			(tv == TV_HEX_BOOK) ||

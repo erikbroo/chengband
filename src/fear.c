@@ -353,6 +353,7 @@ void fear_process_p(void)
 		r_ptr = &r_info[m_ptr->ap_r_idx];
 
 		if (!(r_ptr->flags2 & RF2_AURA_FEAR)) continue;
+		if (is_pet(m_ptr) || is_friendly(m_ptr)) continue;
 		if (!projectable(py, px, m_ptr->fy, m_ptr->fx)) continue;
 
 		r_level = _r_level(r_ptr);
@@ -370,7 +371,7 @@ void fear_process_p(void)
 void fear_update_m(monster_type *m_ptr)
 {
 	monster_race *r_ptr = &r_info[m_ptr->ap_r_idx];
-	if ((r_ptr->flags2 & RF2_AURA_FEAR) && m_ptr->ml)
+	if ((r_ptr->flags2 & RF2_AURA_FEAR) && m_ptr->ml && !is_pet(m_ptr) && !is_friendly(m_ptr))
 	{
 		int r_level = _r_level(r_ptr);
 		if (!fear_save_p(r_level))

@@ -1007,6 +1007,7 @@ static void mass_produce(object_type *o_ptr)
 		case TV_DAEMON_BOOK:
 		case TV_CRUSADE_BOOK:
 		case TV_NECROMANCY_BOOK:
+		case TV_ARMAGEDDON_BOOK:
 		case TV_MUSIC_BOOK:
 		case TV_HISSATSU_BOOK:
 		case TV_HEX_BOOK:
@@ -1477,6 +1478,7 @@ static bool store_will_buy(object_type *o_ptr)
 				case TV_SORCERY_BOOK:
 				case TV_NATURE_BOOK:
 				case TV_CHAOS_BOOK:
+				case TV_ARMAGEDDON_BOOK:
 				case TV_DEATH_BOOK:
 				case TV_TRUMP_BOOK:
 				case TV_ARCANE_BOOK:
@@ -1520,6 +1522,7 @@ static bool store_will_buy(object_type *o_ptr)
 				case TV_DAEMON_BOOK:
 				case TV_CRUSADE_BOOK:
 				case TV_NECROMANCY_BOOK:
+				case TV_ARMAGEDDON_BOOK:
 				case TV_MUSIC_BOOK:
 				case TV_HEX_BOOK:
 					break;

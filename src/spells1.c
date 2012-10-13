@@ -2544,6 +2544,11 @@ note = "には耐性がある。";
 				}
 				if (is_original_ap_and_seen(m_ptr)) r_ptr->r_flagsr |= (RFR_RES_WATE);
 			}
+			else
+			{
+				if (who || !mon_save_p(m_ptr->r_idx, A_NONE))
+					do_stun = (randint1(15) + 1) / (r + 1);
+			}
 			break;
 		}
 
@@ -3657,7 +3662,8 @@ note = "があなたに隷属した。";
 				if (is_original_ap_and_seen(m_ptr)) r_ptr->r_flagsr |= (RFR_RES_ALL);
 				break;
 			}
-			do_stun = (randint1(15) + 1) / (r + 1);
+			if (who || !mon_save_p(m_ptr->r_idx, A_NONE))
+				do_stun = (randint1(15) + 1) / (r + 1);
 			if (r_ptr->flagsr & RFR_IM_COLD)
 			{
 #ifdef JP

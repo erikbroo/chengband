@@ -6771,6 +6771,40 @@ A:90/1
 D:$Food of the gods, fragrant and sweet.
 D:$It cures poison, heals hp a bit, and restores your stats and life when eaten.
 
+N:719:TRANSLATE
+E:[Book of Elements]
+G:?:R
+I:101:0:0
+W:10:0:0:30:100
+A:10/1
+P:0:1d1:0:0:0
+
+N:720:TRANSLATE
+E:[Earth, Wind and Fire]
+G:?:R
+I:101:1:0
+W:20:0:0:30:1000
+A:20/1
+P:0:1d1:0:0:0
+
+N:721:TRANSLATE
+E:[Path of Destruction]
+G:?:r
+I:101:2:0
+W:50:0:0:30:25000
+A:50/1
+P:0:1d1:0:0:0
+F:IGNORE_ACID | IGNORE_ELEC | IGNORE_FIRE | IGNORE_COLD
+
+N:722:TRANSLATE
+E:[Day of Ragnarok]
+G:?:r
+I:101:3:0
+W:90:0:0:30:100000
+A:95/3
+P:0:1d1:0:0:0
+F:IGNORE_ACID | IGNORE_ELEC | IGNORE_FIRE | IGNORE_COLD
+
 # N: serial number : & object name~
 # G: symbol : color
 # I: tval : sval : pval
