@@ -5670,7 +5670,7 @@ void calc_bonuses(void)
 			if (hex_spelling(HEX_XTRA_MIGHT) || hex_spelling(HEX_BUILDING)) { num++; wgt /= 2; mul += 2; }
 			if (p_ptr->tim_building_up && p_ptr->pclass != CLASS_MAULER) 
 			{ 
-				if (num < 5 && p_ptr->lev >= 40) 
+				if (num < 4 && p_ptr->lev >= 40) 
 					num++; 
 				wgt /= 2; 
 				mul += 2; 

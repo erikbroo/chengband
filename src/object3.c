@@ -1133,7 +1133,7 @@ s32b weapon_cost(object_type *o_ptr)
 
 		if (have_flag(flgs, TR_FORCE_WEAPON))
 		{
-			s = (s * 1.50 + 2.0) * 0.25 + s * 0.75;
+			s = (s * 1.50 + 1.0) * 0.25 + s * 0.75;
 		}
 
 		if (have_flag(flgs, TR_VORPAL))

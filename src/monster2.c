@@ -2720,7 +2720,7 @@ void update_mon(int m_idx, bool full)
 		/* Save the distance */
 		m_ptr->cdis = d;
 
-		if (m_ptr->cdis <= 2)
+		if (m_ptr->cdis <= 2 && projectable(py, px, fy, fx))
 			do_disturb = TRUE;
 	}
 

@@ -2273,18 +2273,18 @@ static void display_player_various(void)
 					int cost = 0;
 				
 					if (p_ptr->pclass == CLASS_SAMURAI)
-						cost = (1 + (o_ptr->dd * o_ptr->ds * 2 / 5));
+						cost = (1 + (o_ptr->dd * o_ptr->ds * 2 / 7));
 					else
-						cost = (1+(o_ptr->dd * o_ptr->ds / 5));
+						cost = (1+(o_ptr->dd * o_ptr->ds / 7));
 
 					if (p_ptr->csp >= cost)
-						basedam = basedam * 7 / 2;
+						basedam = basedam * 5 / 2;
 				}
 				if (mauler_get_toggle() == TOGGLE_DEATH_FORCE && p_ptr->ryoute)
 				{
 					int cost = 1 + (o_ptr->dd * o_ptr->ds) / 9;
 					if (p_ptr->fast >= cost)
-						basedam = basedam * 7 / 2;
+						basedam = basedam * 5 / 2;
 				}
 			}
 			else basedam = 0;

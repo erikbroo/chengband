@@ -28,7 +28,7 @@
 #define FAKE_VERSION   0
 #define FAKE_VER_MAJOR 10
 #define FAKE_VER_MINOR 0
-#define FAKE_VER_PATCH 137
+#define FAKE_VER_PATCH 138
 
 
 /*
@@ -46,7 +46,7 @@
  */
 #define H_VER_MAJOR 0
 #define H_VER_MINOR 0
-#define H_VER_PATCH 137
+#define H_VER_PATCH 138
 #define H_VER_EXTRA 0
 
 
@@ -55,7 +55,7 @@
 
 #define MAX_SUMMONS 50
 #define RESIST_SINGLE 60
-#define RESIST_DOUBLE 70
+#define RESIST_DOUBLE 72
 #define RESIST_DAMAGE_INVENTORY 75
 #define RESIST_IMMUNE 100
 #define RESIST_VULNERABLE 10

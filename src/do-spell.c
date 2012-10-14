@@ -4375,8 +4375,8 @@ static cptr do_death_spell(int spell, int mode)
 		if (name) return "耐毒";
 		if (desc) return "一定時間、毒への耐性を得る。装備による耐性に累積する。";
 #else
-		if (name) return "Resist Poison";
-		if (desc) return "Gives resistance to poison. This resistance can be added to which from equipment for more powerful resistance.";
+		if (name) return "Undead Resistance";
+		if (desc) return "Gives resistance to poison and cold. This resistance can be added to which from equipment for more powerful resistance.";
 #endif
     
 		{
@@ -4386,6 +4386,7 @@ static cptr do_death_spell(int spell, int mode)
 
 			if (cast)
 			{
+				set_oppose_cold(randint1(base) + base, FALSE);
 				set_oppose_pois(randint1(base) + base, FALSE);
 			}
 		}
@@ -7310,6 +7311,29 @@ static cptr do_craft_spell(int spell, int mode)
 
 	case 29:
 #ifdef JP
+		if (name) return "人間トランプ";
+		if (desc) return "ランダムにテレポートする突然変異か、自分の意思でテレポートする突然変異が身につく。";
+#else
+		if (name) return "Living Trump";
+		if (desc) return "Gives mutation which makes you teleport randomly or makes you able to teleport at will.";
+#endif
+    
+		if (cast)
+		{
+			int mutation;
+
+			if (one_in_(7) || dun_level == 0)
+				mutation = MUT_TELEPORT;
+			else
+				mutation = MUT_TELEPORT_RND;
+
+			if (mut_gain(mutation))
+				msg_print(T("You have turned into a Living Trump.", "あなたは生きているカードに変わった。"));
+		}
+		break;
+
+	case 30:
+#ifdef JP
 		if (name) return "属性への免疫";
 		if (desc) return "一定時間、冷気、炎、電撃、酸のいずれかに対する免疫を得る。";
 #else
@@ -7325,21 +7349,6 @@ static cptr do_craft_spell(int spell, int mode)
 			if (cast)
 			{
 				if (!choose_ele_immune(base + randint1(base))) return NULL;
-			}
-		}
-		break;
-
-	case 30:
-		if (name) return "Way of Genji";
-		if (desc) return "Temporarily improves your skill with dual wielding.";
-    
-		{
-		int base = spell_power(plev / 4);
-
-			if (info) return info_duration(base, base);
-			if (cast)
-			{
-				set_tim_genji(base + randint1(base), FALSE);
 			}
 		}
 		break;
@@ -7817,7 +7826,7 @@ static cptr do_daemon_spell(int spell, int mode)
 		if (desc) return "恐怖を取り除き、一定時間、炎と冷気の耐性、炎のオーラを得る。耐性は装備による耐性に累積する。";
 #else
 		if (name) return "Devil Cloak";
-		if (desc) return "Gives resistance to fire and cold, and aura of fire. These resistances can be added to which from equipment for more powerful resistances.";
+		if (desc) return "Gives resistance to fire, acid and poison as well as an aura of fire. These resistances can be added to which from equipment for more powerful resistances.";
 #endif
     
 		{
@@ -7830,7 +7839,8 @@ static cptr do_daemon_spell(int spell, int mode)
 				int dur = randint1(base) + base;
 					
 				set_oppose_fire(dur, FALSE);
-				set_oppose_cold(dur, FALSE);
+				set_oppose_acid(dur, FALSE);
+				set_oppose_pois(dur, FALSE);
 				set_tim_sh_fire(dur, FALSE);
 				break;
 			}
@@ -8576,13 +8586,8 @@ static cptr do_crusade_spell(int spell, int mode)
 		break;
 
 	case 18:
-#ifdef JP
-		if (name) return "聖なるオーラ";
-		if (desc) return "一定時間、邪悪なモンスターを傷つける聖なるオーラを得る。";
-#else
-		if (name) return "Holy Aura";
-		if (desc) return "Gives aura of holy power which injures evil monsters which attacked you for a while.";
-#endif
+		if (name) return "Angelic Cloak";
+		if (desc) return "Gives resistance to acid, cold and lightning. Gives aura of holy power which injures evil monsters which attacked you for a while.";
     
 		{
 			int base = 20;
@@ -8591,6 +8596,9 @@ static cptr do_crusade_spell(int spell, int mode)
 
 			if (cast)
 			{
+				set_oppose_acid(randint1(base) + base, FALSE);
+				set_oppose_cold(randint1(base) + base, FALSE);
+				set_oppose_elec(randint1(base) + base, FALSE);
 				set_tim_sh_holy(randint1(base) + base, FALSE);
 			}
 		}

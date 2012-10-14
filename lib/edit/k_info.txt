@@ -6409,7 +6409,6 @@ E:Spell Power:Steel
 G:":y
 I:40:30:0
 W:20:0:0:2:1000
-A:20/8:30/6:80/6
 F:SPELL_POWER | STR | DEX | CON
 
 N:676:TRANSLATE
@@ -6417,7 +6416,6 @@ E:Spell Capacity:Opal
 G:":v
 I:40:31:0
 W:20:0:0:2:1000
-A:20/8:30/6:80/6
 F:SPELL_CAP
 
 N:677:TRANSLATE

@@ -280,7 +280,7 @@ static void death_scythe_miss(object_type *o_ptr, int hand, int mode)
 		{
 			p_ptr->csp -= (1+(p_ptr->msp / 30));
 			p_ptr->redraw |= (PR_MANA);
-			mult = mult * 3 / 2 + 20;
+			mult = mult * 3 / 2 + 10;
 		}
 
 		if (mauler_get_toggle() == TOGGLE_DEATH_FORCE && p_ptr->ryoute)
@@ -289,7 +289,7 @@ static void death_scythe_miss(object_type *o_ptr, int hand, int mode)
 			if (p_ptr->fast >= cost)
 			{
 				set_fast(p_ptr->fast - cost, TRUE);
-				mult = mult * 3 / 2 + 20;
+				mult = mult * 3 / 2 + 10;
 			}
 		}
 
@@ -1402,15 +1402,15 @@ s16b tot_dam_aux(object_type *o_ptr, int tdam, monster_type *m_ptr, s16b hand, i
 				int ds = o_ptr->ds + p_ptr->weapon_info[hand].to_ds;
 				
 				if (p_ptr->pclass == CLASS_SAMURAI)
-					cost = (1 + (dd * ds * 2 / 5));
+					cost = (1 + (dd * ds * 2 / 7));
 				else
-					cost = (1 + (dd * ds / 5));
+					cost = (1 + (dd * ds / 7));
 
 				if (p_ptr->csp >= cost)
 				{
 					p_ptr->csp -= cost;
 					p_ptr->redraw |= (PR_MANA);
-					mult = mult * 3 / 2 + 20;
+					mult = mult * 3 / 2 + 10;
 				}
 			}
 			if (mauler_get_toggle() == TOGGLE_DEATH_FORCE &&  p_ptr->ryoute)
@@ -1419,7 +1419,7 @@ s16b tot_dam_aux(object_type *o_ptr, int tdam, monster_type *m_ptr, s16b hand, i
 				if (p_ptr->fast >= cost)
 				{
 					set_fast(p_ptr->fast - cost, TRUE);
-					mult = mult * 3 / 2 + 20;
+					mult = mult * 3 / 2 + 10;
 				}
 			}
 			if (mult > 10 && prace_is_(RACE_DEMIGOD) && p_ptr->psubrace == DEMIGOD_HEPHAESTUS && !hephaestus_hack)

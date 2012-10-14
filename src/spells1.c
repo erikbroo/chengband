@@ -7273,7 +7273,7 @@ static bool project_p(int who, cptr who_name, int r, int y, int x, int dam, int 
 		if (!evaded && mut_present(MUT_EVASION))
 		{
 			msg_print("You evade the attack!");
-			dam -= dam/3;
+			dam -= dam/4;
 		}		
 	}
 

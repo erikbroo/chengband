@@ -3147,7 +3147,7 @@ static void compare_weapon_aux2(int hand, critical_t *crit,
 			mult += 100;
 		if (force)
 		{
-			mult = mult * 3 / 2 + 200;
+			mult = mult * 3 / 2 + 100;
 			if (old_mult == 100)
 				mult += 100;
 		}
@@ -3155,7 +3155,7 @@ static void compare_weapon_aux2(int hand, critical_t *crit,
 	else
 	{
 		if (force)
-			mult = mult * 3 / 2 + 200;
+			mult = mult * 3 / 2 + 100;
 	}
 
 	switch (o_ptr->name1)

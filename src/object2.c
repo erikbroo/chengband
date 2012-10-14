@@ -2568,7 +2568,7 @@ static void a_m_aux_1(object_type *o_ptr, int level, int power)
 					break;
 				}
 
-				if (!o_ptr->art_name && o_ptr->name2 != EGO_WILD)
+				if (!o_ptr->art_name && o_ptr->name2 != EGO_WILD && o_ptr->name2 != EGO_ATTACKS)
 				{
 					/* Hack -- Super-charge the damage dice */
 					if (o_ptr->dd * o_ptr->ds > 0 && one_in_(5 + 200/MAX(level, 1)))
@@ -4727,10 +4727,15 @@ void apply_magic(object_type *o_ptr, int lev, u32b mode)
 			{
 				if ((o_ptr->name2 == EGO_HA) && (have_flag(o_ptr->art_flags, TR_BLOWS)))
 				{
-					o_ptr->pval = 1;
-					if ((o_ptr->tval == TV_SWORD) && (o_ptr->sval == SV_HAYABUSA))
-						o_ptr->pval++;
-					if ((lev > 60) && one_in_(3) && ((o_ptr->dd*(o_ptr->ds+1)) < 15)) o_ptr->pval++;
+					if (o_ptr->dd*o_ptr->ds > 30)
+						remove_flag(o_ptr->art_flags, TR_BLOWS);
+					else
+					{
+						o_ptr->pval = 1;
+						if ((o_ptr->tval == TV_SWORD) && (o_ptr->sval == SV_HAYABUSA))
+							o_ptr->pval++;
+						if ((lev > 60) && one_in_(3) && ((o_ptr->dd*(o_ptr->ds+1)) < 15)) o_ptr->pval++;
+					}
 				}
 				else if (o_ptr->name2 == EGO_ATTACKS)
 				{
@@ -4739,6 +4744,9 @@ void apply_magic(object_type *o_ptr, int lev, u32b mode)
 					if (o_ptr->pval == 3 && !one_in_(o_ptr->dd * o_ptr->ds / 2)) o_ptr->pval = 2;
 					if ((o_ptr->tval == TV_SWORD) && (o_ptr->sval == SV_HAYABUSA))
 						o_ptr->pval += 1;
+
+					if (o_ptr->dd*o_ptr->ds > 30)
+						o_ptr->pval = 1;
 				}
 				else if (o_ptr->name2 == EGO_BAT)
 				{
