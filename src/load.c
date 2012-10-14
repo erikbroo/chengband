@@ -1674,6 +1674,11 @@ static void rd_extra(void)
 		rd_s16b(&p_ptr->tim_inven_prot);
 	}
 
+	if (h_older_than(0, 0, 138, 1))
+		p_ptr->tim_device_power = 0;
+	else
+		rd_s16b(&p_ptr->tim_device_power);
+
 	rd_s16b(&p_ptr->chaos_patron);
 
 	if (h_older_than(0, 0, 18, 0))

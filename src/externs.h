@@ -1201,7 +1201,7 @@ extern bool detect_all(int range);
 extern bool wall_stone(void);
 extern bool speed_monsters(void);
 extern bool slow_monsters(void);
-extern bool sleep_monsters(void);
+extern bool sleep_monsters(int power);
 extern void aggravate_monsters(int who);
 extern bool genocide_aux(int m_idx, int power, bool player_cast, int dam_side, cptr spell_name);
 extern bool symbol_genocide(int power, bool player_cast);
@@ -1557,6 +1557,7 @@ extern bool set_tim_hold_life(int v, bool do_dec);
 extern bool set_tim_transcendence(int v, bool do_dec);
 extern bool set_tim_quick_walk(int v, bool do_dec);
 extern bool set_tim_inven_prot(int v, bool do_dec);
+extern bool set_tim_device_power(int v, bool do_dec);
 
 extern bool set_multishadow(int v, bool do_dec);
 extern bool set_dustrobe(int v, bool do_dec);

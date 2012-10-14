@@ -162,7 +162,7 @@ void sleeping_dust_spell(int cmd, variant *res)
 	case SPELL_CAST:
 		msg_print(T("You throw some magic dust...", "あなたは魔法の粉を投げつけた..."));
 		if (p_ptr->lev < 25) sleep_monsters_touch();
-		else sleep_monsters();
+		else sleep_monsters(p_ptr->lev);
 		var_set_bool(res, TRUE);
 		break;
 	default:

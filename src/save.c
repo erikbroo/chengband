@@ -850,6 +850,7 @@ static void wr_extra(void)
 	wr_s16b(p_ptr->tim_transcendence);
 	wr_s16b(p_ptr->tim_quick_walk);
 	wr_s16b(p_ptr->tim_inven_prot);
+	wr_s16b(p_ptr->tim_device_power);
 
 	wr_s16b(p_ptr->chaos_patron);
 	for (i = 0; i < MUT_FLAG_SIZE; ++i)

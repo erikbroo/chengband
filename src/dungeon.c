@@ -2358,6 +2358,9 @@ static void process_world_aux_timeout(void)
 	if (p_ptr->tim_inven_prot)
 		set_tim_inven_prot(p_ptr->tim_inven_prot - 1, TRUE);
 
+	if (p_ptr->tim_device_power)
+		set_tim_device_power(p_ptr->tim_device_power - 1, TRUE);
+
 	if (p_ptr->tim_dark_stalker)
 		set_tim_dark_stalker(p_ptr->tim_dark_stalker - 1, TRUE);
 

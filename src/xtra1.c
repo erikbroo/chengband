@@ -453,6 +453,7 @@ static void prt_stat(int stat)
 #define BAR_INVEN_PROT 142
 #define BAR_SHRIKE 143
 #define BAR_WEAPONMASTERY 144
+#define BAR_DEVICE_POWER 145
 
 static struct {
 	byte attr;
@@ -682,6 +683,7 @@ static struct {
 	{TERM_L_BLUE, "IP", "InvenProt"},
 	{TERM_YELLOW, "Sk", "Shrike"},
 	{TERM_L_BLUE, "Wp", "Weapon"},
+	{TERM_VIOLET, "Dv", "Device"},
 	{0, NULL, NULL}
 };
 #endif
@@ -1037,6 +1039,7 @@ static void prt_status(void)
 	if (p_ptr->tim_transcendence) ADD_FLG(BAR_TRANSCENDENCE);
 	if (p_ptr->tim_quick_walk) ADD_FLG(BAR_QUICK_WALK);
 	if (p_ptr->tim_inven_prot) ADD_FLG(BAR_INVEN_PROT);
+	if (p_ptr->tim_device_power) ADD_FLG(BAR_DEVICE_POWER);
 
 	if (p_ptr->tim_dark_stalker) ADD_FLG(BAR_DARK_STALKER);
 	if (p_ptr->tim_nimble_dodge) ADD_FLG(BAR_NIMBLE_DODGE);
@@ -3789,6 +3792,12 @@ void calc_bonuses(void)
 	if (p_ptr->tim_hold_life) p_ptr->hold_life = TRUE;
 	if (p_ptr->tim_inven_prot) p_ptr->inven_prot = TRUE;
 	if (p_ptr->tim_quick_walk) p_ptr->quick_walk = TRUE;
+
+	if (p_ptr->tim_device_power)
+	{
+		int bonus = 1 + (p_ptr->lev + 10)/15;
+		p_ptr->device_power += bonus;
+	}
 
 	if (mut_present(MUT_FLEET_OF_FOOT)) p_ptr->quick_walk = TRUE;
 

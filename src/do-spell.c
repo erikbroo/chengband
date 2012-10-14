@@ -364,7 +364,7 @@ void cast_wonder(int dir)
 	{
 		dispel_monsters(150);
 		slow_monsters();
-		sleep_monsters();
+		sleep_monsters(p_ptr->lev);
 		hp_player(300);
 	}
 }
@@ -522,7 +522,7 @@ static void cast_invoke_spirits(int dir)
 	{ /* RARE */
 		dispel_monsters(150);
 		slow_monsters();
-		sleep_monsters();
+		sleep_monsters(p_ptr->lev);
 		hp_player(300);
 	}
 
@@ -2150,22 +2150,28 @@ static cptr do_sorcery_spell(int spell, int mode)
 		break;
 
 	case 11:
-#ifdef JP
-		if (name) return "周辺スリープ";
-		if (desc) return "視界内の全てのモンスターを眠らせる。抵抗されると無効。";
-#else
-		if (name) return "Mass Sleep";
-		if (desc) return "Attempts to sleep all monsters in sight.";
-#endif
+		if (plev < 35)
+		{
+			if (name) return "Mass Sleep";
+			if (desc) return "Attempts to sleep all monsters in sight.";
+		}
+		else
+		{
+			if (name) return "Mass Stasis";
+			if (desc) return "Attempts to suspend all monsters in sight.";
+		}
     
 		{
-			int power = spell_power(plev * 2);
+			int power = spell_power(plev * 4);
 
 			if (info) return info_power(power);
 
 			if (cast)
 			{
-				sleep_monsters();
+				if (plev < 35)
+					sleep_monsters(power);
+				else
+					stasis_monsters(power);
 			}
 		}
 		break;
@@ -2254,49 +2260,30 @@ static cptr do_sorcery_spell(int spell, int mode)
 		break;
 
 	case 16:
-#ifdef JP
-		if (name) return "物体と財宝感知";
-		if (desc) return "近くの全てのアイテムと財宝を感知する。";
-#else
-		if (name) return "Detect items and Treasure";
-		if (desc) return "Detects all treasures and items in your vicinity.";
-#endif
+		if (name) return "Inventory Protection";
+		if (desc) return "For a short while, items in your pack have a chance to resist destruction.";
     
 		{
-			int rad = DETECT_RAD_DEFAULT;
+			int base = spell_power(30);
 
-			if (info) return info_radius(rad);
+			if (info) return info_duration(30, base);
 
 			if (cast)
-			{
-				detect_objects_normal(rad);
-				detect_treasure(rad);
-				detect_objects_gold(rad);
-			}
+				set_tim_inven_prot(base + randint1(base), FALSE);
 		}
 		break;
 
 	case 17:
 #ifdef JP
-		if (name) return "チャーム・モンスター";
-		if (desc) return "モンスター1体を魅了する。抵抗されると無効。";
+		if (name) return "階段生成";
+		if (desc) return "自分のいる位置に階段を作る。";
 #else
-		if (name) return "Charm Monster";
-		if (desc) return "Attempts to charm a monster.";
+		if (name) return "Stair Creation";
+		if (desc) return "Creates a stair which goes down or up.";
 #endif
     
-		{
-			int power = spell_power(plev);
-
-			if (info) return info_power(power);
-
-			if (cast)
-			{
-				if (!get_aim_dir(&dir)) return NULL;
-
-				charm_monster(dir, power);
-			}
-		}
+		if (cast)
+			stair_creation(FALSE);
 		break;
 
 	case 18:
@@ -2444,25 +2431,14 @@ static cptr do_sorcery_spell(int spell, int mode)
 		break;
 
 	case 25:
-#ifdef JP
-		if (name) return "爆発のルーン";
-		if (desc) return "自分のいる床の上に、モンスターが通ると爆発してダメージを与えるルーンを描く。";
-#else
-		if (name) return "Explosive Rune";
-		if (desc) return "Sets a glyph under you. The glyph will explode when a monster moves on it.";
-#endif
+		if (name) return "Door Creation";
+		if (desc) return "Creates doors on all surrounding squares.";
     
+		if (cast)
 		{
-			int dice = 7;
-			int sides = 7;
-			int base = plev;
-
-			if (info) return info_damage(dice, sides, base);
-
-			if (cast)
-			{
-				explosive_rune();
-			}
+			project(0, 1, py, px, 0, GF_MAKE_DOOR, PROJECT_GRID | PROJECT_ITEM | PROJECT_HIDE, -1);
+			p_ptr->update |= (PU_FLOW);
+			p_ptr->redraw |= (PR_MAP);
 		}
 		break;
 
@@ -2520,23 +2496,16 @@ static cptr do_sorcery_spell(int spell, int mode)
 		break;
 
 	case 28:
-#ifdef JP
-		if (name) return "魅了の視線";
-		if (desc) return "視界内の全てのモンスターを魅了する。抵抗されると無効。";
-#else
-		if (name) return "Charm monsters";
-		if (desc) return "Attempts to charm all monsters in sight.";
-#endif
-    
-		{
-			int power = spell_power(plev * 2);
+		if (name) return "Device Mastery";
+		if (desc) return "For a very short time, your magical devices are more powerful.";
 
-			if (info) return info_power(power);
+		{
+			int base = spell_power(p_ptr->lev/10);
+
+			if (info) return info_duration(base, base);
 
 			if (cast)
-			{
-				charm_monsters(power);
-			}
+				set_tim_device_power(base + randint1(base), FALSE);
 		}
 		break;
 
@@ -7825,7 +7794,7 @@ static cptr do_daemon_spell(int spell, int mode)
 		if (name) return "悪魔のクローク";
 		if (desc) return "恐怖を取り除き、一定時間、炎と冷気の耐性、炎のオーラを得る。耐性は装備による耐性に累積する。";
 #else
-		if (name) return "Devil Cloak";
+		if (name) return "Devilish Cloak";
 		if (desc) return "Gives resistance to fire, acid and poison as well as an aura of fire. These resistances can be added to which from equipment for more powerful resistances.";
 #endif
     
@@ -9808,7 +9777,7 @@ static cptr do_music_spell(int spell, int mode)
 			if (cont)
 			{
 				slow_monsters();
-				sleep_monsters();
+				sleep_monsters(power);
 			}
 		}
 

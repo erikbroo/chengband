@@ -1187,6 +1187,7 @@ struct player_type
 	s16b tim_transcendence;
 	s16b tim_quick_walk;
 	s16b tim_inven_prot;
+	s16b tim_device_power;
 
 	/* Rune Knight: Some Rune effects might become general game mechanics, like Magic Resistance
 	   and Magic Absorption.  Also, let's consolidate the White Aura mutation with the Rune of
